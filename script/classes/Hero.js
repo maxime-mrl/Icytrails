@@ -50,24 +50,22 @@ export default class Hero {
     }
 
     collisionBlock = () => {
-        this.world.level.forEach((row, blockY) => {
-            row.forEach((type, blockX) => {
-                if (type != "a") return;
-                if (
-                    ( // x collision
-                        blockX >= this.pos.x && blockX < this.pos.x + 1 ||
-                        blockX < this.pos.x && blockX + 1 > this.pos.x
-                    ) &&
-                    (// y collision
-                        blockY >= this.pos.y && blockY < this.pos.y + 1
-                    )
-                    ) 
-                {
-                    const {x:rx, y:ry} = this.renderer.calculateCoords({x: blockX,y:blockY});
-                    this.ctx.fillStyle = "red";
-                    this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
-                }
-            })
+        this.world.level.forEach(({x:blockX, y:blockY, t:type}) => {
+            if (type != "a") return;
+            if (
+                ( // x collision
+                    blockX >= this.pos.x && blockX < this.pos.x + 1 ||
+                    blockX < this.pos.x && blockX + 1 > this.pos.x
+                ) &&
+                (// y collision
+                    blockY >= this.pos.y && blockY < this.pos.y + 1
+                )
+                ) 
+            {
+                const {x:rx, y:ry} = this.renderer.calculateCoords({x: blockX,y:blockY});
+                this.ctx.fillStyle = "red";
+                this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
+            }
         });
     }
 

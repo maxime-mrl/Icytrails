@@ -1,6 +1,6 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
-fetch('/script/level2.json')
+fetch('/script/level3.json')
     .then(resp => resp.json())
     .then(data => new World(data));
 
@@ -21,18 +21,17 @@ class World {
     }
 
     update = (delay) => {
-        this.level.forEach((row, y) => {
-            row.forEach((type, x) => {
-                const {x:rx, y:ry} = this.renderer.calculateCoords({x,y});
-                switch (type) {
-                    case "block":
-                        this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
-                        break;
-                    case "a":
-                        this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
-                        break;
-                }
-            })
+        this.level.forEach(({x,y,t:type}) => {
+            const {x:rx, y:ry} = this.renderer.calculateCoords({x,y});
+            switch (type) {
+                case "block":
+                    this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
+                    break;
+                case "a":
+                    this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
+                    break;
+            }
+
         });
         this.player.update(delay);
     }

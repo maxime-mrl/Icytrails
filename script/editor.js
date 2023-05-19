@@ -1,11 +1,10 @@
 import Renderer from "./classes/Renderer.js";
-const level = [];
 
 class World {
-    constructor(level) {
+    constructor() {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
-        this.level = level;
+        this.level = [];
         this.renderer = new Renderer(this);
         this.mouse = { x: 0, y: 0 }; // mouse position over canvas
         this.pos = { x: 0, y: 0 }; // real pos
@@ -23,11 +22,12 @@ class World {
     }
 
     clickEvent = (e) => { // add block on click
-        level.push({
+        this.level.push({
             x: this.pos.x,
             y: this.pos.y,
             t: "a"
         });
+        console.log(this.level)
     }
     
     keyPressed = ({key}) => { // handle canvas translate based on key
@@ -84,4 +84,4 @@ class World {
     }
 }
 
-const world = new World(level);
+const world = new World();
