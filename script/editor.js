@@ -7,27 +7,58 @@ class World {
         this.ctx = this.canvas.getContext("2d");
         this.level = level;
         this.renderer = new Renderer(this);
-        this.pos = {x:0,y:0}
-        this.canvas.addEventListener("mousemove", this.mouseEvent)
-        this.canvas.addEventListener("click", this.clickEvent)
+        this.pos = {x:0,y:0};
+        this.mouse = {x:0,y:0};
+        this.translate = {
+            x: 0,
+            y: 0
+        }
+        this.canvas.addEventListener("mousemove", this.mouseEvent);
+        this.canvas.addEventListener("click", this.clickEvent);
+        document.addEventListener("keypress", this.keyPressed);
     }
 
     mouseEvent = ({clientX, clientY}) => {
         let rect = this.canvas.getBoundingClientRect();
-        this.pos.x = Math.round((clientX - rect.left - this.renderer.blockSize / 2) / this.renderer.blockSize); // get coordinate in block unit w/ mous at center
-        this.pos.y = Math.round((rect.bottom - clientY  - this.renderer.blockSize / 2) / this.renderer.blockSize); // y from the bottom
+        this.mouse.x = Math.round((clientX - rect.left - this.renderer.blockSize / 2) / this.renderer.blockSize); // get coordinate in block unit w/ mous at center
+        this.mouse.y = Math.round((rect.bottom - clientY  - this.renderer.blockSize / 2) / this.renderer.blockSize); // y from the bottom
     }
 
     clickEvent = (e) => {
         level.push({
             x: this.pos.x,
             y: this.pos.y,
-            type: "a"
+            t: "a"
         })
+    }
+    
+    keyPressed = ({key}) => {
+        switch (key) {
+            case " ": case "ArrowUp": case "z": case "w":
+                this.translate.y++
+                break;
+            
+            case "ArrowDown": case "s":
+                this.translate.y--
+                break;
+            case "d": case "ArrowRight":
+                this.translate.x--
+                break;
+            case "a": case "q": case "ArrowLeft":
+                this.translate.x++
+                break;
+            default: console.log(key)
+        }
+        if (this.translate.x > 0) this.translate.x = 0;
+        if (this.translate.y < 0) this.translate.y = 0;
+        console.log(this.translate)
     }
 
     update = () => {
-        this.level.forEach(({x,y,type}) => {
+        this.pos.x = this.mouse.x - this.translate.x
+        this.pos.y = this.mouse.y + this.translate.y
+        this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize)
+        this.level.forEach(({x,y,t:type}) => {
             const {x:rx, y:ry} = this.renderer.calculateCoords({x,y});
             switch (type) {
                 case "block":
