@@ -8,29 +8,35 @@ class World {
         this.level = level;
         this.renderer = new Renderer(this);
         this.pos = {x:0,y:0}
-        document.addEventListener("mousemove", this.mouse)
+        this.canvas.addEventListener("mousemove", this.mouseEvent)
+        this.canvas.addEventListener("click", this.clickEvent)
     }
 
-    mouse = ({clientX, clientY}) => {
+    mouseEvent = ({clientX, clientY}) => {
         let rect = this.canvas.getBoundingClientRect();
         this.pos.x = Math.round((clientX - rect.left - this.renderer.blockSize / 2) / this.renderer.blockSize); // get coordinate in block unit w/ mous at center
         this.pos.y = Math.round((rect.bottom - clientY  - this.renderer.blockSize / 2) / this.renderer.blockSize); // y from the bottom
-        console.log(`x: ${this.pos.x} - y: ${this.pos.y}`)
     }
 
-    update = (delay) => {
-        this.level.forEach((row, y) => {
-            row.forEach((type, x) => {
-                const {x:rx, y:ry} = this.renderer.calculateCoords({x,y});
-                switch (type) {
-                    case "block":
-                        this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
-                        break;
-                    case "a":
-                        this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
-                        break;
-                }
-            })
+    clickEvent = (e) => {
+        level.push({
+            x: this.pos.x,
+            y: this.pos.y,
+            type: "a"
+        })
+    }
+
+    update = () => {
+        this.level.forEach(({x,y,type}) => {
+            const {x:rx, y:ry} = this.renderer.calculateCoords({x,y});
+            switch (type) {
+                case "block":
+                    this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
+                    break;
+                case "a":
+                    this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
+                    break;
+            }
         });
         this.ctx.fillStyle = "#00000050"
         for (let y = 0; y < 50; y++) {
