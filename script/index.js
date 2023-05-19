@@ -1,5 +1,5 @@
-import Renderer from "./Resizer.js";
-import Hero from "./Hero.js";
+import Renderer from "./classes/Renderer.js";
+import Hero from "./classes/Hero.js";
 fetch('/script/level2.json')
     .then(resp => resp.json())
     .then(data => new World(data));
@@ -14,7 +14,7 @@ class World {
         this.renderer = new Renderer(this);
         this.player = new Hero(this, {
             x: 0,
-            y: 0
+            y: 3
         });
         document.addEventListener("keydown", this.keyDown)
         document.addEventListener("keyup", this.keyUp)

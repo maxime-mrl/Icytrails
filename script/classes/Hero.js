@@ -3,7 +3,6 @@ export default class Hero {
         this.ctx = world.ctx;
         this.world = world;
         this.renderer = world.renderer;
-        this.blockSize = world.renderer
         this.pos = pos;
         this.vel = {
             xAbs: 0, // horizontal velocity
@@ -38,10 +37,8 @@ export default class Hero {
             this.vel.xAbs -= (this.vel.increment.slow * delay / 1000) * this.vel.xAbs;
         }
         // vertical
-        if (this.jumping) {
-            this.vel.y -= this.vel.g*delay/1000;
-            this.pos.y += this.vel.y*delay/1000;
-        }
+        this.vel.y -= this.vel.g*delay/1000;
+        this.pos.y += this.vel.y*delay/1000;
     }
 
     vCollision = () => {
