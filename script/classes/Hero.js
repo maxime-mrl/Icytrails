@@ -58,12 +58,28 @@ export default class Hero {
                     blockX < this.pos.x && blockX + 1 > this.pos.x
                 ) &&
                 (// y collision
-                    blockY >= this.pos.y && blockY < this.pos.y + 1
+                    blockY >= this.pos.y - 1 && blockY < this.pos.y + 0.5
                 )
                 ) 
             {
                 const {x:rx, y:ry} = this.renderer.calculateCoords({x: blockX,y:blockY});
-                this.ctx.fillStyle = "red";
+                if (blockY > this.pos.y - 0.9) {
+                    this.vel.xAbs = 0
+                    if (this.pos.x + 0.5 > blockX) {
+                        this.ctx.fillStyle = "red";
+                        this.pos.x = blockX + 1.002
+                    } else {
+                        this.ctx.fillStyle = "purple"
+                        this.pos.x = blockX - 1.002
+                    }
+                } else if (blockX > this.pos.x  - 0.01 && blockX - 1 < this.pos.x - 0.01) {
+                    console.log(`x: ${blockX}; player pos: ${this.pos.x}`)
+                    console.log("ok")
+                    this.jumping = false;
+                    this.pos.y = blockY + 1
+                    this.vel.y = 0
+                    this.ctx.fillStyle = "green";
+                }
                 this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize)
             }
         });
