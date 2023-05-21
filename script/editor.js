@@ -1,11 +1,13 @@
 import Renderer from "./classes/Renderer.js";
+const blockSelector = document.querySelector(".blocks-select")
 
 class World {
     constructor() {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
         this.level = [];
-        this.renderer = new Renderer(this);
+        this.renderer = new Renderer(this, "windowed");
+        this.addBlocksToSelector()
         this.mouse = { x: 0, y: 0 }; // mouse position over canvas
         this.pos = { x: 0, y: 0 }; // real pos
         this.translate = { x: 0, y: 0 }; // translate amount
@@ -15,10 +17,27 @@ class World {
         document.addEventListener("keydown", this.keyPressed);
     }
 
+    addBlocksToSelector = () => {
+        this.renderer.blockTextures.forEach(texture => {
+            blockSelector.appendChild(texture)
+        })
+    }
+
     mouseEvent = ({clientX, clientY}) => { // mouse movement get canvas relative coordinates
         let rect = this.canvas.getBoundingClientRect();
-        this.mouse.x = Math.round((clientX - rect.left - this.renderer.blockSize / 2) / this.renderer.blockSize); // get coordinate in block unit w/ mous at center
-        this.mouse.y = Math.round((rect.bottom - clientY  - this.renderer.blockSize / 2) / this.renderer.blockSize); // y from the bottom
+        // for tiled width of the canvas dosen't correspond to real width
+        let widthRatio = this.canvas.width / rect.width;
+        let heightRatio = this.canvas.height / rect.height;
+        this.mouse.x = Math.round(
+            (
+                (clientX - rect.left - this.renderer.blockSize / 2) / this.renderer.blockSize
+            ) * widthRatio
+        ); // get coordinate in block unit w/ mous at center
+        this.mouse.y = Math.round(
+            (
+                (rect.bottom - clientY  - this.renderer.blockSize / 2) / this.renderer.blockSize
+            ) * heightRatio
+        ); // y from the bottom
     }
 
     clickEvent = (e) => { // add block on click
