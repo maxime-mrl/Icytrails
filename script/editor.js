@@ -6,8 +6,9 @@ class World {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
         this.level = [];
+        this.selectedBlock = "00"
         this.renderer = new Renderer(this, "windowed");
-        this.addBlocksToSelector()
+        this.addBlocksToSelector();
         this.mouse = { x: 0, y: 0 }; // mouse position over canvas
         this.pos = { x: 0, y: 0 }; // real pos
         this.translate = { x: 0, y: 0 }; // translate amount
@@ -19,7 +20,7 @@ class World {
 
     addBlocksToSelector = () => {
         this.renderer.blockTextures.forEach(texture => {
-            blockSelector.appendChild(texture)
+            blockSelector.appendChild(texture.image)
         })
     }
 
@@ -41,11 +42,17 @@ class World {
     }
 
     clickEvent = (e) => { // add block on click
-        this.level.push({
+        console.log(this.selectedBlock)
+        const toAdd = {
             x: this.pos.x,
             y: this.pos.y,
-            t: "a"
-        });
+            t: this.selectedBlock
+        };
+        const potentialDouble = this.level.findIndex(block => block.x == toAdd.x && block.y == toAdd.y);
+        if (potentialDouble != -1) {
+            this.level.splice(potentialDouble, 1)
+        }
+        this.level.push(toAdd)
         console.log(this.level)
     }
     
@@ -70,8 +77,8 @@ class World {
 
     update = () => { // udate, draw etc
         // update pos
-        this.pos.x = this.mouse.x - this.translate.x;
-        this.pos.y = this.mouse.y + this.translate.y;
+        this.pos.x = Math.abs(this.mouse.x - this.translate.x);
+        this.pos.y = Math.abs(this.mouse.y + this.translate.y);
         // line draw
         this.ctx.fillStyle = "#00000050";
         for (let y = 0; y < 50; y++) { // horizontal
@@ -86,15 +93,8 @@ class World {
         this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize);
         this.ctx.fillStyle = "#000000";
         this.level.forEach(({x,y,t:type}) => { // blocks
-            const {x:rx, y:ry} = this.renderer.calculateCoords({x,y});
-            switch (type) {
-                case "block":
-                    this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize);
-                    break;
-                case "a":
-                    this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize);
-                    break;
-            }
+            const texture = this.renderer.blockTextures.find(texture => texture.type == type)
+            this.renderer.drawBlock(texture.image, {x,y})
         });
         // mouse position highlight
         const {x:rx, y:ry} = this.renderer.calculateCoords({x: this.pos.x ,y: this.pos.y});

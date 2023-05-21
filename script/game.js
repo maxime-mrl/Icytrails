@@ -1,6 +1,6 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
-fetch('/script/level3.json') // get the level
+fetch('/script/level-3.json') // get the level
     .then(resp => resp.json())
     .then(data => new World(data));
 
@@ -22,16 +22,8 @@ class World {
     update = (delay) => {
         // draw blocks
         this.level.forEach(({x,y,t:type}) => {
-            const {x:rx, y:ry} = this.renderer.calculateCoords({x,y});
-            switch (type) {
-                case "block":
-                    this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize);
-                    break;
-                case "a":
-                    this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize);
-                    break;
-            }
-
+            const texture = this.renderer.blockTextures.find(texture => texture.type == type)
+            this.renderer.drawBlock(texture.image, {x,y})
         });
         // update player
         this.player.update(delay);

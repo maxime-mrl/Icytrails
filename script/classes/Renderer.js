@@ -1,12 +1,12 @@
 const blocks = [
-    "stone",
-    "stone",
-    "stone",
-    "stone",
-    "stone",
-    "stone",
-    "stone",
-    "stone",
+    ["stone", "00"],
+    ["grass", "02"],
+    ["dirt", "03"],
+    ["stone", "00"],
+    ["stone", "00"],
+    ["stone", "00"],
+    ["stone", "00"],
+    ["stone", "00"],
 ]
 export default class Renderer {
     constructor(world, mode = "fullscreen") {
@@ -16,11 +16,15 @@ export default class Renderer {
         this.verticalRenderDistance = 10;
         this.screenMode = mode; // fullscreen or windowed mode
         this.blockTextures = [];
-        blocks.forEach(block => {
+        blocks.forEach(block => { // create block texture
             const image = document.createElement("img");
-            image.src = `/asset/texture/blocks/${block}.jpg`;
-            image.setAttribute("data-name", block)
-            this.blockTextures.push(image)
+            image.src = `/asset/texture/blocks/${block[0]}.jpg`;
+            image.setAttribute("data-name", block[1])
+            image.onclick = () => this.world.selectedBlock = block[1];
+            this.blockTextures.push({
+                image,
+                type: block[1]
+            })
         })
         this.resize();
         window.addEventListener("resize", this.resize);
@@ -42,7 +46,7 @@ export default class Renderer {
             this.canvas.className = "window";
         }
 
-        this.blockSize = Math.floor(this.canvas.height / this.verticalRenderDistance);
+        this.blockSize = Math.ceil(this.canvas.height / this.verticalRenderDistance);
     }
 
     render = (lastFrame) => {
@@ -64,5 +68,11 @@ export default class Renderer {
             x: pos.x*this.blockSize,
             y: this.canvas.height - (pos.y + 1) * this.blockSize
         }
+    }
+
+    drawBlock = (img, pos) => {
+        const {x, y} = this.calculateCoords(pos) 
+        this.world.ctx.drawImage(img, x, y, this.blockSize, this.blockSize);
+        // draw image full: imgSRC, imgcropStart x-y, imgcropEnd x-y, posX, posY, SizeX, sizeY  
     }
 }
