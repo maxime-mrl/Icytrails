@@ -7,6 +7,10 @@ const blocks = [
     ["stone", "00"],
     ["stone", "00"],
     ["stone", "00"],
+];
+
+const heroSprites = [
+    "idle"
 ]
 export default class Renderer {
     constructor(world, mode = "fullscreen") {
@@ -25,7 +29,25 @@ export default class Renderer {
                 image,
                 type: block[1]
             })
-        })
+        });
+        this.heroSprites = {}
+        heroSprites.forEach(sprite => {
+            console.log(`/asset/texture/hero/${sprite}.png`);
+            const image = document.createElement("img");
+            image.src = `/asset/texture/hero/${sprite}.png`;
+            console.log(image.src)
+            console.log("ok")
+            image.onload = () => {
+                this.heroSprites[sprite].frameNb = image.width/this.heroSprites[sprite].frameSize;
+                this.heroSprites[sprite].loaded = true;
+            };
+            this.heroSprites[sprite] = {
+                sprite: image,
+                frameSize: 256,
+                frameNb: 10,
+                loaded: false
+            }
+        });
         this.resize();
         window.addEventListener("resize", this.resize);
         window.addEventListener("orientationchange", this.resize);
@@ -71,8 +93,13 @@ export default class Renderer {
     }
 
     drawBlock = (img, pos) => {
-        const {x, y} = this.calculateCoords(pos) 
+        const {x, y} = this.calculateCoords(pos) ;
         this.world.ctx.drawImage(img, x, y, this.blockSize, this.blockSize);
+    }
+    drawSprite = ({sprite, frameSize}, displayedFrame, pos) => {
+        const {x, y} = this.calculateCoords(pos);
+        const cropStart = frameSize * displayedFrame;
+        this.world.ctx.drawImage(sprite, cropStart, 0, frameSize, frameSize, x, y, this.blockSize, this.blockSize);
         // draw image full: imgSRC, imgcropStart x-y, imgcropEnd x-y, posX, posY, SizeX, sizeY  
     }
 }

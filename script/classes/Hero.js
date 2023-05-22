@@ -5,7 +5,13 @@ export default class Hero {
         this.ctx = world.ctx;
         this.world = world;
         this.renderer = world.renderer;
+        this.sprites = world.renderer.heroSprites;
         this.pos = pos; // pos.x pos.y
+        this.hitBox = {
+            pos: {x: this.pos.x, y: this.pos.y},
+            width: 0.7,
+            height: 0.8,
+        }
 
         this.vel = {
             xAbs: 0, // horizontal velocity
@@ -21,6 +27,12 @@ export default class Hero {
             g: 100 // gravity
         }
         this.jumping = false;
+
+        // sprite
+        this.frameTime = 75; // for 20 fps
+        this.currentFrame = 0;
+        this.elapsed = 0;
+        this.currentSprite = this.sprites.idle; // should be temporary we'll see...
     }
 
     update = (delay) => {
@@ -35,10 +47,36 @@ export default class Hero {
         this.pos.y += this.vel.y*delay/1000;
         // vertical collision check
         this.checkVerticalColision();
-        this.draw();
+        // draw
+        this.updateFrames(delay)
+        this.renderer.drawSprite(this.currentSprite, this.currentFrame, this.pos);
+        this.drawHitbox();
+    }
+
+    updateFrames(delay) {
+        this.elapsed += delay;
+        if (this.elapsed > this.frameTime) {
+            if (this.currentFrame < this.currentSprite.frameNb - 1) this.currentFrame++;
+            else this.currentFrame = 0;
+            this.elapsed = 0;
+        }
+    }
+    drawHitbox() {
+        this.ctx.fillStyle = "#ff000050"
+        const {x:rx, y:ry} = this.renderer.calculateCoords({
+            x: this.hitBox.pos.x,
+            y: this.hitBox.pos.y
+        });
+        this.ctx.fillRect(rx, ry, this.hitBox.width * this.renderer.blockSize, this.hitBox.height * this.renderer.blockSize);
+    }
+    
+    updateHitBox() {
+        this.hitBox.pos.x = this.pos.x + (1 - this.hitBox.width) / 2;
+        this.hitBox.pos.y = this.pos.y - (1 - this.hitBox.height) / 2;
     }
 
     checkHorizontalColision() {
+        this.updateHitBox();
         this.world.level.forEach(({x:blockX, y:blockY}) => {
             if (!collisionDetection(this.pos, {x: blockX, y: blockY})) return;
             this.vel.xAbs = 0;
@@ -53,6 +91,7 @@ export default class Hero {
     }
     
     checkVerticalColision() {
+        this.updateHitBox();
         this.world.level.forEach(({x:blockX, y:blockY}) => { // with blocks
             if (!collisionDetection(this.pos, {x: blockX, y: blockY})) return;
             this.jumping = false; // if hit ceil jump again possible (need to try whith real levels in future) (so for now it's not a mistake)
@@ -70,11 +109,5 @@ export default class Hero {
             this.pos.y = 0;
             this.vel.y = 0;
         }
-    }
-
-    draw = () => {
-        const {x:rx, y:ry} = this.renderer.calculateCoords(this.pos);
-        this.ctx.fillStyle = "blue";
-        this.ctx.fillRect(rx, ry, this.renderer.blockSize, this.renderer.blockSize);
     }
 }
