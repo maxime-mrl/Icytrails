@@ -1,9 +1,9 @@
 export function collisionDetection(player, obj) {
     if (
-        player.y + 1 >= obj.y &&
-        player.y <= obj.y + 1 &&
-        player.x <= obj.x + 1 &&
-        player.x + 1 >= obj.x
+        player.pos.y + 1 >= obj.y &&
+        player.pos.y + (1 - player.height) <= obj.y + 1 &&
+        player.pos.x <= obj.x + 1 &&
+        player.pos.x + player.width >= obj.x
     ) return true;
 }
 

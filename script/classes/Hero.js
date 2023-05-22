@@ -6,7 +6,12 @@ export default class Hero {
         this.world = world;
         this.renderer = world.renderer;
         this.sprites = world.renderer.heroSprites;
-        this.pos = pos; // pos.x pos.y
+        this.pos = {
+            x: pos.x,
+            y: pos.y,
+            width: 0.7,
+            height: 0.8,
+        }; // pos.x pos.y
         this.hitBox = {
             pos: {x: this.pos.x, y: this.pos.y},
             width: 0.7,
@@ -50,6 +55,7 @@ export default class Hero {
         // draw
         this.updateFrames(delay)
         this.renderer.drawSprite(this.currentSprite, this.currentFrame, this.pos);
+        this.updateHitBox();
         this.drawHitbox();
     }
 
@@ -78,13 +84,13 @@ export default class Hero {
     checkHorizontalColision() {
         this.updateHitBox();
         this.world.level.forEach(({x:blockX, y:blockY}) => {
-            if (!collisionDetection(this.pos, {x: blockX, y: blockY})) return;
+            if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
             this.vel.xAbs = 0;
-            if (blockX - 0.1 > this.pos.x) {
-                this.pos.x = blockX - 1.003;
+            if (blockX - 0.1 > this.hitBox.pos.x) {
+                this.pos.x = blockX - 1.003 + (1 - this.hitBox.width) / 2;
                 return; // stop itteration for perfs
-            } if (blockX + 0.1 < this.pos.x) {
-                this.pos.x = blockX + 1.003;
+            } if (blockX + 0.1 <  this.hitBox.pos.x) {
+                this.pos.x = blockX + 1.003 - (1 - this.hitBox.width) / 2;
                 return; // stop itteration for perfs
             }
         })
@@ -93,14 +99,14 @@ export default class Hero {
     checkVerticalColision() {
         this.updateHitBox();
         this.world.level.forEach(({x:blockX, y:blockY}) => { // with blocks
-            if (!collisionDetection(this.pos, {x: blockX, y: blockY})) return;
+            if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
             this.jumping = false; // if hit ceil jump again possible (need to try whith real levels in future) (so for now it's not a mistake)
             if (this.vel.y > 0) {
-                this.pos.y = blockY - 1.01;
+                this.pos.y = blockY - 1.01 + (1 - this.hitBox.height) / 2;
                 return; // stop itteration for perfs
             } if (this.vel.y < 0) {
                 this.vel.y = 0;
-                this.pos.y = blockY + 1.003;
+                this.pos.y = blockY + 1.003 - (1 - this.hitBox.height) / 2;
                 return; // stop itteration for perfs
             }
         })
