@@ -10,7 +10,9 @@ const blocks = [
 ];
 
 const heroSprites = [
-    "idle"
+    "idle",
+    "death",
+    "walk"
 ]
 export default class Renderer {
     constructor(world, mode = "fullscreen") {
@@ -45,7 +47,8 @@ export default class Renderer {
                 sprite: image,
                 frameSize: 256,
                 frameNb: 10,
-                loaded: false
+                loaded: false,
+                name: sprite,
             }
         });
         this.resize();

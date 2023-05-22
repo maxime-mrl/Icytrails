@@ -44,6 +44,8 @@ export default class Hero {
         // horizontal position update
         if (this.vel.dir != 0) this.vel.xAbs += (this.vel.increment.acc * delay / 1000) * (this.vel.xMax - this.vel.xAbs);
         else this.vel.xAbs -= (this.vel.increment.slow * delay / 1000) * this.vel.xAbs;
+        if (this.vel.xAbs > 5 && /walk|idle/.test(this.currentSprite.name)) this.currentSprite = this.sprites.walk;
+        else if (/walk|idle/.test(this.currentSprite.name)) this.currentSprite = this.sprites.idle;
         this.pos.x += this.vel.xAbs * delay/1000 * this.vel.mdir;
         // horizontal colision check
         this.checkHorizontalColision();
@@ -100,11 +102,12 @@ export default class Hero {
         this.updateHitBox();
         this.world.level.forEach(({x:blockX, y:blockY}) => { // with blocks
             if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
-            this.jumping = false; // if hit ceil jump again possible (need to try whith real levels in future) (so for now it's not a mistake)
             if (this.vel.y > 0) {
-                this.pos.y = blockY - 1.01 + (1 - this.hitBox.height) / 2;
+                this.vel.y = 0;
+                this.pos.y = blockY - 1.003 + (1 - this.hitBox.height) / 2;
                 return; // stop itteration for perfs
             } if (this.vel.y < 0) {
+                this.jumping = false; // if hit ceil jump again possible (need to try whith real levels in future) (so for now it's not a mistake)
                 this.vel.y = 0;
                 this.pos.y = blockY + 1.003 - (1 - this.hitBox.height) / 2;
                 return; // stop itteration for perfs
@@ -112,7 +115,7 @@ export default class Hero {
         })
         if (this.pos.y <= 0) { // with ground collision
             this.jumping = false;
-            this.pos.y = 0;
+            this.pos.y = 0 - (1 - this.hitBox.height) / 2;
             this.vel.y = 0;
         }
     }
