@@ -35,9 +35,11 @@ class World {
     keyDown = ({key}) => {
         switch (key) {
             case " ": case "ArrowUp": case "z": case "w":
-                if (this.player.jumping) break;
-                this.player.jumping = true;
-                this.player.vel.y = this.player.vel.jump + (this.player.vel.xAbs) * 0.08; // jump a bit higher when going quick
+                if (this.player.jumping || this.player.jumpMem) {
+                    this.player.jumpMem = true;
+                    break;
+                };
+                this.player.jump()
                 break;
             case "d": case "ArrowRight":
                 this.player.vel.dir = 1;
@@ -51,6 +53,9 @@ class World {
     }
     keyUp = ({key}) => {
         switch (key) {
+            case " ": case "ArrowUp": case "z": case "w":
+                this.player.jumpMem = false;
+                break;
             case "d": case "ArrowRight":
                 if (this.player.vel.dir == 1) this.player.vel.dir = 0;
                 break;

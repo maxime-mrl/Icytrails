@@ -37,6 +37,7 @@ export default class Hero {
             g: 100 // gravity
         }
         this.jumping = false;
+        this.jumpMem = false;
 
         // sprite
         this.frameTime = 75; // for 20 fps
@@ -46,6 +47,7 @@ export default class Hero {
     }
 
     update = (delay) => {
+        if (this.jumpMem && !this.jumping) this.jump(); // jump feels way better by keeping input while jumping (except if key is released)
         // horizontal position update
         if (this.vel.dir != 0) this.vel.xAbs += (this.vel.increment.acc * delay / 1000) * (this.vel.xMax - this.vel.xAbs);
         else this.vel.xAbs -= (this.vel.increment.slow * delay / 1000) * this.vel.xAbs;
@@ -128,6 +130,7 @@ export default class Hero {
     }
     
     checkVerticalColision() {
+        this.jumping = true;
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
         this.world.level.forEach(({x:blockX, y:blockY}) => { // with blocks
             if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
@@ -135,7 +138,7 @@ export default class Hero {
                 this.vel.y = 0;
                 this.pos.y = blockY - 1.003 + (1 - this.hitBox.height) / 2;
                 return; // stop itteration for perfs
-            } if (this.vel.y < 0) {
+            } if (this.vel.y <= 0) {
                 this.jumping = false; // if hit ceil jump again possible (need to try whith real levels in future) (so for now it's not a mistake)
                 this.vel.y = 0;
                 this.pos.y = blockY + 1.003 - (1 - this.hitBox.height) / 2;
@@ -150,6 +153,13 @@ export default class Hero {
         }
     }
     
+
+    jump = () => {
+        this.jumping = true;
+        this.jumpMem = false;
+        this.vel.y = this.vel.jump + (this.vel.xAbs) * 0.08; // jump a bit higher when going quick
+    }
+
     drawDebug() { // temp
         // camera
         this.ctx.fillStyle = "#00ff0050"
