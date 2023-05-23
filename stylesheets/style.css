@@ -46,7 +46,7 @@ body {
   height: 100vh;
   height: 100dvh;
 }
-#game-canvas.window {
+#game-canvas.windowed {
   aspect-ratio: 16/9;
   width: 100%;
   max-width: 177.7777777778vh;

@@ -9,27 +9,24 @@ class World {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
         this.level = level;
+        this.translate = { x: 0, y: 0 }
         this.max = {
             x: Math.max.apply(Math, this.level.map(elem => elem.x)),
             y: Math.max.apply(Math, this.level.map(elem => elem.y))
-        }
+        };
         this.renderer = new Renderer(this);
-        this.player = new Hero(this, {
-            x: 0,
-            y: 3
-        });
-        this.translate = { x: 0, y: 0 }
+        this.player = new Hero(this, { x: 0, y: 3 }); // in the future spawn point will be set in editor
         // listener for movements
         document.addEventListener("keydown", this.keyDown);
         document.addEventListener("keyup", this.keyUp);
     }
 
     update = (delay) => {
+        this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize); // translate the canvas
         // draw blocks
-        this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize)
-        this.level.forEach(({x,y,t:type}) => {
-            const texture = this.renderer.blockTextures.find(texture => texture.type == type)
-            this.renderer.drawBlock(texture.image, {x,y})
+        this.level.forEach(({ x,y,t:type }) => {
+            const texture = this.renderer.blockTextures.find(texture => texture.type == type);
+            this.renderer.drawBlock(texture.image, {x,y});
         });
         // update player
         this.player.update(delay);
@@ -40,7 +37,7 @@ class World {
             case " ": case "ArrowUp": case "z": case "w":
                 if (this.player.jumping) break;
                 this.player.jumping = true;
-                this.player.vel.y = this.player.vel.jump + (this.player.vel.xAbs) * 0.08; // jump a bit higher when going kick
+                this.player.vel.y = this.player.vel.jump + (this.player.vel.xAbs) * 0.08; // jump a bit higher when going quick
                 break;
             case "d": case "ArrowRight":
                 this.player.vel.dir = 1;

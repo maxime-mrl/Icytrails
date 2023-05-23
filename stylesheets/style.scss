@@ -43,7 +43,7 @@ body {
       height: 100vh;
       height: 100dvh;
     }
-    &.window {
+    &.windowed {
       aspect-ratio: 16/9;
       width: 100%;
       max-width: calc(100vh * (16/9));
