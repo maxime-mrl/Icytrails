@@ -66,13 +66,17 @@ export default class Hero {
     }
 
     updateCamera = (delay) => {
+        // update camera pos
         this.camera.pos.x = this.hitBox.pos.x + (1 - this.camera.width) / 2;
         this.camera.pos.y = this.hitBox.pos.y - (1 - this.camera.height) / 2; // minus bcz Y is calculated from bottom
 
+        // box side coordinate
         const left = this.camera.pos.x;
         const right = this.camera.pos.x + this.camera.width;
         const bottom = this.camera.pos.y + (1 - this.camera.height);
         const top = this.camera.pos.y + 1;
+        // maximum x world translate
+        const maxX = this.world.max.x - (this.world.canvas.width / this.renderer.blockSize) + 1;
 
         // change translate for horizontal
         if (left + this.world.translate.x <= 0 && this.vel.mdir < 0) this.world.translate.x += this.vel.xAbs * delay/1000; // left
@@ -80,9 +84,10 @@ export default class Hero {
         // change translate for vertical
         if (bottom - this.world.translate.y <= 0 && this.vel.y < 0) this.world.translate.y += this.vel.y * delay/1000; // bottom
         else if ((top - this.world.translate.y) * this.renderer.blockSize >= this.world.canvas.height && this.vel.y > 0) this.world.translate.y += this.vel.y * delay/1000; // top
-        // check limits
+        
+        // translate limits
         if (this.world.translate.x > 0) this.world.translate.x = 0; // left
-        if (this.camera.pos.x + this.camera.width >= this.world.max.x + 1 && this.vel.mdir > 0) this.world.translate.x += this.vel.xAbs * delay/1000; // right (this one by reverting movement cause it's easier)
+        if (-this.world.translate.x > maxX) this.world.translate.x = -maxX; // right
         if (this.world.translate.y < 0) this.world.translate.y = 0; // bottom
     }
 
@@ -97,22 +102,6 @@ export default class Hero {
             else this.currentFrame = 0;
             this.elapsed = 0;
         }
-    }
-    drawDebug() { // temp
-        // camera
-        this.ctx.fillStyle = "#00ff0050"
-        const {x:crx, y:cry} = this.renderer.calculateCoords({
-            x: this.camera.pos.x,
-            y: this.camera.pos.y
-        });
-        this.ctx.fillRect(crx, cry, this.camera.width * this.renderer.blockSize, this.camera.height * this.renderer.blockSize);
-        // hitbox
-        this.ctx.fillStyle = "#ff000050"
-        const {x:hrx, y:hry} = this.renderer.calculateCoords({
-            x: this.hitBox.pos.x,
-            y: this.hitBox.pos.y
-        });
-        this.ctx.fillRect(hrx, hry, this.hitBox.width * this.renderer.blockSize, this.hitBox.height * this.renderer.blockSize);
     }
     
     updateHitBox() { // update Hitbox position
@@ -133,6 +122,9 @@ export default class Hero {
                 return; // stop itteration for perfs
             }
         })
+        // check limits
+        if (this.hitBox.pos.x < 0) this.pos.x = 0 - (1 - this.hitBox.width) / 2;
+        if (this.hitBox.pos.x + this.hitBox.width > this.world.max.x + 1) this.pos.x = this.world.max.x + (1 - this.hitBox.width) / 2;
     }
     
     checkVerticalColision() {
@@ -150,10 +142,28 @@ export default class Hero {
                 return; // stop itteration for perfs
             }
         })
-        if (this.pos.y <= 0) { // with ground collision
+        // check ground limits
+        if (this.pos.y <= 0) {
             this.jumping = false;
             this.pos.y = 0 - (1 - this.hitBox.height) / 2;
             this.vel.y = 0;
         }
+    }
+    
+    drawDebug() { // temp
+        // camera
+        this.ctx.fillStyle = "#00ff0050"
+        const {x:crx, y:cry} = this.renderer.calculateCoords({
+            x: this.camera.pos.x,
+            y: this.camera.pos.y
+        });
+        this.ctx.fillRect(crx, cry, this.camera.width * this.renderer.blockSize, this.camera.height * this.renderer.blockSize);
+        // hitbox
+        this.ctx.fillStyle = "#ff000050"
+        const {x:hrx, y:hry} = this.renderer.calculateCoords({
+            x: this.hitBox.pos.x,
+            y: this.hitBox.pos.y
+        });
+        this.ctx.fillRect(hrx, hry, this.hitBox.width * this.renderer.blockSize, this.hitBox.height * this.renderer.blockSize);
     }
 }
