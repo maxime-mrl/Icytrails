@@ -12,9 +12,11 @@ class World {
         this.mouse = { x: 0, y: 0 }; // mouse position over canvas
         this.pos = { x: 0, y: 0 }; // real pos
         this.translate = { x: 0, y: 0 }; // translate amount
+        this.clicked = false;
         // listening stuffs
         this.canvas.addEventListener("mousemove", this.mouseEvent);
-        this.canvas.addEventListener("click", this.clickEvent);
+        this.canvas.addEventListener("mousedown", (e) => { this.mouseEvent(e); this.clicked = true });
+        this.canvas.addEventListener("mouseup", (e) => { this.mouseEvent(e); this.clicked = false });
         document.addEventListener("keydown", this.keyPressed);
     }
 
@@ -29,20 +31,13 @@ class World {
         // for tiled width of the canvas dosen't correspond to real width
         let widthRatio = this.canvas.width / rect.width;
         let heightRatio = this.canvas.height / rect.height;
-        this.mouse.x = Math.round(
-            (
-                (clientX - rect.left - this.renderer.blockSize / 2) / this.renderer.blockSize
-            ) * widthRatio
-        ); // get coordinate in block unit w/ mous at center
-        this.mouse.y = Math.round(
-            (
-                (rect.bottom - clientY  - this.renderer.blockSize / 2) / this.renderer.blockSize
-            ) * heightRatio
-        ); // y from the bottom
-    }
+        this.mouse.x = Math.round(( (clientX - rect.left -(this.renderer.blockSize / 2)) / this.renderer.blockSize ) * widthRatio); // get coordinate in block unit w/ mous at center
+        this.mouse.y = Math.round(( (rect.bottom - clientY  - this.renderer.blockSize / 2) / this.renderer.blockSize ) * heightRatio); // y from the bottom
+        this.mouse.x = Math.max(0, this.mouse.x);
+        this.mouse.y = Math.max(0, this.mouse.y);
 
-    clickEvent = (e) => { // add block on click
-        console.log(this.selectedBlock)
+        // add blocks
+        if (!this.clicked) return;
         const toAdd = {
             x: this.pos.x,
             y: this.pos.y,
@@ -50,11 +45,13 @@ class World {
         };
         const potentialDouble = this.level.findIndex(block => block.x == toAdd.x && block.y == toAdd.y);
         if (potentialDouble != -1) {
-            this.level.splice(potentialDouble, 1)
+            if (potentialDouble.t == toAdd.t) return;
+            this.level.splice(potentialDouble, 1);
         }
-        this.level.push(toAdd)
-        console.log(this.level)
+        this.level.push(toAdd);
+        console.log(this.level);
     }
+
     
     keyPressed = ({key}) => { // handle canvas translate based on key
         switch (key) {

@@ -1,12 +1,12 @@
 const blocks = [
-    ["stone", "00"],
-    ["grass", "02"],
-    ["dirt", "03"],
-    ["stone", "00"],
-    ["stone", "00"],
-    ["stone", "00"],
-    ["stone", "00"],
-    ["stone", "00"],
+    ["smooth.png", "00"],
+    ["snow.png", "02"],
+    ["cobble.png", "03"],
+    ["stone.jpg", "00"],
+    ["stone.jpg", "00"],
+    ["stone.jpg", "00"],
+    ["stone.jpg", "00"],
+    ["stone.jpg", "00"],
 ];
 
 const heroSprites = [
@@ -24,8 +24,8 @@ export default class Renderer {
         this.blockTextures = [];
         blocks.forEach(block => { // create block texture
             const image = document.createElement("img");
-            image.src = `/asset/texture/blocks/${block[0]}.jpg`;
-            image.setAttribute("data-name", block[1])
+            image.src = `/asset/texture/blocks/${block[0]}`;
+            image.setAttribute("data-name", block[1].split(".")[0])
             image.onclick = () => this.world.selectedBlock = block[1];
             this.blockTextures.push({
                 image,
@@ -65,13 +65,14 @@ export default class Renderer {
             this.canvas.width = this.width;
             this.canvas.height = this.height;
             this.canvas.className = "fullscreen";
+            this.blockSize = Math.ceil(this.canvas.height / this.verticalRenderDistance);
         } else if (this.screenMode == "windowed") {
             this.canvas.width = 1280;
             this.canvas.height = 720;
             this.canvas.className = "window";
+            this.blockSize = Math.round(this.canvas.height / this.verticalRenderDistance);
         }
 
-        this.blockSize = Math.ceil(this.canvas.height / this.verticalRenderDistance);
     }
 
     render = (lastFrame) => {

@@ -1,6 +1,6 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
-fetch('/script/level-3.json') // get the level
+fetch('/script/test-big.json') // get the level
     .then(resp => resp.json())
     .then(data => new World(data));
 
@@ -9,11 +9,16 @@ class World {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
         this.level = level;
+        this.max = {
+            x: Math.max.apply(Math, this.level.map(elem => elem.x)),
+            y: Math.max.apply(Math, this.level.map(elem => elem.y))
+        }
         this.renderer = new Renderer(this);
         this.player = new Hero(this, {
             x: 0,
             y: 3
         });
+        this.translate = { x: 0, y: 0 }
         // listener for movements
         document.addEventListener("keydown", this.keyDown);
         document.addEventListener("keyup", this.keyUp);
@@ -21,6 +26,7 @@ class World {
 
     update = (delay) => {
         // draw blocks
+        this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize)
         this.level.forEach(({x,y,t:type}) => {
             const texture = this.renderer.blockTextures.find(texture => texture.type == type)
             this.renderer.drawBlock(texture.image, {x,y})
