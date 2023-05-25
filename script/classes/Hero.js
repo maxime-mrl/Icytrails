@@ -3,7 +3,9 @@ import createSprites from "../utils/createSprites.js"
 const sprites = [
     "idle",
     "death",
-    "walk"
+    "walk",
+    "blink",
+    "jump",
 ];
 
 export default class Hero {
@@ -78,7 +80,7 @@ export default class Hero {
         this.drawDebug();
     }
 
-    updateCamera = (delay) => {
+    updateCamera = (delay) => { // update camera positions and check camera colision
         // update camera pos
         this.camera.pos.x = this.hitBox.pos.x + (1 - this.camera.width) / 2;
         this.camera.pos.y = this.hitBox.pos.y - (1 - this.camera.height) / 2; // minus bcz Y is calculated from bottom
@@ -106,9 +108,23 @@ export default class Hero {
 
     updateSpriteFrames(delay) { // update hero sprite
         // select sprite
-        if (this.vel.xAbs > 5 && /walk|idle/.test(this.currentSprite.name)) this.currentSprite = this.sprites.walk;
-        else if (/walk|idle/.test(this.currentSprite.name)) this.currentSprite = this.sprites.idle;
-        else if (this.currentSprite.name == "death" && this.currentFrame == this.sprites.death.frameNb - 2) return; // stop update sprites when death anim finished
+        if (this.vel.xAbs > 5 && /walk|idle|blink/.test(this.currentSprite.name)) this.currentSprite = this.sprites.walk; // when idling if move walk
+        else if (/walk|idle/.test(this.currentSprite.name)) this.currentSprite = this.sprites.idle; // when idling no movement = idle
+        else if (
+            (this.currentSprite.name == "blink" && this.currentFrame == this.currentSprite.frameNb - 1) ||
+            (!this.jumping && this.currentSprite.name == "jump")
+        ) { // when blink cycle end or when jumping end return to idle
+            this.elapsed = 0;
+            this.currentFrame = 0;
+            this.currentSprite = this.sprites.idle;
+        }
+        else if (this.currentSprite.name == "death" && this.currentFrame == this.currentSprite.frameNb - 1) return this.world.respawn(); // stop update sprites when death anim finished
+        if (this.currentSprite.name == "idle" && Math.random() > 0.99 && this.currentFrame == 0) { // blink if idle at random time
+            this.currentFrame = 0;
+            this.elapsed = 0;
+            this.currentSprite = this.sprites.blink;
+        }
+       if (this.jumping && this.vel.y < -1 && !this.dead) this.currentSprite = this.sprites.jump; // jumping = jump
         // updates sprite frames
         this.elapsed += delay;
         if (this.elapsed > this.frameTime) {
@@ -171,17 +187,17 @@ export default class Hero {
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
         this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}, index) => {
             if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
-            if (type >= 70 && type < 80 && blockY + 0.2 > this.pos.y) {
+            if (type >= 70 && type < 80 && blockY + 0.2 > this.pos.y) { // death
                 this.dead = true;
                 this.currentFrame = 0;
                 this.elapsed = 0;
                 this.currentSprite = this.sprites.death;
                 return;
-            } else if (type == 80) {
+            } else if (type == 80) { // score increase
                 this.world.score++;
                 this.world.level.fg.splice(index, 1);
                 return;
-            } else if (type == 98) {
+            } else if (type == 98) { // succes
                 this.world.level.fg.splice(index, 1);
                 alert("gg")
                 return;
@@ -194,6 +210,9 @@ export default class Hero {
         this.jumping = true;
         this.jumpMem = false;
         this.vel.y = this.vel.jump + (this.vel.xAbs) * 0.08; // jump a bit higher when going quick
+        this.currentFrame = 0;
+        this.elapsed = 0;
+        this.currentSprite = this.sprites.jump;
     }
 
     drawDebug() { // temp

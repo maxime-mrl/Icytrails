@@ -16,12 +16,24 @@ class World {
             y: Math.max.apply(Math, this.level.fg.map(elem => elem.y), this.level.end.x)
         };
         this.score = 0;
-        console.log(this.level)
         this.renderer = new Renderer(this);
         this.player = new Hero(this, this.level.spawn); // in the future spawn point will be set in editor
         // listener for movements
         document.addEventListener("keydown", this.keyDown);
         document.addEventListener("keyup", this.keyUp);
+    }
+
+    respawn = () => {
+        setTimeout(() => {
+            this.player = {
+                update: () => {},
+                dead: true
+            }
+        }, 1000,);
+        setTimeout(() => {
+            this.translate = { x: 0, y: 0 };
+            this.player = new Hero(this, this.level.spawn)
+        }, 2000);
     }
 
     update = (delay) => {
@@ -42,6 +54,7 @@ class World {
     }
 
     keyDown = ({key}) => {
+        if (this.player.dead) return;
         switch (key) {
             case " ": case "ArrowUp": case "z": case "w":
                 if (this.player.jumping || this.player.jumpMem) {
@@ -61,6 +74,7 @@ class World {
         }
     }
     keyUp = ({key}) => {
+        if (this.player.dead) return;
         switch (key) {
             case " ": case "ArrowUp": case "z": case "w":
                 this.player.jumpMem = false;
