@@ -9,7 +9,7 @@ class World {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
         this.level = level;
-        this.translate = { x: 0, y: 0 }
+        this.translate = { x: 0, y: 0 };
         this.max = {
             x: Math.max.apply(Math, this.level.map(elem => elem.x)),
             y: Math.max.apply(Math, this.level.map(elem => elem.y))

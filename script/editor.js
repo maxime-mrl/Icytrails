@@ -15,7 +15,8 @@ class World {
         this.level = {
             spawn: {x: 0, y: 0},
             end: {x: 1, y: 0},
-            blocks: []
+            bg: [],
+            fg: [],
         };
         this.selectedBlock = "00"
         this.renderer = new Renderer(this, "windowed");
@@ -59,6 +60,7 @@ class World {
         this.mouse.y = Math.max(0, this.mouse.y);
 
         // add blocks
+        const selectedInt = parseInt(this.selectedBlock);
         if (!this.clicked) return;
         // specials
         if (
@@ -72,9 +74,11 @@ class World {
         this.pos.y != this.level.spawn.y
         ) this.level.end = { x: this.pos.x, y:this.pos.y };
 
-        if (parseInt(this.selectedBlock) >= 95) {
-            const toErase = this.level.blocks.findIndex(block => block.x == this.pos.x && block.y == this.pos.y);
-            if (toErase != -1) this.level.blocks.splice(toErase, 1);
+        if (selectedInt >= 95) {
+            const toEraseBg = this.level.bg.findIndex(block => block.x == this.pos.x && block.y == this.pos.y);
+            const toEraseFg = this.level.fg.findIndex(block => block.x == this.pos.x && block.y == this.pos.y);
+            if (toEraseBg != -1) this.level.bg.splice(toEraseBg, 1);
+            if (toEraseFg != -1) this.level.fg.splice(toEraseFg, 1);
             return;
         };
         // normal
@@ -83,13 +87,19 @@ class World {
             y: this.pos.y,
             t: this.selectedBlock
         };
-        if ((toAdd.x == this.level.spawn.x && toAdd.y == this.level.spawn.y) || (toAdd.x == this.level.end.x && toAdd.y == this.level.end.y)) return; // check that's not on spawn nor end point
-        const potentialDouble = this.level.blocks.findIndex(block => block.x == toAdd.x && block.y == toAdd.y);
-        if (potentialDouble != -1) {
+        if (selectedInt >= 30 && selectedInt < 70) { // if bg
+            const potentialDouble = this.level.bg.findIndex(block => block.x == toAdd.x && block.y == toAdd.y);
             if (potentialDouble.t == toAdd.t) return;
-            this.level.blocks.splice(potentialDouble, 1);
+            this.level.bg.push(toAdd);
+        } else { // else => foreground
+            if ((toAdd.x == this.level.spawn.x && toAdd.y == this.level.spawn.y) || (toAdd.x == this.level.end.x && toAdd.y == this.level.end.y)) return; // check that's not on spawn nor end point
+            const potentialDouble = this.level.fg.findIndex(block => block.x == toAdd.x && block.y == toAdd.y);
+            if (potentialDouble != -1) {
+                if (potentialDouble.t == toAdd.t) return;
+                this.level.fg.splice(potentialDouble, 1);
+            }
+            this.level.fg.push(toAdd);
         }
-        this.level.blocks.push(toAdd);
         console.log(this.level);
     }
 
@@ -127,9 +137,14 @@ class World {
             const {x:rx, y:ry} = this.renderer.calculateCoords({x,y:0});
             this.ctx.fillRect(rx, 0, 1, this.canvas.height);
         }
-        // block and highlight drawing
+        // blocks and highlight drawing
         this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize);
-        this.level.blocks.forEach(({x,y,t:type}) => { // blocks
+        this.level.bg.forEach(({x,y,t:type}) => { // bg
+            if (type == "80") return;
+            const texture = this.renderer.blockTextures.get(type)
+            this.renderer.drawBlock(texture, {x,y})
+        });
+        this.level.fg.forEach(({x,y,t:type}) => { // fg
             if (type == "80") return;
             const texture = this.renderer.blockTextures.get(type)
             this.renderer.drawBlock(texture, {x,y})
