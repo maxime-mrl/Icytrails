@@ -113,7 +113,7 @@ export default class Hero {
 
     checkHorizontalColision() {
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
-        this.world.level.forEach(({x:blockX, y:blockY}) => {
+        this.world.level.fg.forEach(({x:blockX, y:blockY}) => {
             if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
             this.vel.xAbs = 0;
             if (blockX - 0.1 > this.hitBox.pos.x) {
@@ -132,7 +132,7 @@ export default class Hero {
     checkVerticalColision() {
         this.jumping = true;
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
-        this.world.level.forEach(({x:blockX, y:blockY}) => { // with blocks
+        this.world.level.fg.forEach(({x:blockX, y:blockY}) => { // with blocks
             if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
             if (this.vel.y > 0) {
                 this.vel.y = 0;

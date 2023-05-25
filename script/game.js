@@ -1,6 +1,6 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
-fetch('/script/test-big.json') // get the level
+fetch('/script/level-4.json') // get the level
     .then(resp => resp.json())
     .then(data => new World(data));
 
@@ -9,13 +9,15 @@ class World {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
         this.level = level;
+        this.level.fg.push({ x: level.end.x, y: level.end.y, t: "98" })
         this.translate = { x: 0, y: 0 };
         this.max = {
-            x: Math.max.apply(Math, this.level.map(elem => elem.x)),
-            y: Math.max.apply(Math, this.level.map(elem => elem.y))
+            x: Math.max.apply(Math, this.level.fg.map(elem => elem.x), this.level.end.x),
+            y: Math.max.apply(Math, this.level.fg.map(elem => elem.y), this.level.end.x)
         };
+        console.log(this.level)
         this.renderer = new Renderer(this);
-        this.player = new Hero(this, { x: 0, y: 3 }); // in the future spawn point will be set in editor
+        this.player = new Hero(this, this.level.spawn); // in the future spawn point will be set in editor
         // listener for movements
         document.addEventListener("keydown", this.keyDown);
         document.addEventListener("keyup", this.keyUp);
@@ -24,7 +26,11 @@ class World {
     update = (delay) => {
         this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize); // translate the canvas
         // draw blocks
-        this.level.forEach(({ x,y,t:type }) => {
+        this.level.bg.forEach(({ x,y,t:type }) => {
+            const texture = this.renderer.blockTextures.get(type);
+            this.renderer.drawBlock(texture, {x,y});
+        });
+        this.level.fg.forEach(({ x,y,t:type }) => {
             const texture = this.renderer.blockTextures.get(type);
             this.renderer.drawBlock(texture, {x,y});
         });
