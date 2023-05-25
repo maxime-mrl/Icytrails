@@ -1,6 +1,6 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
-fetch('/script/level-4.json') // get the level
+fetch('/script/level-4-b.json') // get the level
     .then(resp => resp.json())
     .then(data => new World(data));
 
@@ -9,7 +9,7 @@ class World {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
         this.level = level;
-        this.level.fg.push({ x: level.end.x, y: level.end.y, t: "98" })
+        this.level.fg.push({ x: level.end.x, y: level.end.y, t: 98 })
         this.translate = { x: 0, y: 0 };
         this.max = {
             x: Math.max.apply(Math, this.level.fg.map(elem => elem.x), this.level.end.x),
@@ -27,10 +27,12 @@ class World {
         this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize); // translate the canvas
         // draw blocks
         this.level.bg.forEach(({ x,y,t:type }) => {
+            type = parseInt(type);
             const texture = this.renderer.blockTextures.get(type);
             this.renderer.drawBlock(texture, {x,y});
         });
         this.level.fg.forEach(({ x,y,t:type }) => {
+            type = parseInt(type);
             const texture = this.renderer.blockTextures.get(type);
             this.renderer.drawBlock(texture, {x,y});
         });

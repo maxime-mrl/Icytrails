@@ -18,7 +18,7 @@ class World {
             bg: [],
             fg: [],
         };
-        this.selectedBlock = "00"
+        this.selectedBlock = 0;
         this.renderer = new Renderer(this, "windowed");
         this.addBlocksToSelector();
         this.mouse = { x: 0, y: 0 }; // mouse position over canvas
@@ -34,7 +34,6 @@ class World {
 
     addBlocksToSelector = () => {
         this.renderer.blockTextures.forEach((texture, code) => {
-            code = parseInt(code);
             if (code < 20) {
                 blockCategories.solid.appendChild(texture);
             } else if (code < 30) {
@@ -60,21 +59,20 @@ class World {
         this.mouse.y = Math.max(0, this.mouse.y);
 
         // add blocks
-        const selectedInt = parseInt(this.selectedBlock);
         if (!this.clicked) return;
         // specials
         if (
-            this.selectedBlock == "95" &&
+            this.selectedBlock == 95 &&
             this.pos.x != this.level.end.x &&
             this.pos.y != this.level.end.y
         ) this.level.spawn = { x: this.pos.x, y:this.pos.y };
         
-        if (this.selectedBlock == "96" &&
+        if (this.selectedBlock == 96 &&
         this.pos.x != this.level.spawn.x &&
         this.pos.y != this.level.spawn.y
         ) this.level.end = { x: this.pos.x, y:this.pos.y };
 
-        if (selectedInt >= 95) {
+        if (this.selectedBlock >= 95) {
             const toEraseBg = this.level.bg.findIndex(block => block.x == this.pos.x && block.y == this.pos.y);
             const toEraseFg = this.level.fg.findIndex(block => block.x == this.pos.x && block.y == this.pos.y);
             if (toEraseBg != -1) this.level.bg.splice(toEraseBg, 1);
@@ -87,9 +85,9 @@ class World {
             y: this.pos.y,
             t: this.selectedBlock
         };
-        if (selectedInt >= 30 && selectedInt < 70) { // if bg
-            const potentialDouble = this.level.bg.findIndex(block => block.x == toAdd.x && block.y == toAdd.y);
-            if (potentialDouble.t == toAdd.t) return;
+        if (this.selectedBlock >= 30 && this.selectedBlock < 70) { // if bg
+            const potentialDouble = this.level.bg.findIndex(block => block.x == toAdd.x && block.y == toAdd.y && block.t == this.selectedBlock);
+            if (potentialDouble != -1) return;
             this.level.bg.push(toAdd);
         } else { // else => foreground
             if ((toAdd.x == this.level.spawn.x && toAdd.y == this.level.spawn.y) || (toAdd.x == this.level.end.x && toAdd.y == this.level.end.y)) return; // check that's not on spawn nor end point
@@ -150,8 +148,8 @@ class World {
             this.renderer.drawBlock(texture, {x,y})
         });
         // spawn and end draw
-        this.renderer.drawBlock(this.renderer.blockTextures.get("95"), this.level.spawn);
-        this.renderer.drawBlock(this.renderer.blockTextures.get("96"), this.level.end);
+        this.renderer.drawBlock(this.renderer.blockTextures.get(95), this.level.spawn);
+        this.renderer.drawBlock(this.renderer.blockTextures.get(96), this.level.end);
         // mouse position highlight
         this.ctx.globalAlpha = 0.4;
         this.renderer.drawBlock(this.renderer.blockTextures.get(this.selectedBlock), this.pos);
