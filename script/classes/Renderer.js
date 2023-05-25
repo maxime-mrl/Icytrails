@@ -37,7 +37,7 @@ const blocks = [
     ["decor-13", 52],
     ["spikes-01", 70],
     ["spikes-02", 71],
-    ["coin-01", 81],
+    ["coin-01", 80],
     ["point-start", 95],
     ["point-finish", 96],
     ["eraser", 97],
@@ -51,11 +51,6 @@ const blocks = [
 // 80 - 94 other and overflowed category (kind of potential more future proofing)
 // 95 - 99 not rendered (will enter in other category for editor)
 
-const heroSprites = [
-    "idle",
-    "death",
-    "walk"
-];
 
 export default class Renderer {
     constructor(world, mode = "fullscreen") {
@@ -73,18 +68,6 @@ export default class Renderer {
             this.blockTextures.set(block[1], image);
         });
         // create hero sprites textures
-        this.heroSprites = {};
-        heroSprites.forEach(sprite => {
-            const image = document.createElement("img");
-            image.src = `/asset/texture/hero/${sprite}.png`;
-            image.onload = () => this.heroSprites[sprite].frameNb = image.width/this.heroSprites[sprite].frameSize; // when image loaded set number of frames (we now frames size - 256px - so we devide width by frame size for the number)
-            this.heroSprites[sprite] = {
-                sprite: image,
-                frameSize: 256,
-                frameNb: 10, // random number waiting for image to load and be edited
-                name: sprite,
-            }
-        });
         // resize handling
         this.resize();
         window.addEventListener("resize", this.resize);

@@ -1,11 +1,17 @@
-import { collisionDetection } from "../utils/collisionDetection.js";
+import collisionDetection from "../utils/collisionDetection.js";
+import createSprites from "../utils/createSprites.js"
+const sprites = [
+    "idle",
+    "death",
+    "walk"
+];
 
 export default class Hero {
     constructor (world, pos) {
         this.ctx = world.ctx;
         this.world = world;
         this.renderer = world.renderer;
-        this.sprites = world.renderer.heroSprites;
+        this.sprites = createSprites(sprites);
         this.pos = {
             x: pos.x,
             y: pos.y,
@@ -38,6 +44,7 @@ export default class Hero {
         }
         this.jumping = false;
         this.jumpMem = false;
+        this.dead = false;
 
         // sprite
         this.frameTime = 75; // for 20 fps
@@ -47,19 +54,23 @@ export default class Hero {
     }
 
     update = (delay) => {
-        if (this.jumpMem && !this.jumping) this.jump(); // jump feels way better by keeping input while jumping (except if key is released)
-        // horizontal position update
-        if (this.vel.dir != 0) this.vel.xAbs += (this.vel.increment.acc * delay / 1000) * (this.vel.xMax - this.vel.xAbs);
-        else this.vel.xAbs -= (this.vel.increment.slow * delay / 1000) * this.vel.xAbs;
-        this.pos.x += this.vel.xAbs * delay/1000 * this.vel.mdir;
-        this.updateCamera(delay);
-        // horizontal colision check
-        this.checkHorizontalColision();
-        // vertical position update
-        this.vel.y -= this.vel.g*delay/1000;
-        this.pos.y += this.vel.y*delay/1000;
-        // vertical collision check
-        this.checkVerticalColision();
+        if (!this.dead) {
+            if (this.jumpMem && !this.jumping) this.jump(); // jump feels way better by keeping input while jumping (except if key is released)
+            // horizontal position update
+            if (this.vel.dir != 0) this.vel.xAbs += (this.vel.increment.acc * delay / 1000) * (this.vel.xMax - this.vel.xAbs);
+            else this.vel.xAbs -= (this.vel.increment.slow * delay / 1000) * this.vel.xAbs;
+            this.pos.x += this.vel.xAbs * delay/1000 * this.vel.mdir;
+            this.updateCamera(delay);
+            // horizontal colision check
+            this.checkHorizontalColision();
+            // vertical position update
+            this.vel.y -= this.vel.g*delay/1000;
+            this.pos.y += this.vel.y*delay/1000;
+            // vertical collision check
+            this.checkVerticalColision();
+            // special colision check
+            this.checkColisionEvents()
+        }
         // draw
         this.updateSpriteFrames(delay)
         this.renderer.drawSprite(this.currentSprite, this.currentFrame, this.pos);
@@ -97,6 +108,7 @@ export default class Hero {
         // select sprite
         if (this.vel.xAbs > 5 && /walk|idle/.test(this.currentSprite.name)) this.currentSprite = this.sprites.walk;
         else if (/walk|idle/.test(this.currentSprite.name)) this.currentSprite = this.sprites.idle;
+        else if (this.currentSprite.name == "death" && this.currentFrame == this.sprites.death.frameNb - 2) return; // stop update sprites when death anim finished
         // updates sprite frames
         this.elapsed += delay;
         if (this.elapsed > this.frameTime) {
@@ -106,15 +118,15 @@ export default class Hero {
         }
     }
     
-    updateHitBox() { // update Hitbox position
+    updateHitBox = () => { // update Hitbox position
         this.hitBox.pos.x = this.pos.x + (1 - this.hitBox.width) / 2;
         this.hitBox.pos.y = this.pos.y - (1 - this.hitBox.height) / 2; // minus bcz Y is calculated from bottom
     }
 
-    checkHorizontalColision() {
+    checkHorizontalColision = () => {
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
         this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}) => {
-            if (type > 20) return;
+            if (type > 20) return; // no horizontal colision for slabs
             if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
             this.vel.xAbs = 0;
             if (blockX - 0.1 > this.hitBox.pos.x) {
@@ -130,7 +142,7 @@ export default class Hero {
         if (this.hitBox.pos.x + this.hitBox.width > this.world.max.x + 1) this.pos.x = this.world.max.x + (1 - this.hitBox.width) / 2;
     }
     
-    checkVerticalColision() {
+    checkVerticalColision = () => {
         this.jumping = true;
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
         this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}) => { // with blocks
@@ -140,8 +152,8 @@ export default class Hero {
                 this.vel.y = 0;
                 this.pos.y = blockY - 1.003 + (1 - this.hitBox.height) / 2;
                 return; // stop itteration for perfs
-            } if (this.vel.y < 0 && (type < 20 || blockY + 0.8 < this.pos.y)) {
-                this.jumping = false; // if hit ceil jump again possible (need to try whith real levels in future) (so for now it's not a mistake)
+            } if (this.vel.y < 0 && (type < 20 || blockY + 0.6 < this.pos.y)) { // (type < 20 || blockY + 0.6 < this.pos.y) allow to test for plates to only colide from top part
+                this.jumping = false;
                 this.vel.y = 0;
                 this.pos.y = blockY + 1.003 - (1 - this.hitBox.height) / 2;
                 return; // stop itteration for perfs
@@ -153,6 +165,28 @@ export default class Hero {
             this.pos.y = 0 - (1 - this.hitBox.height) / 2;
             this.vel.y = 0;
         }
+    }
+
+    checkColisionEvents = () => {
+        this.updateHitBox(); // check w/ hitbox so make sure it's up to date
+        this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}, index) => {
+            if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
+            if (type >= 70 && type < 80 && blockY + 0.2 > this.pos.y) {
+                this.dead = true;
+                this.currentFrame = 0;
+                this.elapsed = 0;
+                this.currentSprite = this.sprites.death;
+                return;
+            } else if (type == 80) {
+                this.world.score++;
+                this.world.level.fg.splice(index, 1);
+                return;
+            } else if (type == 98) {
+                this.world.level.fg.splice(index, 1);
+                alert("gg")
+                return;
+            }
+        })
     }
     
 

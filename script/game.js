@@ -15,6 +15,7 @@ class World {
             x: Math.max.apply(Math, this.level.fg.map(elem => elem.x), this.level.end.x),
             y: Math.max.apply(Math, this.level.fg.map(elem => elem.y), this.level.end.x)
         };
+        this.score = 0;
         console.log(this.level)
         this.renderer = new Renderer(this);
         this.player = new Hero(this, this.level.spawn); // in the future spawn point will be set in editor
