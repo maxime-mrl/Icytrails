@@ -25,8 +25,8 @@ class World {
         this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize); // translate the canvas
         // draw blocks
         this.level.forEach(({ x,y,t:type }) => {
-            const texture = this.renderer.blockTextures.find(texture => texture.type == type);
-            this.renderer.drawBlock(texture.image, {x,y});
+            const texture = this.renderer.blockTextures.get(type);
+            this.renderer.drawBlock(texture, {x,y});
         });
         // update player
         this.player.update(delay);

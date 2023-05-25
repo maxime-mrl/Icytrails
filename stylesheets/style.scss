@@ -64,10 +64,15 @@ body {
   }
   .blocks-select {
     grid-area: blocks;
+    color: #efefef;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0.6em;
-    height: fit-content;
+    gap: 1em;
+    .blocks {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.6em;
+      height: fit-content;
+    }
     img {
       width: 3em;
       cursor: pointer;

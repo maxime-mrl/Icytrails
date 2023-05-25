@@ -37,17 +37,19 @@ const blocks = [
     ["decor-13", "52"],
     ["spikes-01", "70"],
     ["spikes-02", "71"],
-    ["point-finish", "80"],
-    ["point-start", "81"],
-    ["end", "82"],
-    ["coin-01", "83"],
+    ["coin-01", "81"],
+    ["point-start", "95"],
+    ["point-finish", "96"],
+    ["eraser", "97"],
+    ["end", "98"],
 ];
 // block types
 // 00 - 19 solid
 // 20 - 29 solid from top
 // 30 - 69 background / decoration (no interaction)
 // 70 - 79 kill on colision (spikes)
-// 80 - 99 other and overflowed category (kind of potential more future proofing)
+// 80 - 94 other and overflowed category (kind of potential more future proofing)
+// 95 - 99 not rendered (will enter in other category for editor)
 
 const heroSprites = [
     "idle",
@@ -63,15 +65,12 @@ export default class Renderer {
         this.ctx = world.ctx;
         this.screenMode = mode; // fullscreen or windowed mode
         // create block texture
-        this.blockTextures = [];
+        this.blockTextures = new Map();
         blocks.forEach(block => {
             const image = document.createElement("img");
             image.src = `/asset/texture/blocks/${block[0]}.png`;
             image.onclick = () => this.world.selectedBlock = block[1]; // add event listener for level editors (when images are used as html)
-            this.blockTextures.push({
-                image,
-                type: block[1]
-            });
+            this.blockTextures.set(block[1], image);
         });
         // create hero sprites textures
         this.heroSprites = {};
