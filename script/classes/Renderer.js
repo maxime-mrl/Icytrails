@@ -1,8 +1,53 @@
 const blocks = [
-    ["smooth.png", "00"],
-    ["snow.png", "02"],
-    ["cobble.png", "03"],
+    ["block-01", "00"],
+    ["block-02", "02"],
+    ["block-03", "03"],
+    ["block-04", "04"],
+    ["block-05", "05"],
+    ["block-06", "06"],
+    ["surface-01", "07"],
+    ["surface-02", "08"],
+    ["surface-03", "09"],
+    ["slab-01", "20"],
+    ["slab-02", "21"],
+    ["slab-03", "22"],
+    ["slab-04", "23"],
+    ["bg-01", "30"],
+    ["bg-02", "31"],
+    ["bg-03", "32"],
+    ["bg-04", "33"],
+    ["bg-05", "34"],
+    ["bg-06", "35"],
+    ["bg-07", "36"],
+    ["bg-08", "37"],
+    ["bg-09", "38"],
+    ["bg-10", "39"],
+    ["decor-01", "40"],
+    ["decor-02", "41"],
+    ["decor-03", "42"],
+    ["decor-04", "43"],
+    ["decor-05", "44"],
+    ["decor-06", "45"],
+    ["decor-07", "46"],
+    ["decor-08", "47"],
+    ["decor-09", "48"],
+    ["decor-10", "49"],
+    ["decor-11", "50"],
+    ["decor-12", "51"],
+    ["decor-13", "52"],
+    ["spikes-01", "70"],
+    ["spikes-02", "71"],
+    ["point-finish", "80"],
+    ["point-start", "81"],
+    ["end", "82"],
+    ["coin-01", "83"],
 ];
+// block types
+// 00 - 19 solid
+// 20 - 29 solid from top
+// 30 - 69 background / decoration (no interaction)
+// 70 - 79 kill on colision (spikes)
+// 80 - 99 other and overflowed category (kind of potential more future proofing)
 
 const heroSprites = [
     "idle",
@@ -21,7 +66,7 @@ export default class Renderer {
         this.blockTextures = [];
         blocks.forEach(block => {
             const image = document.createElement("img");
-            image.src = `/asset/texture/blocks/${block[0]}`;
+            image.src = `/asset/texture/blocks/${block[0]}.png`;
             image.onclick = () => this.world.selectedBlock = block[1]; // add event listener for level editors (when images are used as html)
             this.blockTextures.push({
                 image,
@@ -71,14 +116,12 @@ export default class Renderer {
             this.canvas.width = this.width;
             this.canvas.height = this.height;
             this.canvas.className = "fullscreen";
-            this.blockSize = Math.ceil(this.canvas.height / this.verticalRenderDistance);
         } else if (this.screenMode == "windowed") {
             this.canvas.width = 1280;
             this.canvas.height = 720;
             this.canvas.className = "windowed";
-            this.blockSize = Math.round(this.canvas.height / this.verticalRenderDistance);
         }
-
+        this.blockSize =this.canvas.height / this.verticalRenderDistance;
     }
 
 

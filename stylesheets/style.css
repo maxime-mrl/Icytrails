@@ -49,8 +49,8 @@ body {
 #game-canvas.windowed {
   aspect-ratio: 16/9;
   width: 100%;
-  max-width: 177.7777777778vh;
-  max-height: 100vh;
+  max-width: 160vh;
+  max-height: 90vh;
 }
 
 .editor {
