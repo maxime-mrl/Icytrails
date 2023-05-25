@@ -25,7 +25,7 @@ export default class Hero {
 
         this.vel = {
             xAbs: 0, // horizontal velocity
-            xMax: 30, // max velocity
+            xMax: 20, // max velocity
             dir: 0, // direction of this velocity (calculation)
             mdir: 0, // memory velocity for movement
             y: 0, // vertical velocity
@@ -113,7 +113,8 @@ export default class Hero {
 
     checkHorizontalColision() {
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
-        this.world.level.fg.forEach(({x:blockX, y:blockY}) => {
+        this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}) => {
+            if (type > 20) return;
             if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
             this.vel.xAbs = 0;
             if (blockX - 0.1 > this.hitBox.pos.x) {
@@ -132,13 +133,14 @@ export default class Hero {
     checkVerticalColision() {
         this.jumping = true;
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
-        this.world.level.fg.forEach(({x:blockX, y:blockY}) => { // with blocks
+        this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}) => { // with blocks
+            if (type > 30) return;
             if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
-            if (this.vel.y > 0) {
+            if (this.vel.y > 0 && type < 20) {
                 this.vel.y = 0;
                 this.pos.y = blockY - 1.003 + (1 - this.hitBox.height) / 2;
                 return; // stop itteration for perfs
-            } if (this.vel.y <= 0) {
+            } if (this.vel.y < 0 && (type < 20 || blockY + 0.8 < this.pos.y)) {
                 this.jumping = false; // if hit ceil jump again possible (need to try whith real levels in future) (so for now it's not a mistake)
                 this.vel.y = 0;
                 this.pos.y = blockY + 1.003 - (1 - this.hitBox.height) / 2;
