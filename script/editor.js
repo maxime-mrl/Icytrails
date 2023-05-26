@@ -42,7 +42,7 @@ class World {
                 blockCategories.bg.appendChild(texture)
             } else if (code < 80) {
                 blockCategories.kill.appendChild(texture)
-            } else if (code != 98) { // star for the end is renderer differently on editors (code 81)
+            } else if (code != 98) { // star for the end is renderer differently on editors (code 96)
                 blockCategories.others.appendChild(texture)
             }
         })
@@ -63,13 +63,13 @@ class World {
         // specials
         if (
             this.selectedBlock == 95 &&
-            this.pos.x != this.level.end.x &&
-            this.pos.y != this.level.end.y
+            (this.pos.x != this.level.end.x ||
+            this.pos.y != this.level.end.y)
         ) this.level.spawn = { x: this.pos.x, y:this.pos.y };
         
         if (this.selectedBlock == 96 &&
-        this.pos.x != this.level.spawn.x &&
-        this.pos.y != this.level.spawn.y
+        (this.pos.x != this.level.spawn.x ||
+        this.pos.y != this.level.spawn.y)
         ) this.level.end = { x: this.pos.x, y:this.pos.y };
 
         if (this.selectedBlock >= 95) {
