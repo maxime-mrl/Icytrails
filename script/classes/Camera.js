@@ -12,12 +12,8 @@ export default class Camera {
 
         // make sure camera is visible
         this.update(); // make camera pos acurate
-        if (this.camera.pos.x + this.camera.width > this.world.canvas.width / this.renderer.blockSize - this.world.translate.x) { // prevent left overflow
-            this.world.translate.x = this.world.canvas.width/this.renderer.blockSize/2 - this.camera.pos.x - 1;
-        }
-        if (this.camera.pos.y - this.camera.height > this.world.canvas.height / this.renderer.blockSize - this.world.translate.y) { // prevent top overflow
-            this.world.translate.y = -this.world.canvas.height/this.renderer.blockSize/2 + this.camera.pos.y - 1;
-        }
+        this.world.translate.x = this.world.canvas.width/this.renderer.blockSize/2 - this.camera.pos.x - this.camera.width/2 - 1; // set viewport to center camera horizontally
+        this.world.translate.y = -(this.world.canvas.height/this.renderer.blockSize/2 - this.camera.pos.y) - 1; // set viewport to center camera vertically
         // bottom and right overflow are unnecessary since camera start from there
     }
 

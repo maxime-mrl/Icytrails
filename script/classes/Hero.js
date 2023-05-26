@@ -76,8 +76,8 @@ export default class Hero {
         // draw
         this.updateSpriteFrames(delay)
         this.renderer.drawSprite(this.currentSprite, this.currentFrame, this.pos);
-        this.updateHitBox();
-        this.drawDebug();
+        // this.updateHitBox();
+        // this.drawDebug();
     }
 
     updateSpriteFrames(delay) { // update hero sprite
