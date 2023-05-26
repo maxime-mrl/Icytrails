@@ -1,5 +1,6 @@
 import collisionDetection from "../utils/collisionDetection.js";
 import createSprites from "../utils/createSprites.js"
+import Camera from "./Camera.js";
 const sprites = [
     "idle",
     "death",
@@ -13,23 +14,18 @@ export default class Hero {
         this.ctx = world.ctx;
         this.world = world;
         this.renderer = world.renderer;
-        this.sprites = createSprites(sprites);
+        // positions
         this.pos = {
             x: pos.x,
             y: pos.y,
             width: 0.7,
             height: 0.8,
-        }; // pos.x pos.y
+        };
         this.hitBox = {
             pos: { x: this.pos.x, y: this.pos.y },
             width: 0.7,
             height: 0.8,
-        }
-        this.camera = {
-            pos: { x: this.pos.x, y: this.pos.y },
-            width: 10,
-            height: 6,
-        }
+        };
 
         this.vel = {
             xAbs: 0, // horizontal velocity
@@ -48,7 +44,11 @@ export default class Hero {
         this.jumpMem = false;
         this.dead = false;
 
+        //camera
+        this.camera = new Camera(this)
+
         // sprite
+        this.sprites = createSprites(sprites);
         this.frameTime = 75; // for 20 fps
         this.currentFrame = 0;
         this.elapsed = 0;
@@ -62,7 +62,7 @@ export default class Hero {
             if (this.vel.dir != 0) this.vel.xAbs += (this.vel.increment.acc * delay / 1000) * (this.vel.xMax - this.vel.xAbs);
             else this.vel.xAbs -= (this.vel.increment.slow * delay / 1000) * this.vel.xAbs;
             this.pos.x += this.vel.xAbs * delay/1000 * this.vel.mdir;
-            this.updateCamera(delay);
+            this.camera.update(delay);
             // horizontal colision check
             this.checkHorizontalColision();
             // vertical position update
@@ -78,32 +78,6 @@ export default class Hero {
         this.renderer.drawSprite(this.currentSprite, this.currentFrame, this.pos);
         this.updateHitBox();
         this.drawDebug();
-    }
-
-    updateCamera = (delay) => { // update camera positions and check camera colision
-        // update camera pos
-        this.camera.pos.x = this.hitBox.pos.x + (1 - this.camera.width) / 2;
-        this.camera.pos.y = this.hitBox.pos.y - (1 - this.camera.height) / 2; // minus bcz Y is calculated from bottom
-
-        // box side coordinate
-        const left = this.camera.pos.x;
-        const right = this.camera.pos.x + this.camera.width;
-        const bottom = this.camera.pos.y + (1 - this.camera.height);
-        const top = this.camera.pos.y + 1;
-        // maximum x world translate
-        const maxX = this.world.max.x - (this.world.canvas.width / this.renderer.blockSize) + 1;
-
-        // change translate for horizontal
-        if (left + this.world.translate.x <= 0 && this.vel.mdir < 0) this.world.translate.x += this.vel.xAbs * delay/1000; // left
-        else if ((right + this.world.translate.x) * this.renderer.blockSize >= this.world.canvas.width && this.vel.mdir > 0) this.world.translate.x -= this.vel.xAbs * delay/1000; // right
-        // change translate for vertical
-        if (bottom - this.world.translate.y <= 0 && this.vel.y < 0) this.world.translate.y += this.vel.y * delay/1000; // bottom
-        else if ((top - this.world.translate.y) * this.renderer.blockSize >= this.world.canvas.height && this.vel.y > 0) this.world.translate.y += this.vel.y * delay/1000; // top
-        
-        // translate limits
-        if (this.world.translate.x > 0) this.world.translate.x = 0; // left
-        if (-this.world.translate.x > maxX) this.world.translate.x = -maxX; // right
-        if (this.world.translate.y < 0) this.world.translate.y = 0; // bottom
     }
 
     updateSpriteFrames(delay) { // update hero sprite
@@ -201,10 +175,6 @@ export default class Hero {
             } else if (type == 81) {
                 this.world.level.fg.splice(index, 1);
                 this.world.level.spawn = { x: blockX, y: blockY }
-                this.world.savedTranslate = {
-                    x: this.world.translate.x,
-                    y: this.world.translate.y
-                };
             } else if (type == 98) { // succes
                 this.world.level.fg.splice(index, 1);
                 this.world.succes()
@@ -225,12 +195,13 @@ export default class Hero {
 
     drawDebug() { // temp
         // camera
+        const camera = this.camera.camera
         this.ctx.fillStyle = "#00ff0050"
         const {x:crx, y:cry} = this.renderer.calculateCoords({
-            x: this.camera.pos.x,
-            y: this.camera.pos.y
+            x: camera.pos.x,
+            y: camera.pos.y
         });
-        this.ctx.fillRect(crx, cry, this.camera.width * this.renderer.blockSize, this.camera.height * this.renderer.blockSize);
+        this.ctx.fillRect(crx, cry, camera.width * this.renderer.blockSize, camera.height * this.renderer.blockSize);
         // hitbox
         this.ctx.fillStyle = "#ff000050"
         const {x:hrx, y:hry} = this.renderer.calculateCoords({

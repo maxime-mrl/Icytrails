@@ -9,15 +9,14 @@ class World {
     constructor(level) {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
-        console.log(this.confetti)
         this.level = level;
         this.level.fg.push({ x: level.end.x, y: level.end.y, t: 98 })
         this.translate = { x: 0, y: 0 };
-        this.savedTranslate = { x: 0, y: 0 };
         this.max = {
             x: Math.max.apply(Math, this.level.fg.map(elem => elem.x), this.level.end.x),
             y: Math.max.apply(Math, this.level.fg.map(elem => elem.y), this.level.end.x)
         };
+        this.handleDeath = false;
         this.score = 0;
         this.renderer = new Renderer(this);
         this.player = new Hero(this, this.level.spawn); // in the future spawn point will be set in editor
@@ -27,6 +26,8 @@ class World {
     }
 
     respawn = () => {
+        if (this.handleDeath) return;
+        this.handleDeath = true;
         setTimeout(() => {
             this.player = {
                 update: () => {},
@@ -34,11 +35,9 @@ class World {
             }
         }, 1000,);
         setTimeout(() => {
-            this.translate = {
-                x: this.savedTranslate.x,
-                y: this.savedTranslate.y
-            };
+            this.translate = { x: 0, y: 0 };
             this.player = new Hero(this, this.level.spawn)
+            this.handleDeath = false;
         }, 2000);
     }
     

@@ -78,17 +78,16 @@ export default class Renderer {
     }
 
     render = (lastFrame) => {
-        // delay calculation
+        // delay calculation and next frame
         const delay = Math.min((Date.now() - lastFrame), 20); // don't allow under 50 fps physics (because slower risk glitchy collision)
         lastFrame = Date.now();
+        this.updater = requestAnimationFrame(() => this.render(lastFrame));
         // reset canvas
         this.ctx.restore();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.save();
         // update things
         this.world.update(delay);
-        // next frame
-        this.updater = requestAnimationFrame(() => this.render(lastFrame));
     }
 
     resize = () => { // handle everithing for size - resize canvas, set block size etc called at start and on resize
