@@ -1,7 +1,7 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
 import confetti from "./ext/confetti.min.js"
-fetch('/script/level-4-b.json') // get the level
+fetch('/script/level-b.json') // get the level
     .then(resp => resp.json())
     .then(data => new World(data));
 
@@ -13,6 +13,7 @@ class World {
         this.level = level;
         this.level.fg.push({ x: level.end.x, y: level.end.y, t: 98 })
         this.translate = { x: 0, y: 0 };
+        this.savedTranslate = { x: 0, y: 0 };
         this.max = {
             x: Math.max.apply(Math, this.level.fg.map(elem => elem.x), this.level.end.x),
             y: Math.max.apply(Math, this.level.fg.map(elem => elem.y), this.level.end.x)
@@ -33,7 +34,10 @@ class World {
             }
         }, 1000,);
         setTimeout(() => {
-            this.translate = { x: 0, y: 0 };
+            this.translate = {
+                x: this.savedTranslate.x,
+                y: this.savedTranslate.y
+            };
             this.player = new Hero(this, this.level.spawn)
         }, 2000);
     }

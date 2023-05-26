@@ -38,6 +38,7 @@ const blocks = [
     ["spikes-01", 70],
     ["spikes-02", 71],
     ["coin-01", 80],
+    ["checkpoint", 81],
     ["point-start", 95],
     ["point-finish", 96],
     ["eraser", 97],
@@ -116,7 +117,7 @@ export default class Renderer {
 
     drawBlock = (img, pos) => { // draw images without sprite
         const {x, y} = this.calculateCoords(pos) ;
-        this.world.ctx.drawImage(img, x, y, this.blockSize, this.blockSize);
+        this.world.ctx.drawImage(img, x, y, this.blockSize*1.01, this.blockSize*1.01);
     }
 
     drawSprite = ({sprite, frameSize}, displayedFrame, pos) => { // draw sprites images

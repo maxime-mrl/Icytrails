@@ -9,15 +9,10 @@ const blockCategories = {
 }
 
 class World {
-    constructor() {
+    constructor(level) {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
-        this.level = {
-            spawn: {x: 0, y: 0},
-            end: {x: 1, y: 0},
-            bg: [],
-            fg: [],
-        };
+        this.level = level;
         this.selectedBlock = 0;
         this.renderer = new Renderer(this, "windowed");
         this.addBlocksToSelector();
@@ -138,12 +133,12 @@ class World {
         // blocks and highlight drawing
         this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize);
         this.level.bg.forEach(({x,y,t:type}) => { // bg
-            if (type == "80") return;
+            if (type == "98") return;
             const texture = this.renderer.blockTextures.get(type)
             this.renderer.drawBlock(texture, {x,y})
         });
         this.level.fg.forEach(({x,y,t:type}) => { // fg
-            if (type == "80") return;
+            if (type == "98") return;
             const texture = this.renderer.blockTextures.get(type)
             this.renderer.drawBlock(texture, {x,y})
         });
@@ -156,4 +151,12 @@ class World {
     }
 }
 
-const world = new World();
+// const world = new World({
+//     spawn: {x: 0, y: 0},
+//     end: {x: 1, y: 0},
+//     bg: [], fg: [],
+// });
+
+fetch('/script/temp.json') // get the level
+    .then(resp => resp.json())
+    .then(data => new World(data));

@@ -28,7 +28,7 @@ export default class Hero {
         this.camera = {
             pos: { x: this.pos.x, y: this.pos.y },
             width: 10,
-            height: 4.5,
+            height: 6,
         }
 
         this.vel = {
@@ -76,8 +76,8 @@ export default class Hero {
         // draw
         this.updateSpriteFrames(delay)
         this.renderer.drawSprite(this.currentSprite, this.currentFrame, this.pos);
-        // this.updateHitBox();
-        // this.drawDebug();
+        this.updateHitBox();
+        this.drawDebug();
     }
 
     updateCamera = (delay) => { // update camera positions and check camera colision
@@ -142,7 +142,7 @@ export default class Hero {
     checkHorizontalColision = () => {
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
         this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}) => {
-            if (type > 20) return; // no horizontal colision for slabs
+            if (type >= 20) return; // no horizontal colision for slabs
             if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
             this.vel.xAbs = 0;
             if (blockX - 0.1 > this.hitBox.pos.x) {
@@ -159,6 +159,7 @@ export default class Hero {
     }
     
     checkVerticalColision = () => {
+        const halfPlatTolerance = 0.65 + this.vel.y/100;
         this.jumping = true;
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
         this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}) => { // with blocks
@@ -168,7 +169,7 @@ export default class Hero {
                 this.vel.y = 0;
                 this.pos.y = blockY - 1.003 + (1 - this.hitBox.height) / 2;
                 return; // stop itteration for perfs
-            } if (this.vel.y < 0 && (type < 20 || blockY + 0.6 < this.pos.y)) { // (type < 20 || blockY + 0.6 < this.pos.y) allow to test for plates to only colide from top part
+            } if (this.vel.y < 0 && (type < 20 || blockY + halfPlatTolerance < this.pos.y)) { // (type < 20 || blockY + 0.6 < this.pos.y) allow to test for plates to only colide from top part
                 this.jumping = false;
                 this.vel.y = 0;
                 this.pos.y = blockY + 1.003 - (1 - this.hitBox.height) / 2;
@@ -197,6 +198,13 @@ export default class Hero {
                 this.world.score++;
                 this.world.level.fg.splice(index, 1);
                 return;
+            } else if (type == 81) {
+                this.world.level.fg.splice(index, 1);
+                this.world.level.spawn = { x: blockX, y: blockY }
+                this.world.savedTranslate = {
+                    x: this.world.translate.x,
+                    y: this.world.translate.y
+                };
             } else if (type == 98) { // succes
                 this.world.level.fg.splice(index, 1);
                 this.world.succes()
