@@ -76,8 +76,8 @@ export default class Hero {
         // draw
         this.updateSpriteFrames(delay)
         this.renderer.drawSprite(this.currentSprite, this.currentFrame, this.pos);
-        this.updateHitBox();
-        this.drawDebug();
+        // this.updateHitBox();
+        // this.drawDebug();
     }
 
     updateCamera = (delay) => { // update camera positions and check camera colision
@@ -119,7 +119,7 @@ export default class Hero {
             this.currentSprite = this.sprites.idle;
         }
         else if (this.currentSprite.name == "death" && this.currentFrame == this.currentSprite.frameNb - 1) return this.world.respawn(); // stop update sprites when death anim finished
-        if (this.currentSprite.name == "idle" && Math.random() > 0.99 && this.currentFrame == 0) { // blink if idle at random time
+        if (this.currentSprite.name == "idle" && Math.random() > 0.98 && this.currentFrame == 0) { // blink if idle at random time
             this.currentFrame = 0;
             this.elapsed = 0;
             this.currentSprite = this.sprites.blink;
@@ -199,7 +199,7 @@ export default class Hero {
                 return;
             } else if (type == 98) { // succes
                 this.world.level.fg.splice(index, 1);
-                alert("gg")
+                this.world.succes()
                 return;
             }
         })

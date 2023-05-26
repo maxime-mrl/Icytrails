@@ -1,5 +1,6 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
+import confetti from "./ext/confetti.min.js"
 fetch('/script/level-4-b.json') // get the level
     .then(resp => resp.json())
     .then(data => new World(data));
@@ -8,6 +9,7 @@ class World {
     constructor(level) {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
+        console.log(this.confetti)
         this.level = level;
         this.level.fg.push({ x: level.end.x, y: level.end.y, t: 98 })
         this.translate = { x: 0, y: 0 };
@@ -35,9 +37,34 @@ class World {
             this.player = new Hero(this, this.level.spawn)
         }, 2000);
     }
+    
+    succes = () => {
+        setTimeout(() => {
+            cancelAnimationFrame(this.renderer.updater);
+            confetti({
+                particleCount: 100,
+                startVelocity: 30,
+                spread: 360,
+                origin: {
+                  x: 0.2,
+                  y: 0
+                }
+              })
+              confetti({
+                  particleCount: 100,
+                  startVelocity: 30,
+                  spread: 360,
+                  origin: {
+                    x: 0.8,
+                    y: 0
+                  }
+                })
+        }, 100);
+    }
 
     update = (delay) => {
         this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize); // translate the canvas
+
         // draw blocks
         this.level.bg.forEach(({ x,y,t:type }) => {
             type = parseInt(type);

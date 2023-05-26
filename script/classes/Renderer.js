@@ -73,7 +73,7 @@ export default class Renderer {
         window.addEventListener("resize", this.resize);
         window.addEventListener("orientationchange", this.resize);
         // first render
-        requestAnimationFrame(() => this.render(Date.now()));
+        this.updater = requestAnimationFrame(() => this.render(Date.now()));
     }
 
     render = (lastFrame) => {
@@ -87,7 +87,7 @@ export default class Renderer {
         // update things
         this.world.update(delay);
         // next frame
-        requestAnimationFrame(() => this.render(lastFrame));
+        this.updater = requestAnimationFrame(() => this.render(lastFrame));
     }
 
     resize = () => { // handle everithing for size - resize canvas, set block size etc called at start and on resize
