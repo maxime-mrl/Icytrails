@@ -1,4 +1,4 @@
-export default function(spritesSrcs) {
+export default function(spritesSrcs) { // import sprites and create array of object with all usefull things
     const sprites = {};
     spritesSrcs.forEach(sprite => {
         const image = document.createElement("img");

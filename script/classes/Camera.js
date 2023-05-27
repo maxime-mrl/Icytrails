@@ -1,5 +1,5 @@
 export default class Camera {
-    constructor(hero, pos) {
+    constructor(hero) {
         this.world = hero.world;
         this.hitBox = hero.hitBox;
         this.renderer = hero.renderer;
@@ -8,10 +8,10 @@ export default class Camera {
             pos: { x: hero.pos.x, y: hero.pos.y },
             width: 10,
             height: 6,
-        }
+        };
 
         // make sure camera is visible
-        this.update(); // make camera pos acurate
+        this.update();
         this.world.translate.x = this.world.canvas.width/this.renderer.blockSize/2 - this.camera.pos.x - this.camera.width/2 - 1; // set viewport to center camera horizontally
         this.world.translate.y = -(this.world.canvas.height/this.renderer.blockSize/2 - this.camera.pos.y) - 1; // set viewport to center camera vertically
         // bottom and right overflow are unnecessary since camera start from there
@@ -28,7 +28,7 @@ export default class Camera {
         const bottom = this.camera.pos.y + (1 - this.camera.height);
         const top = this.camera.pos.y + 1;
         // maximum x world translate
-        const maxX = this.world.max.x - (this.world.canvas.width / this.renderer.blockSize) + 1;
+        const max = this.world.max - (this.world.canvas.width / this.renderer.blockSize) + 1;
 
         // change translate for horizontal
         if (left + this.world.translate.x <= 0 && this.vel.mdir < 0) this.world.translate.x += this.vel.xAbs * delay/1000; // left
@@ -39,7 +39,7 @@ export default class Camera {
         
         // translate limits
         if (this.world.translate.x > 0) this.world.translate.x = 0; // left
-        if (-this.world.translate.x > maxX) this.world.translate.x = -maxX; // right
+        if (-this.world.translate.x > max) this.world.translate.x = -max; // right
         if (this.world.translate.y < 0) this.world.translate.y = 0; // bottom
         // no top limit since we are pretty naturaly limited by jump
     }

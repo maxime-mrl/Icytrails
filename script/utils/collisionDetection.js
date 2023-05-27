@@ -1,4 +1,4 @@
-export default function(player, obj) { // detect normal colision
+export default function(player, obj) { // detect normal colision from any sides
     if (
         player.pos.y + 1 >= obj.y &&
         player.pos.y + (1 - player.height) <= obj.y + 1 &&

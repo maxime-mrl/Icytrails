@@ -42,7 +42,7 @@ const blocks = [
     ["point-start", 95, "Set the spawn point where you want"],
     ["point-finish", 96, "Set the success point where you want"],
     ["eraser", 97, "Made a mistake? No problem this can even erase you"],
-    ["end", 98, "You shouldn't see this... sus"],
+    ["end", 98, "You shouldn't see this... sus"]
 ];
 // block types
 // 00 - 19 solid
@@ -65,11 +65,10 @@ export default class Renderer {
         blocks.forEach(block => {
             const image = document.createElement("img");
             image.src = `/asset/texture/blocks/${block[0]}.png`;
-            image.setAttribute("data-tooltip", block[2])
+            image.tooltip = block[2]
             image.onclick = () => this.world.selectedBlock = block[1]; // add event listener for level editors (when images are used as html)
             this.blockTextures.set(block[1], image);
         });
-        // create hero sprites textures
         // resize handling
         this.resize();
         window.addEventListener("resize", this.resize);
@@ -106,7 +105,6 @@ export default class Renderer {
         }
         this.blockSize =this.canvas.height / this.verticalRenderDistance;
     }
-
 
     calculateCoords = (pos) => { // from coordinate in blocks return the position in pixel for the canvas
         return {
