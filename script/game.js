@@ -1,8 +1,9 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
 import confetti from "./ext/confetti.min.js"
+new FontFace("atma", "../asset/fonts/Atma-Bold.ttf"); // import font
 
-fetch('/script/level-b.json') // get the level (temp - should be something at least a bit different for backend)
+fetch('/script/level-a.json') // get the level (temp - should be something at least a bit different for backend)
     .then(resp => resp.json())
     .then(data => new World(data));
 
@@ -14,7 +15,10 @@ class World {
         this.translate = { x: 0, y: 0 };
         this.handleDeath = false;
         this.respawnTimeout = 2000; // how long we wait before respawn
+
         this.score = 0;
+        this.maxScore = 0;
+        this.level.fg.forEach(block => { if (block.t == 80) this.maxScore++ })
 
         this.level.fg.push({ x: level.end.x, y: level.end.y, t: 98 });
         this.max = Math.max.apply(this.level.spawn.x, this.level.fg.map(elem => elem.x), this.level.end.x); // level x border
@@ -71,18 +75,39 @@ class World {
 
         // draw blocks
         this.level.bg.forEach(({ x,y,t:type }) => {
-            type = parseInt(type);
             const texture = this.renderer.blockTextures.get(type);
             this.renderer.drawBlock(texture, {x,y});
         });
         this.level.fg.forEach(({ x,y,t:type }) => {
-            type = parseInt(type);
             const texture = this.renderer.blockTextures.get(type);
             this.renderer.drawBlock(texture, {x,y});
         });
 
         // update player
         this.player.update(delay);
+        this.ctx.restore();
+        this.drawScore();
+    }
+
+    drawScore = () => {
+        this.ctx.save()
+
+        this.ctx.font = "30px atma";
+        this.ctx.fillStyle = "black";
+        this.ctx.shadowColor="white";
+        const txt = `${this.score} / ${this.maxScore}`;
+
+        const txtSize = this.ctx.measureText(txt);
+        const x = this.canvas.width - 10 - txtSize.width;
+        const y = 35;
+
+        this.ctx.drawImage(this.renderer.blockTextures.get(80), x-40, 9, 35, 35);
+
+        this.ctx.shadowBlur = 1;
+        this.ctx.shadowOffsetX = 2;
+        this.ctx.shadowOffsetY = 2;
+        this.ctx.fillText(txt, x, y);
+        this.ctx.restore()
     }
 
     // key input events

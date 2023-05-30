@@ -26,6 +26,7 @@ const blocks = [
     ["decor-02", 41, "Pro tip: you can stack multiple background blocks!"],
     ["decor-03", 42, "Reminder: background blocks don't have any collision"],
     ["decor-04", 43, "got lost? seem's like a direction"],
+    ["decor-14", 53, "You can go up?"],
     ["decor-05", 44, "A pot? Yes why not"],
     ["decor-06", 45, "When the pot falls it breaks"],
     ["decor-07", 46, "Another pot woaw"],
@@ -69,6 +70,10 @@ export default class Renderer {
             image.onclick = () => this.world.selectedBlock = block[1]; // add event listener for level editors (when images are used as html)
             this.blockTextures.set(block[1], image);
         });
+        this.bg = document.createElement("img");
+        this.bg.src = "/asset/texture/bg/trees.png";
+        this.bg.ratio = 1;
+        this.bg.onload = () => this.bg.ratio = this.bg.width/this.bg.height;
         // resize handling
         this.resize();
         window.addEventListener("resize", this.resize);
@@ -87,6 +92,7 @@ export default class Renderer {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.save();
         // update things
+        this.drawBackground();
         this.world.update(delay);
     }
 
@@ -123,5 +129,16 @@ export default class Renderer {
         const cropStart = frameSize * displayedFrame;
         this.world.ctx.drawImage(sprite, cropStart, 0, frameSize, frameSize, x, y, this.blockSize, this.blockSize);
         // draw image full: imgSRC, imgcropStart x-y, imgcropWidth x-y, posX, posY, SizeX, sizeY  
+    }
+
+    drawBackground = () => {
+        const bgWidth = this.blockSize*5.5 * this.bg.ratio;
+        const bgHeight = this.blockSize*5.5;
+        const y = this.canvas.height + this.world.translate.y * this.blockSize - bgHeight;
+        for (let i = 0; i < 99; i++) {
+            const x = i*bgWidth + this.world.translate.x * this.blockSize / 5;
+            this.world.ctx.drawImage(this.bg, x, y, bgWidth, bgHeight);
+        }
+
     }
 }

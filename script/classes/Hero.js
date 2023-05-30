@@ -19,7 +19,7 @@ export default class Hero {
         this.pos = { x: pos.x, y: pos.y };
         this.hitBox = {
             pos: { x: this.pos.x, y: this.pos.y },
-            width: 0.7, height: 0.8,
+            width: 0.6, height: 0.8,
         };
 
         this.vel = {
@@ -63,8 +63,8 @@ export default class Hero {
         // draw
         this.updateSpriteFrames(delay);
         this.renderer.drawSprite(this.currentSprite, this.currentFrame, this.pos);
-        // this.updateHitBox();
-        // this.drawDebug();
+        this.updateHitBox();
+        this.drawDebug();
     }
 
     updateSpriteFrames(delay) { // update hero sprite

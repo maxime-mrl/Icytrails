@@ -145,6 +145,6 @@ const world = new World({
     bg: [], fg: [],
 });
 
-// fetch('/script/temp.json') // get the level
+// fetch('/script/level-a.json') // get the level
 //     .then(resp => resp.json())
 //     .then(data => new World(data));

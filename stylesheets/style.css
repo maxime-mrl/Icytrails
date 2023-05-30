@@ -1,3 +1,13 @@
+@font-face {
+  font-family: atma;
+  src: url("../asset/fonts/Atma-SemiBold.ttf");
+  font-weight: normal;
+}
+@font-face {
+  font-family: atma;
+  src: url("../asset/fonts/Atma-Bold.ttf");
+  font-weight: bold;
+}
 * {
   box-sizing: border-box;
   margin: 0;
@@ -30,8 +40,50 @@ a {
 /*                                   CONTENT                                  */
 /* -------------------------------------------------------------------------- */
 body {
-  background-color: #1e1e1e;
-  font-family: sans-serif;
+  background-color: #023E50;
+  color: #F3EFF5;
+  font-family: atma;
+  font-size: 1.25rem;
+}
+
+.btn {
+  background-color: #3DD6D0;
+  padding: 0.8em 2em;
+  border-radius: 0.8em;
+  color: #023E50;
+  cursor: pointer;
+  transition: 200ms;
+  font-weight: bold;
+}
+.btn:hover {
+  box-shadow: inset -2px -2px 3px #023E50;
+  transform: scale(0.98);
+}
+
+select {
+  color: #023E50;
+  background-color: #3DD6D0;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  font-weight: bold;
+}
+select option {
+  background-color: #F3EFF5;
+}
+select option::-moz-selection {
+  background-color: #3DD6D0;
+}
+select option::selection {
+  background-color: #3DD6D0;
+}
+
+.h1 {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.h2 {
+  font-size: 1.5rem;
 }
 
 .tippy-box {
@@ -54,33 +106,83 @@ body {
 #game-canvas.windowed {
   aspect-ratio: 16/9;
   width: 100%;
-  max-width: 160vh;
-  max-height: 90vh;
+  height: auto;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                LEVEL EDITOR                                */
+/* -------------------------------------------------------------------------- */
+.editor-title {
+  text-align: center;
+  margin: 0.5em auto 0 auto;
 }
 
 .editor {
-  display: grid;
-  grid-template-areas: "canvas canvas blocks" "canvas canvas blocks" "controls controls block";
+  display: flex;
+  flex-direction: column;
   gap: 1em;
-  margin: 1em;
+  min-width: 45em;
+  width: 90%;
+  margin: 0 auto;
+  transition: width 250ms ease-in-out;
 }
-.editor canvas {
-  grid-area: canvas;
+.editor .controls {
+  display: flex;
+  justify-content: space-around;
 }
-.editor .blocks-select {
-  grid-area: blocks;
-  color: #efefef;
-  display: grid;
-  gap: 1em;
+.editor .controls > * {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
-.editor .blocks-select .blocks {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.6em;
-  height: -moz-fit-content;
-  height: fit-content;
-}
-.editor .blocks-select img {
-  width: 3em;
+
+.modal-button {
+  position: fixed;
+  top: 0.5em;
+  right: 1em;
+  background: none;
   cursor: pointer;
+  transition: 250ms;
+}
+
+.blocks-select {
+  position: fixed;
+  right: 0;
+  top: 0;
+  border-left: 2px solid #022f3c;
+  background-color: rgba(2, 62, 80, 0.8);
+  box-shadow: -3px 0 5px rgba(2, 54, 70, 0.9);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  padding: 2.5em 0 1em 1em;
+  width: 18em;
+  transform: translateX(100%) scaleX(0);
+  transition: 250ms;
+  height: 100%;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  display: grid;
+  gap: 1em;
+}
+.blocks-select .blocks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3em;
+}
+.blocks-select .blocks img {
+  width: 2.5em;
+  cursor: pointer;
+}
+
+.modal-oppened .modal-button {
+  transform: rotate(-180deg);
+  right: 16em;
+}
+.modal-oppened .blocks-select {
+  transform: translateX(0) scaleX(1);
+}
+.modal-oppened .editor {
+  width: calc(100% - 20em);
+  margin: 0 1em;
 }/*# sourceMappingURL=style.css.map */

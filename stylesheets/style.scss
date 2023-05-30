@@ -1,3 +1,23 @@
+@use "sass:color";
+@font-face {
+  font-family: atma;
+  src: url("../asset/fonts/Atma-SemiBold.ttf");
+  font-weight: normal;
+}
+@font-face {
+  font-family: atma;
+  src: url("../asset/fonts/Atma-Bold.ttf");
+  font-weight: bold;
+}
+
+$bg: #023E50;
+$white: #F3EFF5;
+$accent: #3DD6D0;
+$success: #97DB4F;
+$fail: #FF8585;
+
+$editor-transition: 250ms;
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -28,8 +48,47 @@ a {
 /*                                   CONTENT                                  */
 /* -------------------------------------------------------------------------- */
 body {
-    background-color: #1e1e1e;
-    font-family: sans-serif;
+    background-color: $bg;
+    color: $white;
+    font-family: atma;
+    font-size: 1.25rem;
+}
+
+.btn {
+  background-color: $accent;
+  padding: 0.8em 2em;
+  border-radius: 0.8em;
+  color: $bg;
+  cursor: pointer;
+  transition: 200ms;
+  font-weight: bold;
+  &:hover {
+    box-shadow: inset -2px -2px 3px $bg;
+    transform: scale(0.98);
+  }
+}
+
+select {
+  color: $bg;
+  background-color: $accent;
+  padding: 0.5em 1em;
+  border-radius: 0.5em;
+  font-weight: bold;
+  option {
+    background-color: $white;
+    &::selection {
+      background-color: $accent;
+    }
+  }
+}
+
+.h1 {
+  font-size: 3rem;
+  font-weight: bold;
+}
+
+.h2 {
+  font-size: 1.5rem;
 }
 
 .tippy-box { 
@@ -51,37 +110,83 @@ body {
     &.windowed {
       aspect-ratio: 16/9;
       width: 100%;
-      max-width: calc(90vh * (16/9));
-      max-height: 90vh;
+      height: auto;
     }
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                LEVEL EDITOR                                */
+/* -------------------------------------------------------------------------- */
+.editor-title {
+  text-align: center;
+  margin: 0.5em auto 0 auto;
+}
+
 .editor {
-  display: grid;
-  grid-template-areas: 
-  "canvas canvas blocks"
-  "canvas canvas blocks"
-  "controls controls block";
+  display: flex;
+  flex-direction: column;
   gap: 1em;
-  margin: 1em;
-  canvas {
-    grid-area: canvas;
-  }
-  .blocks-select {
-    grid-area: blocks;
-    color: #efefef;
-    display: grid;
-    gap: 1em;
-    .blocks {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 0.6em;
-      height: fit-content;
+  min-width: 45em;
+  width: 90%;
+  margin: 0 auto;
+  transition: width $editor-transition ease-in-out;
+  .controls {
+    display: flex;
+    justify-content: space-around;
+    & > * {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+  }
+}
+
+.modal-button {
+  position: fixed;
+  top: 0.5em;
+  right: 1em;
+  background: none;
+  cursor: pointer;
+  transition:$editor-transition;
+}
+
+.blocks-select {
+  position: fixed;
+  right: 0;
+  top: 0;
+  border-left: 2px solid darken($bg, 4);
+  background-color: fade-out($bg, 0.2);
+  box-shadow: -3px 0 5px fade-out(darken($bg, 2), 0.1);
+  backdrop-filter: blur(8px);
+  padding: 2.5em 0 1em 1em;
+  width: 18em;
+  transform: translateX(100%) scaleX(0);
+  transition: $editor-transition;
+  height: 100%;
+  user-select: none;
+  display: grid;
+  gap: 1em;
+  .blocks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3em;
     img {
-      width: 3em;
+      width: 2.5em;
       cursor: pointer;
     }
   }
 }
 
+.modal-oppened {
+  .modal-button {
+    transform: rotate(-180deg);
+    right: 16em;
+  }
+  .blocks-select {
+    transform: translateX(0) scaleX(1);
+  }
+  .editor {
+    width: calc(100% - 20em);
+    margin: 0 1em;
+  }
+}

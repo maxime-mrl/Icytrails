@@ -7,7 +7,7 @@ export default class Camera {
         this.camera = {
             pos: { x: hero.pos.x, y: hero.pos.y },
             width: 10,
-            height: 6,
+            height: 6.5,
         };
 
         // make sure camera is visible
