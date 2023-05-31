@@ -10,7 +10,7 @@
   font-weight: bold;
 }
 
-$bg: #023E50;
+$bg: #022e3c;
 $white: #F3EFF5;
 $accent: #3DD6D0;
 $success: #97DB4F;
@@ -63,22 +63,26 @@ body {
   transition: 200ms;
   font-weight: bold;
   &:hover {
-    box-shadow: inset -2px -2px 3px $bg;
-    transform: scale(0.98);
+    transform: scale(1.05);
   }
 }
 
 select {
   color: $bg;
   background-color: $accent;
-  padding: 0.5em 1em;
+  padding: 0.8em 1em;
   border-radius: 0.5em;
   font-weight: bold;
+  cursor: pointer;
+  transition: 200ms;
   option {
     background-color: $white;
     &::selection {
       background-color: $accent;
     }
+  }
+  &:hover {
+    transform: scale(1.05);
   }
 }
 
@@ -187,6 +191,6 @@ select {
   }
   .editor {
     width: calc(100% - 20em);
-    margin: 0 1em;
+    margin: 0 1em 1em;
   }
 }

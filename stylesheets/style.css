@@ -40,7 +40,7 @@ a {
 /*                                   CONTENT                                  */
 /* -------------------------------------------------------------------------- */
 body {
-  background-color: #023E50;
+  background-color: #022e3c;
   color: #F3EFF5;
   font-family: atma;
   font-size: 1.25rem;
@@ -50,22 +50,23 @@ body {
   background-color: #3DD6D0;
   padding: 0.8em 2em;
   border-radius: 0.8em;
-  color: #023E50;
+  color: #022e3c;
   cursor: pointer;
   transition: 200ms;
   font-weight: bold;
 }
 .btn:hover {
-  box-shadow: inset -2px -2px 3px #023E50;
-  transform: scale(0.98);
+  transform: scale(1.05);
 }
 
 select {
-  color: #023E50;
+  color: #022e3c;
   background-color: #3DD6D0;
-  padding: 0.5em 1em;
+  padding: 0.8em 1em;
   border-radius: 0.5em;
   font-weight: bold;
+  cursor: pointer;
+  transition: 200ms;
 }
 select option {
   background-color: #F3EFF5;
@@ -75,6 +76,9 @@ select option::-moz-selection {
 }
 select option::selection {
   background-color: #3DD6D0;
+}
+select:hover {
+  transform: scale(1.05);
 }
 
 .h1 {
@@ -149,9 +153,9 @@ select option::selection {
   position: fixed;
   right: 0;
   top: 0;
-  border-left: 2px solid #022f3c;
-  background-color: rgba(2, 62, 80, 0.8);
-  box-shadow: -3px 0 5px rgba(2, 54, 70, 0.9);
+  border-left: 2px solid #011f28;
+  background-color: rgba(2, 46, 60, 0.8);
+  box-shadow: -3px 0 5px rgba(2, 38, 50, 0.9);
   -webkit-backdrop-filter: blur(8px);
           backdrop-filter: blur(8px);
   padding: 2.5em 0 1em 1em;
@@ -184,5 +188,5 @@ select option::selection {
 }
 .modal-oppened .editor {
   width: calc(100% - 20em);
-  margin: 0 1em;
+  margin: 0 1em 1em;
 }/*# sourceMappingURL=style.css.map */
