@@ -137,7 +137,7 @@ export default class Renderer {
         const y = this.canvas.height + this.world.translate.y * this.blockSize - bgHeight;
         for (let i = 0; i < 99; i++) {
             const x = i*bgWidth + this.world.translate.x * this.blockSize / 5;
-            this.world.ctx.drawImage(this.bg, x, y, bgWidth, bgHeight);
+            this.world.ctx.drawImage(this.bg, x, y, bgWidth * 1.01, bgHeight * 1.01);
         }
 
     }

@@ -8,6 +8,9 @@
   src: url("../asset/fonts/Atma-Bold.ttf");
   font-weight: bold;
 }
+/* -------------------------------------------------------------------------- */
+/*                                    RESET                                   */
+/* -------------------------------------------------------------------------- */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -36,6 +39,17 @@ a {
   text-decoration: none;
 }
 
+select {
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 100%;
+  cursor: inherit;
+  line-height: inherit;
+  z-index: 1;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                   CONTENT                                  */
 /* -------------------------------------------------------------------------- */
@@ -47,38 +61,65 @@ body {
 }
 
 .btn {
-  background-color: #3DD6D0;
   padding: 0.8em 2em;
-  border-radius: 0.8em;
+  background-color: #3DD6D0;
   color: #022e3c;
-  cursor: pointer;
-  transition: 200ms;
   font-weight: bold;
+  cursor: pointer;
+  border-radius: 0.8em;
+  transition: 200ms;
 }
 .btn:hover {
   transform: scale(1.05);
 }
+.btn.succes-bg {
+  background-color: #97DB4F;
+}
+.btn.fail-bg {
+  background-color: #FF8585;
+}
 
-select {
+.select {
+  position: relative;
   color: #022e3c;
   background-color: #3DD6D0;
-  padding: 0.8em 1em;
-  border-radius: 0.5em;
   font-weight: bold;
   cursor: pointer;
+  border-radius: 0.8em;
   transition: 200ms;
 }
-select option {
+.select .fa-solid {
+  position: absolute;
+  top: 50%;
+  right: 1em;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 0.5em;
+}
+.select select {
+  padding: 0.8em 1em;
+  margin-right: 0.8em;
+}
+.select option {
   background-color: #F3EFF5;
 }
-select option::-moz-selection {
+.select option::-moz-selection {
   background-color: #3DD6D0;
 }
-select option::selection {
+.select option::selection {
   background-color: #3DD6D0;
 }
-select:hover {
+.select:hover {
   transform: scale(1.05);
+}
+
+select:after {
+  content: "";
+  width: 0.8em;
+  height: 0.5em;
+  background-color: #97DB4F;
+  -webkit-clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+          clip-path: polygon(100% 0%, 0 0%, 50% 100%);
 }
 
 .h1 {
@@ -98,6 +139,7 @@ select:hover {
 #game-canvas {
   display: block;
   background-color: rgb(193, 255, 255);
+  background: linear-gradient(165deg, rgb(193, 255, 255) 30%, rgb(61, 214, 208) 100%);
 }
 #game-canvas.fullscreen {
   position: fixed;
@@ -141,7 +183,7 @@ select:hover {
 }
 
 .modal-button {
-  position: fixed;
+  position: absolute;
   top: 0.5em;
   right: 1em;
   background: none;
@@ -150,24 +192,26 @@ select:hover {
 }
 
 .blocks-select {
-  position: fixed;
+  position: absolute;
   right: 0;
   top: 0;
+  display: grid;
+  gap: 1em;
+  width: 18em;
+  height: -moz-fit-content;
+  height: fit-content;
+  min-height: 100%;
+  padding: 2.5em 0 1em 1em;
   border-left: 2px solid #011f28;
   background-color: rgba(2, 46, 60, 0.8);
   box-shadow: -3px 0 5px rgba(2, 38, 50, 0.9);
   -webkit-backdrop-filter: blur(8px);
           backdrop-filter: blur(8px);
-  padding: 2.5em 0 1em 1em;
-  width: 18em;
-  transform: translateX(100%) scaleX(0);
-  transition: 250ms;
-  height: 100%;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
-  display: grid;
-  gap: 1em;
+  transform: translateX(100%) scaleX(0);
+  transition: 250ms;
 }
 .blocks-select .blocks {
   display: flex;

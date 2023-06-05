@@ -3,7 +3,7 @@ import Hero from "./classes/Hero.js";
 import confetti from "./ext/confetti.min.js"
 new FontFace("atma", "../asset/fonts/Atma-Bold.ttf"); // import font
 
-fetch('/script/level-a.json') // get the level (temp - should be something at least a bit different for backend)
+fetch('/script/level-easy.json') // get the level (temp - should be something at least a bit different for backend)
     .then(resp => resp.json())
     .then(data => new World(data));
 
@@ -114,7 +114,7 @@ class World {
             particleCount: 250,
             startVelocity: 30,
             spread: 360,
-            ticks: 60,
+            ticks: 80,
             origin: {
               x: 0.2,
               y: 0
@@ -124,7 +124,7 @@ class World {
               particleCount: 250,
               startVelocity: 30,
               spread: 360,
-              ticks: 60,
+              ticks: 80,
               origin: {
                 x: 0.8,
                 y: 0

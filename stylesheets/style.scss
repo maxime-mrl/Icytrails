@@ -18,6 +18,9 @@ $fail: #FF8585;
 
 $editor-transition: 250ms;
 
+/* -------------------------------------------------------------------------- */
+/*                                    RESET                                   */
+/* -------------------------------------------------------------------------- */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -44,6 +47,18 @@ a {
   text-decoration: none;
 }
 
+select {
+  background-color: transparent;
+  border: none;
+  padding: 0 1em 0 0;
+  margin: 0;
+  width: 100%;
+  cursor: inherit;
+  line-height: inherit;
+  z-index: 1;
+}
+
+
 /* -------------------------------------------------------------------------- */
 /*                                   CONTENT                                  */
 /* -------------------------------------------------------------------------- */
@@ -55,25 +70,42 @@ body {
 }
 
 .btn {
-  background-color: $accent;
   padding: 0.8em 2em;
-  border-radius: 0.8em;
+  background-color: $accent;
   color: $bg;
-  cursor: pointer;
-  transition: 200ms;
   font-weight: bold;
-  &:hover {
-    transform: scale(1.05);
+  cursor: pointer;
+  border-radius: 0.8em;
+  transition: 200ms;
+  &:hover { transform: scale(1.05) }
+  &.succes-bg {
+    background-color: $success;
+  }
+  &.fail-bg {
+    background-color: $fail;
   }
 }
 
-select {
+.select {
+  position: relative;
+  // Custom arrow
+  .fa-solid {
+    position: absolute;
+    top: 50%;
+    right: 1em;
+    transform: translateY(-50%);
+    pointer-events: none;
+    font-size: 0.5em;
+  }
+  select {
+    padding: 0.8em 1em;
+    margin-right: 0.8em;
+  }
   color: $bg;
   background-color: $accent;
-  padding: 0.8em 1em;
-  border-radius: 0.5em;
   font-weight: bold;
   cursor: pointer;
+  border-radius: 0.8em;
   transition: 200ms;
   option {
     background-color: $white;
@@ -83,6 +115,17 @@ select {
   }
   &:hover {
     transform: scale(1.05);
+  }
+
+}
+
+select {
+  &:after {
+    content: "";
+    width: 0.8em;
+    height: 0.5em;
+    background-color: #97DB4F;
+    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
   }
 }
 
@@ -103,6 +146,7 @@ select {
 #game-canvas {
     display: block;
     background-color: rgb(193, 255, 255);
+    background: linear-gradient(165deg, rgb(193,255,255) 30%, rgb(61,214,208) 100%);
     &.fullscreen {
       position: fixed;
       top: 0;
@@ -146,7 +190,7 @@ select {
 }
 
 .modal-button {
-  position: fixed;
+  position: absolute;
   top: 0.5em;
   right: 1em;
   background: none;
@@ -155,21 +199,22 @@ select {
 }
 
 .blocks-select {
-  position: fixed;
+  position: absolute;
   right: 0;
   top: 0;
+  display: grid;
+  gap: 1em;
+  width: 18em;
+  height: fit-content;
+  min-height: 100%;
+  padding: 2.5em 0 1em 1em;
   border-left: 2px solid darken($bg, 4);
   background-color: fade-out($bg, 0.2);
   box-shadow: -3px 0 5px fade-out(darken($bg, 2), 0.1);
   backdrop-filter: blur(8px);
-  padding: 2.5em 0 1em 1em;
-  width: 18em;
+  user-select: none;
   transform: translateX(100%) scaleX(0);
   transition: $editor-transition;
-  height: 100%;
-  user-select: none;
-  display: grid;
-  gap: 1em;
   .blocks {
     display: flex;
     flex-wrap: wrap;
