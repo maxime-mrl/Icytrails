@@ -91,6 +91,9 @@ export default class Hero {
             else this.currentFrame = 0;
             this.elapsed = 0;
         }
+        // update side of the sprite
+        if (this.vel.mdir < 0) this.currentSprite.sprite = this.currentSprite.lSprite;
+        else this.currentSprite.sprite = this.currentSprite.rSprite;
     }
     
     updateHitBox = () => { // update Hitbox position

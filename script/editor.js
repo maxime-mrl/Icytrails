@@ -26,6 +26,7 @@ class World {
         // listening stuffs
         this.canvas.addEventListener("mousemove", this.mouseEvent);
         this.canvas.addEventListener("mousedown", (e) => { this.mouseEvent(e); this.clicked = true });
+        this.canvas.addEventListener("mouseleave", (e) => { this.mouseEvent(e); this.clicked = false })
         this.canvas.addEventListener("mouseup", (e) => { this.mouseEvent(e); this.clicked = false });
         document.addEventListener("keydown", this.keyPressed);
     }
