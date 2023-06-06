@@ -55,7 +55,7 @@ class World {
     }
 
     drawScore = () => {
-        this.ctx.save()
+        this.ctx.save();
 
         this.ctx.font = "30px atma";
         this.ctx.fillStyle = "black";
@@ -72,7 +72,7 @@ class World {
         this.ctx.shadowOffsetX = 2;
         this.ctx.shadowOffsetY = 2;
         this.ctx.fillText(txt, x, y);
-        this.ctx.restore()
+        this.ctx.restore();
     }
 
     respawn = () => { // Handle respawn capabilities after death animation finished
