@@ -39,24 +39,27 @@ class World {
         this.player.update(delay);
         
         // simulate movement
+        this.updateMovement()
+        // text
+        this.drawText();
+    }
 
+    updateMovement = () => {
         if (this.player.vel.xAbs < this.memSpeed / 2 && !this.player.jumping) this.player.jump(); // auto jump
+        // random jump and stop
         if (Math.random() > 0.998 && !this.player.jumping && this.moving) {
             this.player.jump();
             this.moving = false;
         }
-        if (Math.random() > 0.99) {
-            this.moving = true;
-        } else if (Math.random() < 0.005) {
-            this.moving = false;
-        }
+        // ranndom stop and start moving
+        if (Math.random() > 0.99) this.moving = true;
+        else if (Math.random() < 0.005) this.moving = false;
+        // random dirrection change
         if (Math.random() * Math.random() > 0.998) this.player.vel.mdir = 1;
         else if (Math.random() < 0.0015) this.player.vel.mdir = -1;
         // movement limit
         if (this.player.pos.x < 2) this.player.vel.mdir = 1;
         else if (this.player.pos.x > 20) this.player.vel.mdir = -1;
-        // text
-        this.drawText();
     }
 
     drawText = () => {
@@ -74,41 +77,5 @@ class World {
             this.ctx.fillText(txt, rx, ry);
         })
 
-    }
-
-    // key input events
-    keyDown = ({key}) => {
-        if (this.player.dead) return;
-        switch (key) {
-            case " ": case "ArrowUp": case "z": case "w": // jump
-                if (this.player.jumping || this.player.jumpMem) {
-                    this.player.jumpMem = true;
-                    break;
-                };
-                this.player.jump()
-                break;
-            case "d": case "ArrowRight": // right
-                this.player.vel.dir = 1;
-                this.player.vel.mdir = 1;
-                break;
-            case "a": case "q": case "ArrowLeft": // left
-                this.player.vel.dir = -1;
-                this.player.vel.mdir = -1;
-                break;
-        }
-    }
-    keyUp = ({key}) => {
-        if (this.player.dead) return;
-        switch (key) {
-            case " ": case "ArrowUp": case "z": case "w": // cancel jump
-                this.player.jumpMem = false;
-                break;
-            case "d": case "ArrowRight": // stop right
-                if (this.player.vel.dir == 1) this.player.vel.dir = 0;
-                break;
-            case "a": case "q": case "ArrowLeft": // stop left
-                if (this.player.vel.dir == -1) this.player.vel.dir = 0;
-                break;
-        }
     }
 }

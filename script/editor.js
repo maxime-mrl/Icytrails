@@ -140,12 +140,12 @@ class World {
     }
 }
 
-const world = new World({
-    spawn: {x: 0, y: 0},
-    end: {x: 1, y: 0},
-    bg: [], fg: [],
-});
+// const world = new World({
+//     spawn: {x: 0, y: 0},
+//     end: {x: 1, y: 0},
+//     bg: [], fg: [],
+// });
 
-// fetch('/script/level-a.json') // get the level
-//     .then(resp => resp.json())
-//     .then(data => new World(data));
+fetch('/script/404b.json') // get the level
+    .then(resp => resp.json())
+    .then(data => new World(data));
