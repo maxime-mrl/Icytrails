@@ -239,3 +239,53 @@ select {
     margin: 0 1em 1em;
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                LEVEL BROWSER                               */
+/* -------------------------------------------------------------------------- */
+.level {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  height: 4em;
+  padding: 0 1em;
+  border-bottom: 1px solid darken($bg, 2);
+  * {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+  }
+  & > * {
+    gap: 1em;
+  }
+  .play {
+    margin-left: 1em;
+  }
+  .difficulty .btn {
+    font-size: 1em;
+    padding: 0.6em 1.5em;
+  }
+}
+
+.scale {
+  --pos: 0%;
+  position: relative;
+  width: 5em;
+  border-radius: 0.2em;
+  height: 0.8em;
+  border: 1px solid $bg;
+  background: linear-gradient(90deg, rgba(151,219,79,1) 0%, rgba(255,133,133,1) 100%);
+  &:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: var(--pos);
+    transform: translate(-50%, -50%);
+    height: 140%;
+    width: 0.3em;
+    background-color: $bg;
+    border: 2px solid $white;
+    border-radius: 0.1em;
+  }
+}

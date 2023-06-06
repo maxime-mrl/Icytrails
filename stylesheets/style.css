@@ -233,4 +233,54 @@ select:after {
 .modal-oppened .editor {
   width: calc(100% - 20em);
   margin: 0 1em 1em;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                LEVEL BROWSER                               */
+/* -------------------------------------------------------------------------- */
+.level {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  height: 4em;
+  padding: 0 1em;
+  border-bottom: 1px solid #022632;
+}
+.level * {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+}
+.level > * {
+  gap: 1em;
+}
+.level .play {
+  margin-left: 1em;
+}
+.level .difficulty .btn {
+  font-size: 1em;
+  padding: 0.6em 1.5em;
+}
+
+.scale {
+  --pos: 0%;
+  position: relative;
+  width: 5em;
+  border-radius: 0.2em;
+  height: 0.8em;
+  border: 1px solid #022e3c;
+  background: linear-gradient(90deg, rgb(151, 219, 79) 0%, rgb(255, 133, 133) 100%);
+}
+.scale:after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--pos);
+  transform: translate(-50%, -50%);
+  height: 140%;
+  width: 0.3em;
+  background-color: #022e3c;
+  border: 2px solid #F3EFF5;
+  border-radius: 0.1em;
 }/*# sourceMappingURL=style.css.map */
