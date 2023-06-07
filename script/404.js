@@ -1,6 +1,5 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
-new FontFace("atma", "../asset/fonts/Atma-Bold.ttf"); // import font
 
 fetch('/script/404.json') // get 404 "level"
     .then(resp => resp.json())
@@ -62,7 +61,7 @@ class World {
     }
 
     drawText = () => {
-        this.ctx.font = `${this.renderer.blockSize}px atma`;
+        this.ctx.font = `500 ${this.renderer.blockSize}px atma`;
         this.ctx.fillStyle = "#F3EFF5";
         this.ctx.shadowColor="#022e3c";
         this.ctx.shadowBlur = this.renderer.blockSize*0.03;

@@ -1,7 +1,6 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
 import confetti from "./ext/confetti.min.js"
-new FontFace("atma", "../asset/fonts/Atma-Bold.ttf"); // import font
 
 fetch('/script/level-easy.json') // get the level (temp - should be something at least a bit different for backend)
     .then(resp => resp.json())
@@ -57,7 +56,8 @@ class World {
     drawScore = () => {
         this.ctx.save();
 
-        this.ctx.font = "30px atma";
+        this.ctx.font = "bold 30px atma";
+        this.ctx.fon
         this.ctx.fillStyle = "black";
         this.ctx.shadowColor="white";
         const txt = `${this.score} / ${this.maxScore}`;

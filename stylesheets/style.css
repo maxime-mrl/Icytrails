@@ -1,7 +1,12 @@
 @font-face {
   font-family: atma;
-  src: url("../asset/fonts/Atma-SemiBold.ttf");
+  src: url("../asset/fonts/Atma-regular.ttf");
   font-weight: normal;
+}
+@font-face {
+  font-family: atma;
+  src: url("../asset/fonts/Atma-SemiBold.ttf");
+  font-weight: 500;
 }
 @font-face {
   font-family: atma;
@@ -129,6 +134,11 @@ select:after {
 
 .h2 {
   font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.h3 {
+  font-weight: bold;
 }
 
 .tippy-box {
@@ -289,7 +299,7 @@ select:after {
   border: 1px solid #022e3c;
   background: linear-gradient(90deg, rgb(151, 219, 79) 0%, rgb(255, 133, 133) 100%);
 }
-.scale:after {
+.scale.scale-point:after {
   content: "";
   position: absolute;
   top: 50%;
@@ -300,4 +310,57 @@ select:after {
   background-color: #022e3c;
   border: 2px solid #F3EFF5;
   border-radius: 0.1em;
+}
+.scale::-webkit-slider-thumb {
+  height: 1.2em;
+  width: 0.5em;
+  -webkit-appearance: none;
+          appearance: none;
+  background-color: #022e3c;
+  border: 2px solid #F3EFF5;
+  border-radius: 0.1em;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                LEVEL DETAIL                                */
+/* -------------------------------------------------------------------------- */
+.level-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  max-width: 900px;
+  margin: 1em auto;
+}
+.level-card .h2, .level-card .h1 {
+  text-align: center;
+}
+.level-card .btn {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.level-card .difficulty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2em 0 2em 0;
+}
+.level-card .difficulty .slider {
+  display: flex;
+  gap: 0.5em;
+  margin: 0.5em 0 1em 0;
+}
+.level-card form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5em;
+}
+.level-card form .btn {
+  font-weight: 500;
+  padding: 0.5em 1em;
+}
+.level-card .comments article {
+  padding: 0.8em 0;
 }/*# sourceMappingURL=style.css.map */
