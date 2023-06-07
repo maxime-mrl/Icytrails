@@ -239,13 +239,15 @@ select:after {
 /*                                LEVEL BROWSER                               */
 /* -------------------------------------------------------------------------- */
 .level {
+  position: relative;
   display: flex;
-  width: 100%;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   height: 4em;
   padding: 0 1em;
   border-bottom: 1px solid #022632;
+  cursor: pointer;
 }
 .level * {
   display: flex;
@@ -258,9 +260,20 @@ select:after {
 .level .play {
   margin-left: 1em;
 }
-.level .difficulty .btn {
-  font-size: 1em;
-  padding: 0.6em 1.5em;
+.level::before {
+  background: radial-gradient(200px circle at var(--mouse-x) var(--mouse-y), rgba(243, 239, 245, 0.07), transparent 100%);
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 300ms ease-in-out;
+}
+.level:not(:has(.play:hover)):hover::before {
+  opacity: 1;
 }
 
 .scale {

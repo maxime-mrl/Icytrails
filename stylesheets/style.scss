@@ -244,28 +244,39 @@ select {
 /*                                LEVEL BROWSER                               */
 /* -------------------------------------------------------------------------- */
 .level {
+  position: relative;
   display: flex;
-  width: 100%;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   height: 4em;
   padding: 0 1em;
   border-bottom: 1px solid darken($bg, 2);
+  cursor: pointer;
   * {
     display: flex;
     align-items: center;
     gap: 0.3em;
   }
-  & > * {
-    gap: 1em;
+  & > * { gap: 1em; }
+  .play { margin-left: 1em; }
+  &::before {
+    background: radial-gradient(
+        200px circle 
+        at var(--mouse-x) var(--mouse-y),
+        fade-out($white, 0.93), transparent 100%
+    );
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
   }
-  .play {
-    margin-left: 1em;
-  }
-  .difficulty .btn {
-    font-size: 1em;
-    padding: 0.6em 1.5em;
-  }
+  &:not(:has(.play:hover)):hover::before { opacity: 1; }
 }
 
 .scale {
@@ -289,3 +300,5 @@ select {
     border-radius: 0.1em;
   }
 }
+
+
