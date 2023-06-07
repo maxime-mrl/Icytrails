@@ -262,9 +262,9 @@ select {
   .play { margin-left: 1em; }
   &::before {
     background: radial-gradient(
-        200px circle 
+        300px circle 
         at var(--mouse-x) var(--mouse-y),
-        fade-out($white, 0.93), transparent 100%
+        fade-out($white, 0.95), transparent 100%
     );
     content: "";
     position: absolute;
@@ -277,6 +277,10 @@ select {
     transition: opacity 300ms ease-in-out;
   }
   &:not(:has(.play:hover)):hover::before { opacity: 1; }
+  .infos {
+    height: 100%;
+    padding: 0 1em;
+  }
 }
 
 .scale {
