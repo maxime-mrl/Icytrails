@@ -193,7 +193,7 @@ select:after {
 }
 
 .modal-button {
-  position: absolute;
+  position: fixed;
   top: 0.5em;
   right: 1em;
   background: none;
@@ -202,7 +202,7 @@ select:after {
 }
 
 .blocks-select {
-  position: absolute;
+  position: fixed;
   right: 0;
   top: 0;
   display: grid;
@@ -363,4 +363,65 @@ select:after {
 }
 .level-card .comments article {
   padding: 0.8em 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  HOME PAGE                                 */
+/* -------------------------------------------------------------------------- */
+.hero {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  align-items: flex-end;
+}
+.hero h2, .hero h1 {
+  filter: drop-shadow(0.08em 0.1em 5px #022e3c);
+  text-shadow: 0.25rem 0 1px #022e3c, -0.25rem 0 1px #022e3c, 0 0.25rem 1px #022e3c, 0 -0.25rem 1px #022e3c, 0.125rem 0.125rem 1px #022e3c, -0.125rem -0.125rem 1px #022e3c, 0.125rem -0.125rem 1px #022e3c, -0.125rem 0.125rem 1px #022e3c;
+}
+.hero .cta {
+  filter: drop-shadow(0.08em 0.1em 5px #022e3c);
+  display: flex;
+  gap: 1em;
+}
+.hero a.btn {
+  background-color: #97DB4F;
+  display: block;
+}
+
+.main-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5rem;
+  gap: 0.5em;
+}
+.main-title img {
+  height: 3em;
+}
+
+.video-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100vh;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 RESPONSIVE                                 */
+/* -------------------------------------------------------------------------- */
+@media screen and (max-height: 46em) {
+  .modal-button {
+    position: absolute;
+  }
+  .blocks-select {
+    position: absolute;
+  }
 }/*# sourceMappingURL=style.css.map */
