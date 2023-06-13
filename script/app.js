@@ -4,6 +4,28 @@
 const editor = document.getElementById("editor-container");
 const toggleEditor = () => editor.classList.toggle("modal-oppened");
 
+const blocksEditor = document.querySelector(".blocks-select");
+if (blocksEditor) {
+    blocksEditor.style.minHeight = Math.max(document.body.offsetHeight, window.innerHeight) + "px";
+    window.onresize = () => blocksEditor.style.minHeight = Math.max(document.body.offsetHeight, window.innerHeight) + "px";
+}
+
+const keysimg = document.querySelector("img.keys");
+if (keysimg) {
+    const keyLayout = [
+        "arrow",
+        "qwerty",
+        "azerty"
+    ];
+    const originalSrc = keysimg.src.split(".png")[0].split("keys-")[0] + "keys-";
+    let i = 0;
+    setInterval(() => {
+        i++;
+        if (i >= keyLayout.length) i = 0;
+        keysimg.src = `${originalSrc}${keyLayout[i]}.png`;
+    }, 850)
+}
+
 /* -------------------------------------------------------------------------- */
 /*                               Level browser                                */
 /* -------------------------------------------------------------------------- */
@@ -23,7 +45,6 @@ class WorldScrambler {
         this.text = text;
         this.words = [];
         text.getAttribute("data-words").split(';').forEach(word => this.words.push(word.split("%c")));
-        console.log(this.words)
         this.actualWord = 0;
         this.duration = {
             show: 1500,

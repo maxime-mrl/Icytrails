@@ -63,9 +63,34 @@ body {
   color: #F3EFF5;
   font-family: atma;
   font-size: 1.25rem;
+  overflow-x: hidden;
+}
+
+footer {
+  display: flex;
+  justify-content: space-around;
+  padding: 1em 0 2em;
+}
+footer .cookie {
+  width: 10rem;
+  text-align: center;
+}
+footer .sitemap h2 {
+  margin-bottom: 0.5rem;
+}
+footer .cp {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+footer .cp .logo {
+  width: 3em;
 }
 
 .btn {
+  display: block;
+  width: -moz-fit-content;
+  width: fit-content;
   padding: 0.8em 2em;
   background-color: #3DD6D0;
   color: #022e3c;
@@ -97,9 +122,9 @@ body {
   position: absolute;
   top: 50%;
   right: 1em;
+  font-size: 0.5em;
   transform: translateY(-50%);
   pointer-events: none;
-  font-size: 0.5em;
 }
 .select select {
   padding: 0.8em 1em;
@@ -118,31 +143,26 @@ body {
   transform: scale(1.05);
 }
 
-select:after {
-  content: "";
-  width: 0.8em;
-  height: 0.5em;
-  background-color: #97DB4F;
-  -webkit-clip-path: polygon(100% 0%, 0 0%, 50% 100%);
-          clip-path: polygon(100% 0%, 0 0%, 50% 100%);
-}
-
 .h1 {
-  font-size: 3rem;
-  font-weight: bold;
+  --normal-size: 3rem;
 }
 
 .h2 {
-  font-size: 1.5rem;
-  font-weight: bold;
+  --normal-size: 2.5rem;
 }
 
 .h3 {
+  --normal-size: 1.5rem;
+}
+
+h1, h2, h3 {
+  font-size: var(--normal-size);
   font-weight: bold;
 }
 
 .tippy-box {
   text-align: center;
+  font-weight: 500;
   padding: 0.3em 0.2em;
 }
 
@@ -164,7 +184,7 @@ select:after {
 
 #game-canvas {
   display: block;
-  background-color: rgb(193, 255, 255);
+  background-color: rgb(144, 240, 238);
   background: linear-gradient(165deg, rgb(193, 255, 255) 30%, rgb(61, 214, 208) 100%);
 }
 #game-canvas.fullscreen {
@@ -209,7 +229,7 @@ select:after {
 }
 
 .modal-button {
-  position: fixed;
+  position: absolute;
   top: 0.5em;
   right: 1em;
   background: none;
@@ -218,7 +238,7 @@ select:after {
 }
 
 .blocks-select {
-  position: fixed;
+  position: absolute;
   right: 0;
   top: 0;
   display: grid;
@@ -384,14 +404,14 @@ select:after {
 /* -------------------------------------------------------------------------- */
 /*                                  HOME PAGE                                 */
 /* -------------------------------------------------------------------------- */
-.hero-container:after {
+.hero-container::before {
   content: "";
   display: block;
   height: 100vh;
 }
 
 .hero {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   top: 50%;
@@ -404,17 +424,29 @@ select:after {
   text-shadow: 0.25rem 0 1px #022e3c, -0.25rem 0 1px #022e3c, 0 0.25rem 1px #022e3c, 0 -0.25rem 1px #022e3c, 0.125rem 0.125rem 1px #022e3c, -0.125rem -0.125rem 1px #022e3c, 0.125rem -0.125rem 1px #022e3c, -0.125rem 0.125rem 1px #022e3c;
   text-align: center;
 }
+.hero .h1 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  font-size: clamp(16px, 20vw, 5rem);
+  -moz-column-gap: 0.2em;
+       column-gap: 0.2em;
+}
+.hero .h1 img {
+  height: 3em;
+}
 .hero .h2 {
+  font-size: clamp(16px, 8vw, var(--normal-size));
   text-align: right;
   width: -moz-fit-content;
   width: fit-content;
   margin: 0 auto;
-  font-size: 2.5rem;
 }
 .hero .h2::before {
   content: "";
   display: block;
-  height: max(calc(1vh - 1vw), 0);
+  height: calc(10vh - 10vw);
 }
 .hero .cta {
   display: flex;
@@ -425,23 +457,11 @@ select:after {
   filter: drop-shadow(0.08em 0.1em 5px #022e3c);
 }
 
-.main-title {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  font-size: 5rem;
-  gap: 0.5em;
-}
-.main-title img {
-  height: 3em;
-}
-
 .video-bg {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: -2;
   width: 100%;
   height: 100vh;
   -o-object-fit: cover;
@@ -449,24 +469,139 @@ select:after {
 }
 
 .video-paralax {
+  position: relative;
+  z-index: 2;
   min-height: 50vh;
-  padding-top: 1em;
-  border-top: 1px solid #011015;
-  box-shadow: -3px 0 5px rgba(2, 38, 50, 0.9);
-  background-color: rgba(2, 46, 60, 0.8);
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
+  background-color: #022e3c;
+  overflow-x: hidden;
+}
+.video-paralax .split {
+  height: 3px;
+  background-color: #011f28;
+}
+.video-paralax section {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5em;
+  text-align: center;
+  max-width: 900px;
+  min-height: 700px;
+  margin: 0 auto;
+  padding: 0 1em;
+}
+
+.create > * {
+  margin: 0.5em 0;
+}
+.create .h2 {
+  text-align: center;
+}
+
+.tuto .keys {
+  height: 15em;
+  max-width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+
+.background-images {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 99vw;
+  width: 99svw;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  filter: drop-shadow(5px 5px 3px #011b23);
+}
+.background-images > * {
+  position: absolute;
+}
+.background-images .edit-img {
+  top: 10%;
+  right: 5%;
+  height: 15em;
+  transform: rotate(20deg);
+}
+.background-images .hero-img {
+  bottom: 5%;
+  left: 10%;
+  height: 12em;
+  animation: margin-float 3s ease-in-out infinite;
+}
+.background-images .trees-img {
+  bottom: 0;
+  right: 0;
+  height: 20em;
+  z-index: -2;
+  opacity: 0.5;
+}
+.background-images .corner-img {
+  top: 0;
+  left: 0;
+  height: 14em;
+  z-index: -2;
+}
+.background-images .terrain {
+  bottom: 0;
+  left: 0;
+  opacity: 0.5;
+  width: 100%;
+}
+.background-images .star1 {
+  top: 1em;
+  left: 20%;
+  height: 5em;
+}
+.background-images .star2 {
+  top: 40%;
+  right: 20%;
+  height: 5.5em;
+}
+.background-images .star3 {
+  top: 4em;
+  left: 30%;
+  height: 3em;
 }
 
 /* -------------------------------------------------------------------------- */
 /*                                 RESPONSIVE                                 */
 /* -------------------------------------------------------------------------- */
-@media screen and (max-height: 46em) {
-  .modal-button {
-    position: absolute;
+@media screen and (max-width: 700px) {
+  .background-images {
+    display: none;
   }
-  .blocks-select {
-    position: absolute;
+  footer {
+    flex-direction: column;
+    gap: 2.5em;
+    align-items: center;
+  }
+  footer .cp {
+    order: 1;
+    align-items: center;
+  }
+  footer .cp .logo {
+    width: 5em;
+  }
+}
+/* -------------------------------------------------------------------------- */
+/*                                 ANIMATIONS                                 */
+/* -------------------------------------------------------------------------- */
+@keyframes margin-float {
+  0% {
+    margin-bottom: 0;
+  }
+  50% {
+    margin-bottom: 10px;
+  }
+  100% {
+    margin-bottom: 0;
   }
 }
 @keyframes blink {

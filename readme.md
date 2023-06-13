@@ -19,9 +19,10 @@ With all these possibilities and the special physics, you can really get creativ
   - [x] 🔧 Level editor
   - [x] 🕹️ Level player
   - [x] ⚠️ 404 page
-  - [ ] 🔎 Levels browsing (landing page)
+  - [x] 🔎 Levels browsing
+  - [x] 🏠 Landing page
   - [ ] 👤 Profile pages (register / login / edit profile)
-  - [ ] 🖼️ Logo
+  - [x] 🖼️ Logo
 - [ ] ⚙️ Backend
   - [x] 🏗️ Database structure
   - [ ] 📜 Database

@@ -23,13 +23,8 @@ $fail: #FF8585;
 
 $editor-transition: 250ms;
 
-
 @mixin shadowStroke($size, $color) {
   text-shadow: $size 0 1px $color,(-$size) 0 1px $color,0 $size 1px $color,0 (-$size) 1px $color,calc($size / 2) calc($size / 2) 1px $color,calc($size * -0.5) calc($size * -0.5) 1px $color,calc($size / 2) calc($size * -0.5) 1px $color,calc($size * -0.5) calc($size / 2) 1px $color;
-}
-
-@mixin glass($opacity, $blur) {
-
 }
 
 /* -------------------------------------------------------------------------- */
@@ -48,13 +43,9 @@ $editor-transition: 250ms;
   appearance: none;
 }
 
-ol, ul {
-  list-style: none;
-}
+ol, ul { list-style: none }
 
-textarea {
-  resize: none;
-}
+textarea { resize: none }
 
 a {
   color: unset;
@@ -81,9 +72,37 @@ body {
     color: $white;
     font-family: atma;
     font-size: 1.25rem;
+    overflow-x: hidden;
+}
+
+footer {
+  display: flex;
+  justify-content: space-around;
+  // align-items: center;
+  // background-color: $bg;
+  padding: 1em 0 2em;
+  .cookie {
+    width: 10rem;
+    text-align: center;
+  }
+  .sitemap {
+    h2 {
+      margin-bottom: 0.5rem;
+    }
+  }
+  .cp {
+    .logo {
+      width: 3em;
+    }
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
 }
 
 .btn {
+  display: block;
+  width: fit-content;
   padding: 0.8em 2em;
   background-color: $accent;
   color: $bg;
@@ -92,24 +111,20 @@ body {
   border-radius: 0.8em;
   transition: 200ms;
   &:hover { transform: scale(1.05) }
-  &.succes-bg {
-    background-color: $success;
-  }
-  &.fail-bg {
-    background-color: $fail;
-  }
+  &.succes-bg { background-color: $success }
+  &.fail-bg { background-color: $fail }
 }
 
-.select {
+.select { // select input somewhat custom style
   position: relative;
   // Custom arrow
   .fa-solid {
     position: absolute;
     top: 50%;
     right: 1em;
+    font-size: 0.5em;
     transform: translateY(-50%);
     pointer-events: none;
-    font-size: 0.5em;
   }
   select {
     padding: 0.8em 1em;
@@ -123,41 +138,30 @@ body {
   transition: 200ms;
   option {
     background-color: $white;
-    &::selection {
-      background-color: $accent;
-    }
+    &::selection { background-color: $accent }
   }
-  &:hover {
-    transform: scale(1.05);
-  }
-
-}
-
-select {
-  &:after {
-    content: "";
-    width: 0.8em;
-    height: 0.5em;
-    background-color: #97DB4F;
-    clip-path: polygon(100% 0%, 0 0%, 50% 100%);
-  }
+  &:hover { transform: scale(1.05) }
 }
 
 .h1 {
-  font-size: 3rem;
-  font-weight: bold;
+  --normal-size: 3rem;
 }
 
 .h2 {
-  font-size: 1.5rem;
-  font-weight: bold;
+  --normal-size: 2.5rem;
 }
 .h3 {
+  --normal-size: 1.5rem;
+}
+
+h1,h2,h3 {
+  font-size: var(--normal-size);
   font-weight: bold;
 }
 
 .tippy-box { 
   text-align: center;
+  font-weight: 500;
   padding: 0.3em 0.2em;
 }
 
@@ -179,7 +183,7 @@ select {
 
 #game-canvas {
     display: block;
-    background-color: rgb(193, 255, 255);
+    background-color: rgb(144, 240, 238);
     background: linear-gradient(165deg, rgb(193,255,255) 30%, rgb(61,214,208) 100%);
     &.fullscreen {
       position: fixed;
@@ -224,7 +228,7 @@ select {
 }
 
 .modal-button {
-  position: fixed;
+  position: absolute;
   top: 0.5em;
   right: 1em;
   background: none;
@@ -233,7 +237,7 @@ select {
 }
 
 .blocks-select {
-  position: fixed;
+  position: absolute;
   right: 0;
   top: 0;
   display: grid;
@@ -397,7 +401,7 @@ select {
 /* -------------------------------------------------------------------------- */
 
 .hero-container {
-  &:after {
+  &::before {
     content: "";
     display: block;
     height: 100vh;
@@ -405,7 +409,7 @@ select {
 }
 
 .hero {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   top: 50%;
@@ -417,16 +421,27 @@ select {
     @include shadowStroke(0.25rem, $bg);
     text-align: center;
   }
+  .h1 {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(16px, 20vw, 5rem);
+    column-gap: 0.2em;
+    img {
+      height: 3em;
+    }
+  }
   .h2 {
+    font-size: clamp(16px, 8vw, var(--normal-size));
     &::before { // create a variable margin top
       content: "";
       display: block;
-      height: max(#{calc(1vh - 1vw)}, 0);
+      height: calc(10vh - 10vw);
     }
     text-align: right;
     width: fit-content;
     margin: 0 auto;
-    font-size: 2.5rem;
   }
   .cta {
     display: flex;
@@ -438,50 +453,155 @@ select {
   }
 }
 
-.main-title {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  font-size: 5rem;
-  gap: 0.5em;
-  img {
-    height: 3em;
-  }
-}
 
 .video-bg {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: -2;
   width: 100%;
   height: 100vh;
   object-fit: cover;
 }
 
 .video-paralax {
+  position: relative;
+  z-index: 2;
   min-height: 50vh;
-  padding-top: 1em;
-  border-top: 1px solid darken($bg, 8);
-  box-shadow: -3px 0 5px fade-out(darken($bg, 2), 0.1);
-  background-color: fade-out($bg, 0.2);
-  backdrop-filter: blur(10px);
+  background-color: $bg;
+  overflow-x: hidden;
+  .split {
+    height: 3px;
+    background-color: darken($bg, 4);
+  }
+  section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5em;
+    text-align: center;
+    max-width: 900px;
+    min-height: 700px;
+    margin: 0 auto;
+    padding: 0 1em;
+  }
 }
 
+.create {
+  & > * {
+    margin: 0.5em 0;
+  }
+  .h2 {
+    text-align: center;
+  }
+}
+.tuto {
+  .keys {
+    height: 15em;
+    max-width: 100%;
+    object-fit: contain;
+  }
+}
+
+.background-images {
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 99vw;
+  width: 99svw;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  filter: drop-shadow(5px 5px 3px darken($bg, 5));
+  & > * { position: absolute; }
+  .edit-img {
+    top: 10%;
+    right: 5%;
+    height: 15em;
+    transform: rotate(20deg);
+  }
+  .hero-img {
+    bottom: 5%;
+    left: 10%;
+    height: 12em;
+    animation: margin-float 3s ease-in-out infinite;
+  }
+  .trees-img {
+    bottom: 0;
+    right: 0;
+    height: 20em;
+    z-index: -2;
+    opacity: 0.5;
+  }
+  .corner-img {
+    top: 0;
+    left: 0;
+    height: 14em;
+    z-index: -2;
+  }
+
+  .terrain {
+    bottom: 0;
+    left: 0;
+    opacity: 0.5;
+    width: 100%;
+  }
+
+  .star1 {
+    top: 1em;
+    left: 20%;
+    height: 5em;
+  }
+  .star2 {
+    top: 40%;
+    right: 20%;
+    height: 5.5em;
+  }
+  .star3 {
+    top: 4em;
+    left: 30%;
+    height: 3em;
+  }
+}
 
 
 /* -------------------------------------------------------------------------- */
 /*                                 RESPONSIVE                                 */
 /* -------------------------------------------------------------------------- */
-
-
-@media screen and (max-height: 46em) {
-  .modal-button {
-    position: absolute;
+@media screen and (max-width: 700px) {
+  .background-images {
+    display: none;
   }
-  .blocks-select {
-    position: absolute;
+  footer {
+    flex-direction: column;
+    gap: 2.5em;
+    align-items: center;
+    .cp {
+      order: 1;
+      align-items: center;
+      .logo {
+        width: 5em;
+      }
+    }
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 ANIMATIONS                                 */
+/* -------------------------------------------------------------------------- */
+@keyframes margin-float {
+  0% {
+    margin-bottom: 0;
+  }
+  50% {
+    margin-bottom: 10px;
+  }
+  100% {
+    margin-bottom: 0;
   }
 }
 
