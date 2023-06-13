@@ -29,6 +29,7 @@
   -webkit-appearance: none;
      -moz-appearance: none;
           appearance: none;
+  background: none;
 }
 
 ol, ul {
@@ -64,6 +65,40 @@ body {
   font-family: atma;
   font-size: 1.25rem;
   overflow-x: hidden;
+}
+body:has(.modal.active) {
+  overflow: hidden;
+}
+
+.navbar {
+  position: fixed;
+  z-index: 5;
+  width: 100%;
+  height: 9vh;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 3px 4px 5px rgba(2, 46, 60, 0.5);
+  background-color: rgba(2, 46, 60, 0.8);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  border-bottom: 2px solid #011f28;
+}
+.navbar > * {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+.navbar > * > * {
+  margin: 0 0.25em;
+}
+.navbar li {
+  flex-shrink: 0;
+}
+.navbar .logo {
+  height: 9vh;
+}
+.navbar .btn {
+  padding: 0.7em 1.5em;
 }
 
 footer {
@@ -109,6 +144,22 @@ footer .cp .logo {
   background-color: #FF8585;
 }
 
+input:not([type=submit], [type=range], [type=select]) {
+  padding: 0.1em 0.5em;
+  border-radius: 0.3em;
+  background-color: #F3EFF5;
+  color: #022e3c;
+  font-weight: 500;
+}
+input:not([type=submit], [type=range], [type=select])::-moz-placeholder {
+  font-weight: 400;
+  color: rgba(2, 46, 60, 0.7);
+}
+input:not([type=submit], [type=range], [type=select])::placeholder {
+  font-weight: 400;
+  color: rgba(2, 46, 60, 0.7);
+}
+
 .select {
   position: relative;
   color: #022e3c;
@@ -144,19 +195,19 @@ footer .cp .logo {
 }
 
 .h1 {
-  --normal-size: 3rem;
+  --size: 3rem ;
 }
 
 .h2 {
-  --normal-size: 2.5rem;
+  --size: 2.5rem ;
 }
 
 .h3 {
-  --normal-size: 1.5rem;
+  --size: 1.5rem ;
 }
 
 h1, h2, h3 {
-  font-size: var(--normal-size);
+  font-size: var(--size);
   font-weight: bold;
 }
 
@@ -199,6 +250,57 @@ h1, h2, h3 {
   aspect-ratio: 16/9;
   width: 100%;
   height: auto;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  -webkit-backdrop-filter: blur(3px);
+          backdrop-filter: blur(3px);
+  background-color: rgba(2, 46, 60, 0.5);
+}
+.modal.active {
+  display: block;
+}
+.modal > *:not(.close) {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 1em;
+  border: 2px solid #011f28;
+  border-radius: 0.5em;
+  box-shadow: 3px 4px 5px rgba(2, 46, 60, 0.5);
+  background-color: rgba(2, 46, 60, 0.8);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+}
+.modal .close {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  font-size: 2rem;
+  color: #F3EFF5;
+  text-shadow: 2px 2px 4px #022e3c;
+  cursor: pointer;
+}
+
+.form-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.form-modal .btn {
+  align-self: center;
+}
+.form-modal input {
+  margin-bottom: 0.5em;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -437,7 +539,7 @@ h1, h2, h3 {
   height: 3em;
 }
 .hero .h2 {
-  font-size: clamp(16px, 8vw, var(--normal-size));
+  font-size: clamp(16px, 8vw, var(--size));
   text-align: right;
   width: -moz-fit-content;
   width: fit-content;
@@ -505,6 +607,10 @@ h1, h2, h3 {
   max-width: 100%;
   -o-object-fit: contain;
      object-fit: contain;
+  display: none;
+}
+.tuto .keys.active {
+  display: block;
 }
 
 .background-images {

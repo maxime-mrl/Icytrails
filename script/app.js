@@ -1,3 +1,17 @@
+function closeModal(modal) {
+    if (!modal) return;
+    if (!/modal/.test(modal.className)) return;
+    modal.className = "modal";
+}
+
+function openModal(target) {
+    const modal = document.getElementById(target);
+    if (!modal) return;
+    if (!/modal/.test(modal.className)) return;
+    modal.className = "modal active";
+}
+
+
 /* -------------------------------------------------------------------------- */
 /*                                level editor                                */
 /* -------------------------------------------------------------------------- */
@@ -10,19 +24,14 @@ if (blocksEditor) {
     window.onresize = () => blocksEditor.style.minHeight = Math.max(document.body.offsetHeight, window.innerHeight) + "px";
 }
 
-const keysimg = document.querySelector("img.keys");
-if (keysimg) {
-    const keyLayout = [
-        "arrow",
-        "qwerty",
-        "azerty"
-    ];
-    const originalSrc = keysimg.src.split(".png")[0].split("keys-")[0] + "keys-";
+const keysimg = document.querySelectorAll("img.keys");
+if (keysimg[0]) {
     let i = 0;
     setInterval(() => {
+        keysimg[i].className = "keys";
         i++;
-        if (i >= keyLayout.length) i = 0;
-        keysimg.src = `${originalSrc}${keyLayout[i]}.png`;
+        if (i >= keysimg.length) i = 0;
+        keysimg[i].className = "keys active";
     }, 850)
 }
 

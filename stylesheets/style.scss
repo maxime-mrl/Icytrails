@@ -41,6 +41,7 @@ $editor-transition: 250ms;
   vertical-align: baseline;
   line-height: 1;
   appearance: none;
+  background: none;
 }
 
 ol, ul { list-style: none }
@@ -73,6 +74,40 @@ body {
     font-family: atma;
     font-size: 1.25rem;
     overflow-x: hidden;
+    &:has(.modal.active) {
+      overflow: hidden;
+    }
+}
+
+.navbar {
+  position: fixed;
+  z-index: 5;
+  width: 100%;
+  height: 9vh;
+
+  display: flex;
+  justify-content: space-between;
+  
+  box-shadow: 3px 4px 5px fade-out($bg, 0.5);
+  background-color: fade-out($bg, 0.2);
+  backdrop-filter: blur(8px);
+  border-bottom: 2px solid darken($bg, 4);
+
+  & > * {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    & > * {
+      margin: 0 0.25em;
+    }
+  }
+  li {
+    flex-shrink: 0;
+  }
+  .logo { height: 9vh }
+  .btn {
+    padding: 0.7em 1.5em;
+  }
 }
 
 footer {
@@ -115,6 +150,18 @@ footer {
   &.fail-bg { background-color: $fail }
 }
 
+input:not([type="submit"], [type="range"], [type="select"]) {
+  padding: 0.1em 0.5em;
+  border-radius: 0.3em;
+  background-color: $white;
+  color: $bg;
+  font-weight: 500;
+  &::placeholder {
+    font-weight: 400;
+    color: fade-out($bg, 0.3);
+  }
+}
+
 .select { // select input somewhat custom style
   position: relative;
   // Custom arrow
@@ -143,19 +190,12 @@ footer {
   &:hover { transform: scale(1.05) }
 }
 
-.h1 {
-  --normal-size: 3rem;
-}
-
-.h2 {
-  --normal-size: 2.5rem;
-}
-.h3 {
-  --normal-size: 1.5rem;
-}
+.h1 { --size: 3rem }
+.h2 { --size: 2.5rem }
+.h3 { --size: 1.5rem }
 
 h1,h2,h3 {
-  font-size: var(--normal-size);
+  font-size: var(--size);
   font-weight: bold;
 }
 
@@ -165,7 +205,7 @@ h1,h2,h3 {
   padding: 0.3em 0.2em;
 }
 
-.scramble {
+.scramble { // styling for world typing animation
   position: relative;
   padding: 0 0.2em;
   &:after {
@@ -198,6 +238,58 @@ h1,h2,h3 {
       width: 100%;
       height: auto;
     }
+}
+
+.modal {
+  display: none;
+  &.active {
+    display: block;
+  }
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  backdrop-filter: blur(3px);
+  background-color: fade-out($bg, 0.5);
+  & > *:not(.close) {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    padding: 1em;
+
+    border: 2px solid darken($bg, 4);
+    border-radius: 0.5em;
+
+    box-shadow: 3px 4px 5px fade-out($bg, 0.5);
+    background-color: fade-out($bg, 0.2);
+    backdrop-filter: blur(8px);
+  }
+  .close {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    color: $white;
+    text-shadow: 2px 2px 4px $bg;
+    cursor: pointer;
+  }
+}
+
+.form-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  .btn {
+    align-self: center;
+  }
+  input {
+    margin-bottom: 0.5em;
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -433,7 +525,7 @@ h1,h2,h3 {
     }
   }
   .h2 {
-    font-size: clamp(16px, 8vw, var(--normal-size));
+    font-size: clamp(16px, 8vw, var(--size));
     &::before { // create a variable margin top
       content: "";
       display: block;
@@ -502,6 +594,10 @@ h1,h2,h3 {
     height: 15em;
     max-width: 100%;
     object-fit: contain;
+    display: none;
+    &.active {
+      display: block;
+    }
   }
 }
 
