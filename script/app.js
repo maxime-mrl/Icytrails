@@ -20,8 +20,8 @@ function toggleNavbar() {
 const inputs = document.querySelectorAll('input:not([type="submit"], [type="range"], [type="select"])');
 inputs.forEach(input => { // browse all input and initialize checking on blur
     let regex = input.getAttribute("data-check");
-    if (!/^\/.*\//.test(regex)) return; // check if regex is valid
-    regex = eval(regex);
+    if (/^\/.*\//.test(regex)) regex = eval(regex); // check if regex is valid
+    else if (!/^=[a-z]+:/.test(regex)) return;
     let err = input.getAttribute("data-err");
     if (!err) err = "Invalid input!";
     const originalPlaceholder = input.getAttribute("placeholder");
@@ -30,9 +30,17 @@ inputs.forEach(input => { // browse all input and initialize checking on blur
 
 function checkInput(elem) { // check input to visually tell the user if his input is good
     // assume success
+    console.log(elem.regex)
     elem.input.setAttribute("data-state", "success");
     elem.input.setAttribute("placeHolder", elem.originalPlaceholder);
-    if (!elem.regex.test(elem.input.value)) { // test regex for fail
+    if (/^=[a-z]+:/.test(elem.regex)) { // check for special rule (eg must match id)
+        if (/^=id:/.test(elem.regex)) {
+            const match = document.getElementById(elem.regex.split("=id:")[1])
+            if (!match.value) fail();
+            else if (match.value != elem.input.value) fail();
+        } else fail();
+    } else if (!elem.regex.test(elem.input.value)) fail();
+    function fail() {
         elem.input.setAttribute("data-state", "fail");
         elem.input.value = "";
         elem.input.setAttribute("placeHolder", elem.err);

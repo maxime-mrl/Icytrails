@@ -15,7 +15,7 @@ IcyTrails is an open-source and in-browser platformer game with some ✨special�
 
 With all these possibilities and the special physics, you can really get creative and create a **unique level**!
 ## Roadmap:
-- [ ] 🖥️ Frontend: 
+- [x] 🖥️ Frontend: 
   - [x] 🔧 Level editor
   - [x] 🕹️ Level player
   - [x] ⚠️ 404 page
