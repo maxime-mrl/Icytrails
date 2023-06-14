@@ -1,3 +1,4 @@
+/* ---------------------------------- MODAL --------------------------------- */
 function closeModal(modal) {
     if (!modal) return;
     if (!/modal/.test(modal.className)) return;
@@ -10,22 +11,41 @@ function openModal(target) {
     if (!/modal/.test(modal.className)) return;
     modal.className = "modal active";
 }
-
-
-/* -------------------------------------------------------------------------- */
-/*                                level editor                                */
-/* -------------------------------------------------------------------------- */
-const editor = document.getElementById("editor-container");
-const toggleEditor = () => editor.classList.toggle("modal-oppened");
-
-const blocksEditor = document.querySelector(".blocks-select");
-if (blocksEditor) {
-    blocksEditor.style.minHeight = Math.max(document.body.offsetHeight, window.innerHeight) + "px";
-    window.onresize = () => blocksEditor.style.minHeight = Math.max(document.body.offsetHeight, window.innerHeight) + "px";
+const navbar = document.querySelector(".navbar")
+function toggleNavbar() {
+    navbar.classList.toggle("active")
 }
 
+/* ---------------------------- INPUT VALIDATION ---------------------------- */
+const inputs = document.querySelectorAll('input:not([type="submit"], [type="range"], [type="select"])');
+inputs.forEach(input => { // browse all input and initialize checking on blur
+    let regex = input.getAttribute("data-check");
+    if (!/^\/.*\//.test(regex)) return; // check if regex is valid
+    regex = eval(regex);
+    let err = input.getAttribute("data-err");
+    if (!err) err = "Invalid input!";
+    const originalPlaceholder = input.getAttribute("placeholder");
+    input.onblur = () => checkInput({ input, regex, err, originalPlaceholder })
+})
+
+function checkInput(elem) { // check input to visually tell the user if his input is good
+    // assume success
+    elem.input.setAttribute("data-state", "success");
+    elem.input.setAttribute("placeHolder", elem.originalPlaceholder);
+    if (!elem.regex.test(elem.input.value)) { // test regex for fail
+        elem.input.setAttribute("data-state", "fail");
+        elem.input.value = "";
+        elem.input.setAttribute("placeHolder", elem.err);
+    }
+}
+
+
+
+/* -------------------------------------------------------------------------- */
+/*                                    HOME                                    */
+/* -------------------------------------------------------------------------- */
 const keysimg = document.querySelectorAll("img.keys");
-if (keysimg[0]) {
+if (keysimg[0]) { // kind of basic caroussel to show each keys layout
     let i = 0;
     setInterval(() => {
         keysimg[i].className = "keys";
@@ -36,9 +56,22 @@ if (keysimg[0]) {
 }
 
 /* -------------------------------------------------------------------------- */
+/*                                level editor                                */
+/* -------------------------------------------------------------------------- */
+const editor = document.getElementById("editor-container");
+const toggleEditor = () => editor.classList.toggle("modal-oppened");
+
+// resize editor blockList to match document height
+const blocksEditor = document.querySelector(".blocks-select");
+if (blocksEditor) {
+    blocksEditor.style.minHeight = Math.max(document.body.offsetHeight, window.innerHeight) + "px";
+    window.onresize = () => blocksEditor.style.minHeight = Math.max(document.body.offsetHeight, window.innerHeight) + "px";
+}
+
+/* -------------------------------------------------------------------------- */
 /*                               Level browser                                */
 /* -------------------------------------------------------------------------- */
-document.querySelectorAll(".level").forEach(card => card.onmousemove = e => {
+document.querySelectorAll(".level").forEach(card => card.onmousemove = e => { // cool mouse hover effect for each level
     const target = e.currentTarget;
     const rect = target.getBoundingClientRect();
     target.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
@@ -49,7 +82,7 @@ document.querySelectorAll(".level").forEach(card => card.onmousemove = e => {
 /* -------------------------------------------------------------------------- */
 /*                               Word scrambler                               */
 /* -------------------------------------------------------------------------- */
-class WorldScrambler {
+class WorldScrambler { // typing effect to change world
     constructor (text) {
         this.text = text;
         this.words = [];

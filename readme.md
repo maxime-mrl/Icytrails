@@ -21,7 +21,7 @@ With all these possibilities and the special physics, you can really get creativ
   - [x] ⚠️ 404 page
   - [x] 🔎 Levels browsing
   - [x] 🏠 Landing page
-  - [ ] 👤 Profile pages (register / login / edit profile)
+  - [x] 👤 Profile pages (register / login / edit profile)
   - [x] 🖼️ Logo
 - [ ] ⚙️ Backend
   - [x] 🏗️ Database structure

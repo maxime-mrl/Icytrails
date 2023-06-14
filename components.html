@@ -31,12 +31,36 @@
         <p>Register</p>
     </div>
     <div class="contact">
-        Contact us at <a href="mailto:maxime.morel@ik.me">maxime.morel@ik.me</a>
+        Contact us at <a href="mailto:mail@mail.com" class="link">mail@mail.com</a>
     </div>
     <div class="cookie">
         <p>This website only use necessary cookies to function and does not track user data</p>
     </div>
 </footer>
+
+<button class="burger-btn" onclick="toggleNavbar()">
+    <i class="fa-solid fa-bars"></i>
+</button>
+<nav class="navbar">
+    <ul class="left">
+        <li>
+            <a href="/"><img src="asset/img/logo-transparent.png" alt="Icytrails logo" class="logo"></a>
+        </li>
+        <li>
+            <a href="/browser.html" class="link">Browse levels</a>
+        </li>
+    </ul>
+    <ul class="right">
+        <li>
+            <button class="btn" onclick="openModal('register-modal')">Register</button>
+        </li>
+        <li>
+            <button class="btn" onclick="openModal('login-modal')">Login</button>
+        </li>
+    </ul>
+</nav>
+
+
 
 <div class="modal" id="login-modal">
     <button class="close" onclick="closeModal(this.parentNode)"><i class="fa-solid fa-xmark"></i></button>

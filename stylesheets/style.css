@@ -70,11 +70,23 @@ body:has(.modal.active) {
   overflow: hidden;
 }
 
+.burger-btn {
+  position: fixed;
+  z-index: 11;
+  top: 1em;
+  right: 1rem;
+  font-size: 2rem;
+  display: none;
+  text-shadow: 0.1em 0.1em 0.1em #022e3c;
+  color: #F3EFF5;
+}
+
 .navbar {
   position: fixed;
-  z-index: 5;
+  z-index: 10;
   width: 100%;
   height: 9vh;
+  max-height: 3.5em;
   display: flex;
   justify-content: space-between;
   box-shadow: 3px 4px 5px rgba(2, 46, 60, 0.5);
@@ -96,6 +108,7 @@ body:has(.modal.active) {
 }
 .navbar .logo {
   height: 9vh;
+  margin-right: 0.75em;
 }
 .navbar .btn {
   padding: 0.7em 1.5em;
@@ -159,6 +172,12 @@ input:not([type=submit], [type=range], [type=select])::placeholder {
   font-weight: 400;
   color: rgba(2, 46, 60, 0.7);
 }
+input:not([type=submit], [type=range], [type=select])[data-state=fail] {
+  border: 2px solid #FF8585;
+}
+input:not([type=submit], [type=range], [type=select])[data-state=success] {
+  border: 2px solid #97DB4F;
+}
 
 .select {
   position: relative;
@@ -209,6 +228,19 @@ input:not([type=submit], [type=range], [type=select])::placeholder {
 h1, h2, h3 {
   font-size: var(--size);
   font-weight: bold;
+}
+
+.link {
+  color: #3DD6D0;
+  font-weight: 500;
+  text-shadow: 0.1em 0.1em 0.1em #02232d;
+  transition: transform 200ms ease-in-out, color 200ms ease-in-out;
+  display: inline-block;
+}
+.link:hover {
+  transform: scale(1.05);
+  text-shadow: 0.15em 0.15em 0.1em #02232d;
+  color: #52dad5;
 }
 
 .tippy-box {
@@ -324,10 +356,16 @@ h1, h2, h3 {
   display: flex;
   justify-content: space-around;
 }
-.editor .controls > * {
+.editor .level-title {
   display: flex;
-  justify-content: center;
   align-items: center;
+  gap: 1em;
+}
+.editor .level-title label {
+  font-weight: 500;
+}
+.editor .level-title input {
+  width: 100%;
 }
 
 .modal-button {
@@ -680,8 +718,33 @@ h1, h2, h3 {
 /*                                 RESPONSIVE                                 */
 /* -------------------------------------------------------------------------- */
 @media screen and (max-width: 700px) {
-  .background-images {
+  body:has(.navbar.active) {
+    overflow: hidden;
+  }
+  .burger-btn {
+    display: block;
+  }
+  .navbar {
     display: none;
+    height: 100vh;
+    height: 100dvh;
+    max-height: unset;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+  }
+  .navbar.active {
+    display: flex;
+  }
+  .navbar > * {
+    flex-direction: column;
+    justify-content: end;
+    height: -moz-fit-content;
+    height: fit-content;
+    gap: 1em;
+  }
+  .navbar .logo {
+    height: 8em;
   }
   footer {
     flex-direction: column;
@@ -694,6 +757,9 @@ h1, h2, h3 {
   }
   footer .cp .logo {
     width: 5em;
+  }
+  .background-images {
+    opacity: 0.2;
   }
 }
 /* -------------------------------------------------------------------------- */
