@@ -1,3 +1,32 @@
+<?php
+$title_regex = '/^[-a-z0-9\/]{5,100}$/';
+if (!empty($_POST)) {
+    // check if all data are present
+    if (empty($_POST["level"]) || empty($_POST["name"] || empty($_POST["visibility"]))) die("incorect data");
+    // all data entries are present
+    $level = json_decode($_POST["level"]);
+    $title = strip_tags($_POST["name"]);
+    $visibility = intval($_POST["visibility"]);
+    // check if data are correct
+    if (!is_int($level->spawn->x) || !is_int($level->spawn->y) || !is_int($level->end->x) || !is_int($level->end->y)) die("incorect data"); // spawn and end
+    foreach($level->fg as $fg) if (!is_int($fg->x) || !is_int($fg->y) || !is_int($fg->t) || $fg->t > 100) die("incorect data"); // foreground blocks
+    foreach($level->bg as $bg) if (!is_int($bg->x) || !is_int($bg->y) || !is_int($bg->t) || $bg->t > 100) die("incorect data"); // background blocks
+    if (!preg_match($title_regex, $title)) die("incorect data"); // title
+    if (!is_int($visibility) || $visibility > 1) die("incorect data"); /// visiblity
+    // data entries are coherent -> we can continue
+    echo "all checked \n";
+    // compress level (can divide by up to 3 the total size of level compared to plain json)
+    $compressedLevel = "{$level->spawn->x},{$level->spawn->y};{$level->end->x},{$level->end->y}b";
+    foreach($level->bg as $bg) $compressedLevel .= "{$bg->x},{$bg->y},{$bg->t};";
+    $compressedLevel .= "f";
+    foreach($level->fg as $fg) $compressedLevel .= "{$fg->x},{$fg->y},{$fg->t};";
+    echo $compressedLevel;
+    // now we can save the level
+
+    die;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,16 +48,16 @@
                     <div class="select">
                         <i class="fa-solid fa-chevron-down"></i>
                         <select name="visibility" id="visibility">
-                            <option value="public">Visibility: Public</option>
-                            <option value="private">Visibility: Un-listed</option>
+                            <option value="1">Visibility: Public</option>
+                            <option value="0">Visibility: Un-listed</option>
                         </select>
                     </div>
                 </article>
                 <article>
-                    <button class="btn succes-bg">Save change</button>
+                    <button class="btn succes-bg" id="save-btn">Save change</button>
                 </article>
                 <article>
-                    <button class="btn succes-bg">Save change and try</button>
+                    <button class="btn succes-bg" id="try-btn">Save change and try</button>
                 </article>
                 <article>
                     <button class="btn fail-bg">Delete</button>
@@ -36,7 +65,7 @@
             </section>
             <section class="level-title">
                 <label for="input-title">Title:</label>
-                <input type="text" name="title" id="input-title" placeholder="Level title" data-err="Please enter a valid title" data-check="/^[-a-z0-9/]{5,100}$/">
+                <input type="text" name="title" id="input-title" placeholder="Level title" data-err="Please enter a valid title" data-check=<?=$title_regex?>>
             </section>
         </div>
         <section class="blocks-select">

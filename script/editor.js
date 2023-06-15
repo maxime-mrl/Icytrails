@@ -9,6 +9,18 @@ const blockCategories = {
     others: blockSelector.querySelector(".specials .blocks"),
 }
 
+const title = document.getElementById("input-title");
+const visibility = document.getElementById("visibility");
+let level;
+
+const btns = {
+    save: document.getElementById("save-btn"),
+    try:document.getElementById("try-btn")
+}
+
+btns.save.onclick = btnClick;
+btns.try.onclick = btnClick;
+
 class World {
     constructor(level) {
         this.canvas = document.getElementById("game-canvas");
@@ -148,4 +160,78 @@ class World {
 
 fetch('/script/level-hard.json') // get the level
     .then(resp => resp.json())
-    .then(data => new World(data));
+    .then(data => level = new World(data).level);
+
+function btnClick(e) { // listen to the btn click and yolo send data to let php manage
+    const action = e.target.id.split("-btn")[0];
+    
+    // adapted from https://developer.mozilla.org/en-US/docs/Learn/Forms/Sending_forms_through_JavaScript
+    const XHR = new XMLHttpRequest();
+    // Turn the data object into an array of URL-encoded key/value pairs
+    const urlEncodedDataPairs = [
+        `${encodeURIComponent("visibility")}=${encodeURIComponent(visibility.value)}`,
+        `${encodeURIComponent("name")}=${encodeURIComponent(title.value)}`,
+        `${encodeURIComponent("level")}=${encodeURIComponent(JSON.stringify(level))}`,
+    ];
+
+    // Combine the pairs into a single string and replace all %-encoded spaces to the '+' character; matches the behavior of browser form submissions.
+    const urlEncodedData = urlEncodedDataPairs.join("&").replace(/%20/g, "+");
+
+    // error and success events
+    XHR.addEventListener("load", () => {
+        // alert("Yeah! Data sent and response loaded.");
+    });
+    
+  XHR.onreadystatechange = () => {
+    if (XHR.readyState === 4) {
+      console.log(XHR.response);
+    }
+  };
+
+    XHR.addEventListener("error", () => {
+        // alert("Oops! Something went wrong.");
+    });
+
+    // Set up our request
+    XHR.open("POST", window.location.href);
+    XHR.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    XHR.send(urlEncodedData);
+}
+
+function compressLevel(level) {
+    let compressedLevel = `${level.spawn.x},${level.spawn.y};${level.end.x},${level.end.y}b`;
+    level.bg.forEach(bg => compressedLevel += `${bg.x},${bg.y},${bg.t};`)
+    compressedLevel += 'f';
+    level.fg.forEach(fg => compressedLevel += `${fg.x},${fg.y},${fg.t};`)
+    return compressedLevel;
+}
+function decompressLevel(compressedLevel) {
+    let intermediate = compressedLevel.split(/[a-z]/i)
+    intermediate.forEach((elem, i) => intermediate[i] = elem.split(";"));
+    let decompressedLevel = {
+        spawn: {x: intermediate[0][0].split(',')[0], y: intermediate[0][0].split(',')[1]},
+        end: {x: intermediate[0][1].split(',')[0], y: intermediate[0][1].split(',')[1]},
+        bg: [],
+        fg: []
+    }
+    console.log(intermediate[1][0].split(','))
+    intermediate[1].forEach(bg => {
+        bg = bg.split(',');
+        if (!bg[0] || !bg[1] || !bg[2]) return;
+        decompressedLevel.bg.push({
+            x: parseInt(bg[0]),
+            y: parseInt(bg[1]),
+            t: parseInt(bg[2])
+        })
+    })
+    intermediate[2].forEach(fg => {
+        fg = fg.split(',');
+        if (!fg[0] || !fg[1] || !fg[2]) return;
+        decompressedLevel.fg.push({
+            x: parseInt(fg[0]),
+            y: parseInt(fg[1]),
+            t: parseInt(fg[2])
+        })
+    })
+    return decompressedLevel;
+}

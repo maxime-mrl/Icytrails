@@ -30,7 +30,6 @@ inputs.forEach(input => { // browse all input and initialize checking on blur
 
 function checkInput(elem) { // check input to visually tell the user if his input is good
     // assume success
-    console.log(elem.regex)
     elem.input.setAttribute("data-state", "success");
     elem.input.setAttribute("placeHolder", elem.originalPlaceholder);
     if (/^=[a-z]+:/.test(elem.regex)) { // check for special rule (eg must match id)

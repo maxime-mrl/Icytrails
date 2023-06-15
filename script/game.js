@@ -2,7 +2,7 @@ import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
 import confetti from "./ext/confetti.min.js"
 
-fetch('/script/level-easy.json') // get the level (temp - should be something at least a bit different for backend)
+fetch('/script/level-hardb.json') // get the level (temp - should be something at least a bit different for backend)
     .then(resp => resp.json())
     .then(data => new World(data));
 
