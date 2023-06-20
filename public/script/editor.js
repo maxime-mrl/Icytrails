@@ -33,7 +33,7 @@ class World {
         this.clicked = false;
 
         this.renderer = new Renderer(this, "windowed");
-        this.addBlocksToSelector();
+        window.addEventListener("blocksLoaded", this.addBlocksToSelector)
         
         // listening stuffs
         this.canvas.addEventListener("mousemove", this.mouseEvent);
@@ -164,7 +164,6 @@ fetch('/script/level-hard.json') // get the level
 
 function btnClick(e) { // listen to the btn click and yolo send data to let php manage
     const action = e.target.id.split("-btn")[0];
-    
     // adapted from https://developer.mozilla.org/en-US/docs/Learn/Forms/Sending_forms_through_JavaScript
     const XHR = new XMLHttpRequest();
     // Turn the data object into an array of URL-encoded key/value pairs
@@ -214,7 +213,6 @@ function decompressLevel(compressedLevel) {
         bg: [],
         fg: []
     }
-    console.log(intermediate[1][0].split(','))
     intermediate[1].forEach(bg => {
         bg = bg.split(',');
         if (!bg[0] || !bg[1] || !bg[2]) return;

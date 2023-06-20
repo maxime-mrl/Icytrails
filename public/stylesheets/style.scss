@@ -99,6 +99,8 @@ body {
 
   display: flex;
   justify-content: space-between;
+
+  padding: 0 1em;
   
   box-shadow: 3px 4px 5px fade-out($bg, 0.5);
   background-color: fade-out($bg, 0.2);
@@ -123,6 +125,10 @@ body {
   .btn {
     padding: 0.7em 1.5em;
   }
+}
+.margin {
+  height: 9vh;
+  max-height: 3.5em;
 }
 
 footer {
@@ -222,6 +228,7 @@ h1,h2,h3 {
   text-shadow: 0.1em 0.1em 0.1em darken($bg, 3);
   transition: transform 200ms ease-in-out, color 200ms ease-in-out;
   display: inline-block;
+  cursor: pointer;
   &:hover {
     transform: scale(1.05);
     text-shadow: 0.15em 0.15em 0.1em darken($bg, 3);
@@ -320,6 +327,9 @@ h1,h2,h3 {
   input {
     margin-bottom: 0.5em;
   }
+  .h1 {
+    text-align: center;
+  }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -407,6 +417,7 @@ h1,h2,h3 {
 /* -------------------------------------------------------------------------- */
 /*                                LEVEL BROWSER                               */
 /* -------------------------------------------------------------------------- */
+.level-list { min-height: 90vh };
 .level {
   position: relative;
   display: flex;

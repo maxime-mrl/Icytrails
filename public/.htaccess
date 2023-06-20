@@ -1,0 +1,10 @@
+# start rewrite engine
+RewriteEngine On
+
+# block user from trying to access directly to index.php
+RewriteCond %{QUERY_STRING} !^p= [NC] # don't apply the redirect if the query is made
+RewriteRule ^index\.php(/.*)?$ / [R=301,L]
+# rewrite url
+RewriteRule ^([a-zA-Z0-9\-\_\/]*)$ index.php?p=$1
+# let php handle every 404
+ErrorDocument 404 /404

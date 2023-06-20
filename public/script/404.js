@@ -14,7 +14,7 @@ const texts = [
     "Or is it?",
 ]
 
-fetch('/script/404.json') // get 404 "level"
+fetch('/asset/json/404.json') // get 404 "level"
     .then(resp => resp.json())
     .then(data => new World(data));
 
