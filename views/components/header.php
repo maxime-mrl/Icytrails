@@ -40,3 +40,14 @@
         </form>
     </div>
     <?php endif; ?>
+<?php
+    if (isset($_SESSION["messages"])):
+    foreach ($_SESSION["messages"] as $index=>$message):
+?>
+    <article class="notification <?= $message["type"]; ?>" style="margin-top: calc(1em + 3 * <?= $index; ?>em">
+        <?= $message["text"]; ?>
+    </article>
+<?php
+    endforeach;
+    endif;
+?>

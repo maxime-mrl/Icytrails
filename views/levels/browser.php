@@ -1,12 +1,11 @@
 <?php include_once ROOT . "/views/components/nav.php" ?>
-
 <section class="level-list">
     <?php foreach ($data as $level): ?>
         <article class="level">
             <div class="name">
                 <h2 class="h3"><?= $level->name ?></h2>
                 <a class="btn play" href="/levels/play/<?= $level->id ?>"><i class="fa-solid fa-play"></i> Play !</a>
-                <a class="btn details" href="/levels/detail/<?= $level->id ?>"><i class="fa-solid fa-plus"></i> More info</a>
+                <a class="btn details" href="/levels/details/<?= $level->id ?>"><i class="fa-solid fa-plus"></i> More info</a>
             </div>
             <a  href="/levels/detail/<?= $level->id ?>" class="infos">
                 <div class="slider">

@@ -85,6 +85,27 @@ body:has(.modal.active) {
   margin-left: 1em;
 }
 
+.notification {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.5em 1.5em;
+  border-radius: 0.5em;
+  z-index: 999;
+  font-weight: 500;
+  color: #022e3c;
+  animation: disapear 300ms 2s forwards;
+}
+.notification.error {
+  background-color: #FF8585;
+  border: 2px solid #ff5c5c;
+}
+.notification.success {
+  background-color: #97DB4F;
+  border: 2px solid #83d42d;
+}
+
 .navbar {
   position: fixed;
   z-index: 10;
@@ -818,5 +839,19 @@ h1, h2, h3 {
   }
   50% {
     opacity: 1;
+  }
+}
+@keyframes disapear {
+  0% {
+    opacity: 1;
+    top: 0;
+  }
+  99% {
+    opacity: 0;
+    top: -5em;
+  }
+  100% {
+    opacity: 0;
+    top: -5em;
   }
 }/*# sourceMappingURL=style.css.map */

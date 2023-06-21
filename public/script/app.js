@@ -1,3 +1,8 @@
+/* ------------------------------ NOTIFICATIONS ----------------------------- */
+setTimeout(() => { // removes notifications popup
+    document.querySelectorAll(".notification").forEach( notification => notification.remove() );
+}, 5000);
+
 /* ---------------------------------- MODAL --------------------------------- */
 function closeModal(modal) {
     if (!modal) return;

@@ -1,66 +1,70 @@
 <?php
 namespace App\Controllers;
 use App\Models\UsersModel;
+use App\Core\Tools;
 
 
 class UsersController extends controller {
     public function register() {
         $error = false;
         if (!empty($_POST)) {
-            foreach($_POST as $field => $value) { // check that nothing is empty or not plain text
-                if (empty($value)) {
-                    die("Merci de remplir le champs $field");
-                    $error = true;
-                    break;
-                }
-                if (strip_tags($value) != $value) {
-                    die("you should only enter plain text");
-                    $error = true;
-                    break;
-                }
+            // check that everything is filled
+            Tools::checkEntriesValidity($_POST, "/users/register");
+            // set the redirect path (add first / if missing)
+            if ($_POST["redirect"][0] != "/") {
+                $_POST["redirect"] = "/" . $_POST["redirect"];
             }
-            // check mail
+            /* ----------------------------- SPECIFIC CHECK ----------------------------- */
+            // mail
             if (!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL) && !$error) {
-                die("incorect adress");
-                $error = true;
+                Tools::redirectResponse($_POST["redirect"], 200, [
+                    ['type' => "error", "text" => "Please enter a valid mail"]
+                ]);
             }
-            // check name
+
+            // name
             if(!preg_match("/^[-a-z0-9\/]{4,20}$/", $_POST["username"])) {
-                die("incorect username");
-                $error = true;
+                Tools::redirectResponse($_POST["redirect"], 200, [
+                    ['type' => "error", "text" => "Please enter a valid username"]
+                ]);
             }
-            // check pass
+            // pass
             if(!preg_match("/.{6,}/", $_POST["pass"]) || $_POST["pass"] !== $_POST["pass-confirm"]) {
-                die("incorect password");
-                $error = true;
+                Tools::redirectResponse($_POST["redirect"], 200, [
+                    ['type' => "error", "text" => "Please enter a valid password"]
+                ]);
             }
-
-            if (!$error) {
-                // data validated
-                $mail = strip_tags($_POST["mail"]);
-                $username = strip_tags($_POST["username"]);
-                $password = password_hash($_POST["pass"], PASSWORD_ARGON2ID);
-                $usersModel = new UsersModel();
-                if ($usersModel->findBy(["username"=>$username])) {
-                    die("username arleady used");
-                    $error = true;
-                }
-                if ($usersModel->findBy(["mail"=>$mail])) {
-                    die("mail arleady used");
-                    $error = true;
-                }
-
-                $usersModel->setMail($mail)
-                    ->setUsername($username)
-                    ->setPassword($password)
-                    ->create($usersModel);
-                // redirect back to main page
-                if ($_POST["redirect"][0] != "/") { // add first / if missing
-                    $_POST["redirect"] = "/" . $_POST["redirect"];
-                } 
-                http_response_code(301);
-                header("location: " . $_POST["redirect"]);
+            /* ----------------------------- DATA VALIDATED ----------------------------- */
+            $mail = strip_tags($_POST["mail"]);
+            $username = strip_tags($_POST["username"]);
+            $password = password_hash($_POST["pass"], PASSWORD_ARGON2ID);
+            $usersModel = new UsersModel();
+            // check if entries arleady taken
+            if ($usersModel->findBy(["username"=>$username])) {
+                Tools::redirectResponse($_POST["redirect"], 200, [
+                    ['type' => "error", "text" => "This username is arleady taken"]
+                ]);
             }
+            if ($usersModel->findBy(["mail"=>$mail])) {
+                Tools::redirectResponse($_POST["redirect"], 200, [
+                    ['type' => "error", "text" => "This mail arleady exist"]
+                ]);
+            }
+            // all ok -> create user
+            $usersModel->setMail($mail)
+                ->setUsername($username)
+                ->setPassword($password)
+                ->create($usersModel);
+            // create session
+            $user = $usersModel->findBy(["mail"=>$mail])[0];
+            $_SESSION["user"] = [
+                "id" => $user->id,
+                "username" => $user->username,
+            ];
+            // redirect
+            Tools::redirectResponse($_POST["redirect"], 200, [
+                ['type' => "success", "text" => "Yeahhh welcome $user->username!"]
+            ]);
         } else {
             $this->render("users/register");
         }
@@ -68,58 +72,50 @@ class UsersController extends controller {
     public function login() {
         $error = false;
         if (!empty($_POST)) {
-            foreach($_POST as $field => $value) { // check that nothing is empty or not plain text
-                if (empty($value)) {
-                    die("Merci de remplir le champs $field");
-                    $error = true;
-                    break;
-                }
-                if (strip_tags($value) != $value) {
-                    die("you should only enter plain text");
-                    $error = true;
-                    break;
-                }
+            // check that everything is filled
+            Tools::checkEntriesValidity($_POST, "/users/login");
+            // set the redirect path (add first / if missing)
+            if ($_POST["redirect"][0] != "/") {
+                $_POST["redirect"] = "/" . $_POST["redirect"];
             }
-            // check mail
-            if (!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL) && !$error) {
-                die("incorect adress");
-                $error = true;
+            
+            /* ----------------------------- SPECIFIC CHECK ----------------------------- */
+            if (!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL) && !$error) { // mail
+                Tools::redirectResponse($_POST["redirect"], 200, [
+                    ['type' => "error", "text" => "Please enter a valid mail"]
+                ]);
             }
-            // check pass
-            if(!preg_match("/.{6,}/", $_POST["pass"])) {
-                die("incorect password");
-                $error = true;
+            if(!preg_match("/.{6,}/", $_POST["pass"])) { // pass
+                Tools::redirectResponse($_POST["redirect"], 200, [
+                    ['type' => "error", "text" => "Please enter a valid password"]
+                ]);
             }
 
-            if (!$error) {
-                // data validated
-                $mail = strip_tags($_POST["mail"]);
-                $password = $_POST["pass"];
-                $usersModel = new UsersModel();
-                echo $usersModel->getPassword();
+            /* ----------------------------- DATA VALIDATED ----------------------------- */
+            $mail = strip_tags($_POST["mail"]);
+            $password = $_POST["pass"];
+            $usersModel = new UsersModel();
 
-                $user = $usersModel->findBy(["mail" => $mail]);
-                if (!$user) {
-                    die("incorect mail or password");
-                    $error = true;
-                } else {
-                    $user = $usersModel->hydrate($user[0]);
-                    if (password_verify($password, $usersModel->getPassword())) {
-                        $_SESSION["user"] = [
-                            "id" => $user->getId(),
-                            "username" => $user->getUsername(),
-                        ];
-                        // redirect back to main page
-                        if ($_POST["redirect"][0] != "/") { // add first / if missing
-                            $_POST["redirect"] = "/" . $_POST["redirect"];
-                        } 
-                        header("location: " . $_POST["redirect"]);
-                    } else {
-                        die("incorect mail or password");
-                        $error = true;
-                    }
-                }
+            $user = $usersModel->findBy(["mail" => $mail]);
+            if (!$user) {
+                Tools::redirectResponse($_POST["redirect"], 200, [
+                    ['type' => "error", "text" => "Incorrect mail or password"]
+                ]);
             }
+            $user = $usersModel->hydrate($user[0]);
+            if (!password_verify($password, $usersModel->getPassword())) {
+                Tools::redirectResponse($_POST["redirect"], 200, [
+                    ['type' => "error", "text" => "Incorrect mail or password"]
+                ]);
+            }
+            $_SESSION["user"] = [
+                "id" => $user->getId(),
+                "username" => $user->getUsername(),
+            ];
+            // redirect
+            Tools::redirectResponse($_POST["redirect"], 200, [
+                ['type' => "success", "text" => "Yeahhh welcome back " . $user->getUsername() . "!"]
+            ]);
         } else {
             $this->render("users/login");
         }
