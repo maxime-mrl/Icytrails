@@ -30,11 +30,6 @@ if (!empty($_POST)) {
     if (!preg_match($title_regex, $title)) die("incorect data"); // title
     if (!is_int($visibility) || $visibility > 1) die("incorect data"); /// visiblity
     // data entries are coherent -> we can continue
-    // compress level (can divide by up to 3 the total size of level compared to plain json)
-    $compressedLevel = "{$level->spawn->x},{$level->spawn->y};{$level->end->x},{$level->end->y}b";
-    foreach($level->bg as $bg) $compressedLevel .= "{$bg->x},{$bg->y},{$bg->t};";
-    $compressedLevel .= "f";
-    foreach($level->fg as $fg) $compressedLevel .= "{$fg->x},{$fg->y},{$fg->t};";
     // echo $compressedLevel;
     // now we can save the level
 

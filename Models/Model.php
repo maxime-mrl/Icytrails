@@ -16,7 +16,7 @@ class Model extends Db {
         $splits = [];
 
         foreach ($model as $column => $value) { // on sépare clé valeur et on fait autant de ? que d'entrées
-            if ($value != null && $column !== "db" && $column !== "table") { // le modele a aussi db et table donc on vire
+            if ($value !== null && $column !== "db" && $column !== "table") { // le modele a aussi db et table donc on vire
                 $columns[] = "$column";
                 $values[] = "$value";
                 $splits[] = "?";
@@ -31,7 +31,7 @@ class Model extends Db {
         $values = [];
 
         foreach ($model as $field => $value) { // on bloucle pour séparer clé / valeur ($field clé => $value valeur)
-            if ($value != null && $field !== "db" && $field !== "table") { // le modele a aussi db et table donc on vire
+            if ($value !== null && $field !== "db" && $field !== "table") { // le modele a aussi db et table donc on vire
                 $fields[] = "$field = ?";
                 $values[] = "$value";
             }

@@ -3,10 +3,10 @@ namespace App\Models;
 
 class LevelsModel extends Model {
 
-    protected $uuid;
+    protected $id;
     protected $name;
     protected $visibility;
-    protected $crated_by;
+    protected $created_by;
     protected $crated_at;
     protected $level;
     
@@ -20,16 +20,16 @@ class LevelsModel extends Model {
     /**
      * Get the value of uuid
      */ 
-    public function getUuid() {
-        return $this->uuid;
+    public function getId() {
+        return $this->id;
     }
 
     /**
      * Set the value of uuid
      * @return  self
      */ 
-    public function setUuid($uuid) {
-        $this->uuid = $uuid;
+    public function setId($id) {
+        $this->id = $id;
         return $this;
     }
 
@@ -66,18 +66,18 @@ class LevelsModel extends Model {
     }
 
     /**
-     * Get the value of crated_by
+     * Get the value of created_by
      */ 
-    public function getCrated_by() {
-        return $this->crated_by;
+    public function getCreated_by() {
+        return $this->created_by;
     }
 
     /**
-     * Set the value of crated_by
+     * Set the value of created_by
      * @return  self
      */ 
-    public function setCrated_by($crated_by) {
-        $this->crated_by = $crated_by;
+    public function setCreated_by($created_by) {
+        $this->created_by = $created_by;
         return $this;
     }
 

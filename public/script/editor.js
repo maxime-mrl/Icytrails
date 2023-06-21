@@ -11,7 +11,15 @@ const blockCategories = {
 
 const title = document.getElementById("input-title");
 const visibility = document.getElementById("visibility");
-let level;
+const formSubmit = document.getElementById("form-sumbit");
+const titleSumbit = document.getElementById("title-box");
+const levelSumbit = document.getElementById("level-box");
+
+let level = {
+    spawn: {x: 0, y: 0},
+    end: {x: 1, y: 0},
+    bg: [], fg: [],
+};
 
 const btns = {
     save: document.getElementById("save-btn"),
@@ -53,7 +61,7 @@ class World {
             else if (code != 98) blockCategories.others.appendChild(texture);  // star for the end is renderer differently on editors (code 96) so don't display it
             // add tooltips
             tippy(texture, {
-                content: texture.tooltip,
+                content: texture.alt,
                 delay: 200
             })
         })
@@ -107,7 +115,6 @@ class World {
             }
             this.level.fg.push(toAdd);
         }
-        console.log(this.level); // for now used to save level
     }
 
     
@@ -152,64 +159,20 @@ class World {
     }
 }
 
-// const world = new World({
-//     spawn: {x: 0, y: 0},
-//     end: {x: 1, y: 0},
-//     bg: [], fg: [],
-// });
-
-fetch('/script/level-hard.json') // get the level
-    .then(resp => resp.json())
-    .then(data => level = new World(data).level);
-
-function btnClick(e) { // listen to the btn click and yolo send data to let php manage
+function btnClick(e) {
     const action = e.target.id.split("-btn")[0];
-    // adapted from https://developer.mozilla.org/en-US/docs/Learn/Forms/Sending_forms_through_JavaScript
-    const XHR = new XMLHttpRequest();
-    // Turn the data object into an array of URL-encoded key/value pairs
-    const urlEncodedDataPairs = [
-        `${encodeURIComponent("visibility")}=${encodeURIComponent(visibility.value)}`,
-        `${encodeURIComponent("name")}=${encodeURIComponent(title.value)}`,
-        `${encodeURIComponent("level")}=${encodeURIComponent(JSON.stringify(level))}`,
-    ];
-
-    // Combine the pairs into a single string and replace all %-encoded spaces to the '+' character; matches the behavior of browser form submissions.
-    const urlEncodedData = urlEncodedDataPairs.join("&").replace(/%20/g, "+");
-
-    // error and success events
-    XHR.addEventListener("load", () => {
-        // alert("Yeah! Data sent and response loaded.");
-    });
-    
-  XHR.onreadystatechange = () => {
-    if (XHR.readyState === 4) {
-      console.log(XHR.response);
-    }
-  };
-
-    XHR.addEventListener("error", () => {
-        // alert("Oops! Something went wrong.");
-    });
-
-    // Set up our request
-    XHR.open("POST", window.location.href);
-    XHR.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    XHR.send(urlEncodedData);
+    formSubmit.action += "/" + action;
+    levelSumbit.value = JSON.stringify(level);
+    titleSumbit.value = title.value;
+    formSubmit.submit();
 }
 
-function compressLevel(level) {
-    let compressedLevel = `${level.spawn.x},${level.spawn.y};${level.end.x},${level.end.y}b`;
-    level.bg.forEach(bg => compressedLevel += `${bg.x},${bg.y},${bg.t};`)
-    compressedLevel += 'f';
-    level.fg.forEach(fg => compressedLevel += `${fg.x},${fg.y},${fg.t};`)
-    return compressedLevel;
-}
 function decompressLevel(compressedLevel) {
     let intermediate = compressedLevel.split(/[a-z]/i)
     intermediate.forEach((elem, i) => intermediate[i] = elem.split(";"));
     let decompressedLevel = {
-        spawn: {x: intermediate[0][0].split(',')[0], y: intermediate[0][0].split(',')[1]},
-        end: {x: intermediate[0][1].split(',')[0], y: intermediate[0][1].split(',')[1]},
+        spawn: {x: parseInt(intermediate[0][0].split(',')[0]), y: parseInt(intermediate[0][0].split(',')[1])},
+        end: {x: parseInt(intermediate[0][1].split(',')[0]), y: parseInt(intermediate[0][1].split(',')[1])},
         bg: [],
         fg: []
     }
@@ -232,4 +195,10 @@ function decompressLevel(compressedLevel) {
         })
     })
     return decompressedLevel;
+}
+
+if (compressedLevel) {
+    level = new World(decompressLevel(compressedLevel)).level;
+} else {
+    level = new World(level).level;
 }

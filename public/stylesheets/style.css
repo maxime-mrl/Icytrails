@@ -81,6 +81,10 @@ body:has(.modal.active) {
   color: #F3EFF5;
 }
 
+.left-space {
+  margin-left: 1em;
+}
+
 .navbar {
   position: fixed;
   z-index: 10;
@@ -454,6 +458,9 @@ h1, h2, h3 {
   align-items: center;
   gap: 0.3em;
 }
+.level .h3 {
+  min-width: 11em;
+}
 .level > * {
   gap: 1em;
 }
@@ -774,6 +781,18 @@ h1, h2, h3 {
   }
   .background-images {
     opacity: 0.2;
+  }
+  .level {
+    height: 6em;
+  }
+  .level .play {
+    display: none;
+  }
+  .level .infos {
+    display: none;
+  }
+  .level .h3 {
+    min-width: unset;
   }
 }
 /* -------------------------------------------------------------------------- */

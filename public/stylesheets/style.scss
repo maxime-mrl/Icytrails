@@ -90,6 +90,11 @@ body {
   color: $white;
 }
 
+.left-space {
+  margin-left: 1em;
+}
+
+
 .navbar {
   position: fixed;
   z-index: 10;
@@ -433,6 +438,9 @@ h1,h2,h3 {
     align-items: center;
     gap: 0.3em;
   }
+  .h3 {
+    min-width: 11em;
+  }
   & > * { gap: 1em; }
   .play { margin-left: 1em; }
   &::before {
@@ -748,6 +756,12 @@ h1,h2,h3 {
   }
   .background-images {
     opacity: 0.2;
+  }
+  .level {
+    .play { display: none; }
+    .infos { display: none; }
+    .h3 { min-width: unset; }
+    height: 6em;
   }
 }
 

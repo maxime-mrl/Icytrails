@@ -1,6 +1,6 @@
 <section class="level-card">
-    <h1 class="h1">un superbe niveaux</h1>
-        <a class="btn"><i class="fa-solid fa-play"></i> Play !</a>
+    <h1 class="h1"><?= $level->name ?></h1>
+        <a href="/levels/play/<?= $level->id ?>" class="btn"><i class="fa-solid fa-play"></i> Play !</a>
         <div class="difficulty">
             <h2 class="h3">difficulty rating:</h2>
             <div class="slider">

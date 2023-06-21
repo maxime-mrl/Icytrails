@@ -3,28 +3,35 @@
         <h1 class="h1 editor-title">IcyTrails level editor</h1>
         <canvas width="1280" height="720" id="game-canvas"></canvas>
         <section class="controls">
-            <article class="visibility">
+            <form action="/<?= $_GET["p"] ?>" method="post" class="visibility" id="form-sumbit">
                 <div class="select">
                     <i class="fa-solid fa-chevron-down"></i>
                     <select name="visibility" id="visibility">
-                        <option value="1">Visibility: Public</option>
+                        <?php $visibility = isset($level->visibility) ? $level->visibility : 0 ?>
                         <option value="0">Visibility: Un-listed</option>
+                        <option value="1" <?= ($visibility == 1 ? "selected" : "") ?>>Visibility: Public</option>
                     </select>
                 </div>
-            </article>
+                <div style="display:none">
+                    <input type="text" name="name" id="title-box" readonly>
+                    <input type="text" name="level" id="level-box" readonly>
+                </div>
+            </form>
             <article>
                 <button class="btn succes-bg" id="save-btn">Save change</button>
             </article>
             <article>
                 <button class="btn succes-bg" id="try-btn">Save change and try</button>
             </article>
-            <article>
-                <button class="btn fail-bg">Delete</button>
-            </article>
+            <?php if (isset($level->id)): ?>
+                <form action="/levels/delete/<?= $level->id ?>" method="post" onsubmit="return confirm('Are you sure you want to delete level <?= $level->name ?>');">
+                    <input type="submit" class="btn fail-bg" value="Delete">
+                </form>
+            <?php endif; ?>
         </section>
         <section class="level-title">
             <label for="input-title">Title:</label>
-            <input type="text" name="title" id="input-title" placeholder="Level title" data-err="Please enter a valid title" data-check="/^[-a-z0-9\/]{5,100}$/">
+            <input type="text" name="title" id="input-title" placeholder="Level title" data-err="Please enter a valid title" data-check="/^.{5,100}$/" value="<?= ($level != false ?$level->name : '') ?>">
         </section>
     </div>
     <section class="blocks-select">
@@ -58,4 +65,5 @@
 <script src="/script/ext/popper.min.js"></script>
 <script src="/script/ext/tippy-bundle.umd.js"></script>
 <!-- main game script -->
+<script>const compressedLevel = "<?= ($level != false ?$level->level : false) ?>";</script>
 <script src="/script/editor.js" type="module"></script>

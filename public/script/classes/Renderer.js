@@ -23,7 +23,7 @@ export default class Renderer {
                 blocks.forEach(block => {
                     const image = document.createElement("img");
                     image.src = `/asset/texture/blocks/${block[0]}.png`;
-                    image.tooltip = block[2]
+                    image.alt = block[2];
                     image.onclick = () => this.world.selectedBlock = block[1]; // add event listener for level editors (when images are used as html)
                     this.blockTextures.set(block[1], image);
                 });
