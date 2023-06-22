@@ -115,7 +115,6 @@ body {
   animation: disapear 300ms 2s forwards;
 }
 
-
 .navbar {
   position: fixed;
   z-index: 10;
@@ -152,6 +151,7 @@ body {
     padding: 0.7em 1.5em;
   }
 }
+
 .margin {
   height: 9vh;
   max-height: 3.5em;
@@ -160,8 +160,8 @@ body {
 footer {
   display: flex;
   justify-content: space-around;
-  // align-items: center;
-  // background-color: $bg;
+  border-top: 2px solid darken($bg, 4);
+  background-color: $bg;
   padding: 1em 0 2em;
   .cookie {
     width: 10rem;
@@ -197,7 +197,7 @@ footer {
   &.fail-bg { background-color: $fail }
 }
 
-input:not([type="submit"], [type="range"], [type="select"]) {
+input:not([type="submit"], [type="range"], [type="select"]), textarea {
   padding: 0.1em 0.5em;
   border-radius: 0.3em;
   background-color: $white;
@@ -242,8 +242,9 @@ input:not([type="submit"], [type="range"], [type="select"]) {
 .h1 { --size: 3rem }
 .h2 { --size: 2.5rem }
 .h3 { --size: 1.5rem }
+.h4 { --size: 1.3rem }
 
-h1,h2,h3 {
+.h1,.h2,.h3,.h4 {
   font-size: var(--size);
   font-weight: bold;
 }
@@ -531,6 +532,10 @@ h1,h2,h3 {
   .h2, .h1 {
     text-align: center;
   }
+  .actions {
+    display: flex;
+    gap: 1em;
+  }
   .btn {
     width: fit-content;
   }
@@ -555,9 +560,25 @@ h1,h2,h3 {
       padding: 0.5em 1em;
     }
   }
-  .comments {
-    article {
-      padding: 0.8em 0;
+}
+
+.comments {
+  margin-top: 2em;
+  width: 100%;
+  form {
+    margin: 1.5em 0;
+    text-align: left;
+    align-items: flex-start;
+    textarea {
+      padding: 0.2em;
+      width: 80%;
+      height: 3.5em;
+    }
+  }
+  article {
+    padding: 0.8em 0;
+    p {
+      margin-left: 1em;
     }
   }
 }

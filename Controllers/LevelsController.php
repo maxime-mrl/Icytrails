@@ -4,6 +4,7 @@ use App\Models\CommentsModel;
 use App\Models\LevelsModel;
 use App\Core\Tools;
 use App\Models\RatingsModel;
+use App\Models\UsersModel;
 
 class LevelsController extends Controller {
     /* ----------------------------- ROUTES FUNCTION ---------------------------- */
@@ -144,6 +145,9 @@ class LevelsController extends Controller {
     }
 
     public function setrating($uuid = null) {
+        if (empty($_POST)) {
+            Tools::redirectResponse("/");
+        }
         $levelsModel = new LevelsModel();
         $levelId = $this->isLevelExist($uuid, $levelsModel)->id;
         $userId = Tools::IsLogged()->id;
@@ -179,6 +183,34 @@ class LevelsController extends Controller {
                 ["type"=>"success", "text"=>"Personal rating successfully posted!"]
             ]);
         }
+    }
+
+    public function postcomment($uuid = null) {
+        if (empty($_POST)) {
+            Tools::redirectResponse("/");
+        }
+        $levelsModel = new LevelsModel();
+        $levelId = $this->isLevelExist($uuid, $levelsModel)->id;
+        $userId = Tools::IsLogged()->id;
+        if (!isset($_POST["comment"])) {
+            Tools::redirectResponse("/levels/details/$levelId", 200, [
+                ["type"=>"error", "text"=>"Please provide a valid comment"]
+            ]);
+        }
+        if ($_POST["comment"] !== strip_tags($_POST["comment"])) {
+            Tools::redirectResponse("/levels/details/$levelId", 200, [
+                ["type"=>"error", "text"=>"Please provide a valid comment"]
+            ]);
+        }
+        $comment = strip_tags($_POST["comment"]);
+        $commentsModel = new CommentsModel();
+        $commentsModel->setFor_level($levelId)
+            ->setPosted_by($userId)
+            ->setComment($comment);
+        $commentsModel->create($commentsModel);
+        Tools::redirectResponse("/levels/details/$levelId", 200, [
+            ["type"=>"success", "text"=>"Your comment is successfully posted!"]
+        ]);
     }
 
     /* ----------------------------- UTILS FUNCTIONS ---------------------------- */
@@ -226,6 +258,7 @@ class LevelsController extends Controller {
     private function addRatingToLevels($levels) {
         $ratingsModel = new RatingsModel();
         $commentsModel = new CommentsModel();
+        $usersModel = new UsersModel();
         $user = Tools::IsLogged(false);
         foreach ($levels as $level) {
             $level->ratings = $ratingsModel->findBy([
@@ -234,6 +267,9 @@ class LevelsController extends Controller {
             $level->comments = $commentsModel->findBy([
                 "for_level" => $level->id
             ]);
+            foreach ($level->comments as $comment) {
+                $comment->posted_by_name = $usersModel->findById($comment->posted_by)->username;
+            }
             if (count($level->ratings) < 1) {
                 $level->ratingAverage = 50;
             } else {

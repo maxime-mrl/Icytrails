@@ -148,6 +148,8 @@ body:has(.modal.active) {
 footer {
   display: flex;
   justify-content: space-around;
+  border-top: 2px solid #011f28;
+  background-color: #022e3c;
   padding: 1em 0 2em;
 }
 footer .cookie {
@@ -188,25 +190,25 @@ footer .cp .logo {
   background-color: #FF8585;
 }
 
-input:not([type=submit], [type=range], [type=select]) {
+input:not([type=submit], [type=range], [type=select]), textarea {
   padding: 0.1em 0.5em;
   border-radius: 0.3em;
   background-color: #F3EFF5;
   color: #022e3c;
   font-weight: 500;
 }
-input:not([type=submit], [type=range], [type=select])::-moz-placeholder {
+input:not([type=submit], [type=range], [type=select])::-moz-placeholder, textarea::-moz-placeholder {
   font-weight: 400;
   color: rgba(2, 46, 60, 0.7);
 }
-input:not([type=submit], [type=range], [type=select])::placeholder {
+input:not([type=submit], [type=range], [type=select])::placeholder, textarea::placeholder {
   font-weight: 400;
   color: rgba(2, 46, 60, 0.7);
 }
-input:not([type=submit], [type=range], [type=select])[data-state=fail] {
+input:not([type=submit], [type=range], [type=select])[data-state=fail], textarea[data-state=fail] {
   border: 2px solid #FF8585;
 }
-input:not([type=submit], [type=range], [type=select])[data-state=success] {
+input:not([type=submit], [type=range], [type=select])[data-state=success], textarea[data-state=success] {
   border: 2px solid #97DB4F;
 }
 
@@ -256,7 +258,11 @@ input:not([type=submit], [type=range], [type=select])[data-state=success] {
   --size: 1.5rem ;
 }
 
-h1, h2, h3 {
+.h4 {
+  --size: 1.3rem ;
+}
+
+.h1, .h2, .h3, .h4 {
   font-size: var(--size);
   font-weight: bold;
 }
@@ -554,6 +560,10 @@ h1, h2, h3 {
 .level-card .h2, .level-card .h1 {
   text-align: center;
 }
+.level-card .actions {
+  display: flex;
+  gap: 1em;
+}
 .level-card .btn {
   width: -moz-fit-content;
   width: fit-content;
@@ -579,8 +589,26 @@ h1, h2, h3 {
   font-weight: 500;
   padding: 0.5em 1em;
 }
-.level-card .comments article {
+
+.comments {
+  margin-top: 2em;
+  width: 100%;
+}
+.comments form {
+  margin: 1.5em 0;
+  text-align: left;
+  align-items: flex-start;
+}
+.comments form textarea {
+  padding: 0.2em;
+  width: 80%;
+  height: 3.5em;
+}
+.comments article {
   padding: 0.8em 0;
+}
+.comments article p {
+  margin-left: 1em;
 }
 
 /* -------------------------------------------------------------------------- */

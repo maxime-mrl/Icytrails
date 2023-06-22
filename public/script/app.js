@@ -22,9 +22,10 @@ function toggleNavbar() {
 }
 
 /* ---------------------------- INPUT VALIDATION ---------------------------- */
-const inputs = document.querySelectorAll('input:not([type="submit"], [type="range"], [type="select"])');
+const inputs = document.querySelectorAll('input:not([type="submit"], [type="range"], [type="select"]), textarea');
 inputs.forEach(input => { // browse all input and initialize checking on blur
     let regex = input.getAttribute("data-check");
+    if (!regex) return;
     if (/^\/.*\//.test(regex)) regex = eval(regex); // check if regex is valid
     else if (!/^=[a-z]+:/.test(regex)) return;
     let err = input.getAttribute("data-err");
