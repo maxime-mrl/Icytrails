@@ -22,7 +22,7 @@ class Tools {
         foreach ($array as $item) if ($filter == $item) return true;
         return false;
     }
-    public static function IsLogged() {
+    public static function IsLogged($redirect = true) {
         if (isset($_SESSION["user"]) && isset($_SESSION["user"]["id"])) {
             $usersModel = new UsersModel();
             $user = $usersModel->findById($_SESSION["user"]["id"]);
@@ -30,6 +30,7 @@ class Tools {
                 return $user;
             }
         }
+        if ($redirect === false) return false;
         Tools::redirectResponse("/users/login", 200, [
             ['type' => "error", "text" => "Please log in before accessing this page"]
         ]);

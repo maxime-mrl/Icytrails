@@ -7,15 +7,15 @@
                 <a class="btn play" href="/levels/play/<?= $level->id ?>"><i class="fa-solid fa-play"></i> Play !</a>
                 <a class="btn details" href="/levels/details/<?= $level->id ?>"><i class="fa-solid fa-plus"></i> More info</a>
             </div>
-            <a  href="/levels/detail/<?= $level->id ?>" class="infos">
+            <a  href="/levels/details/<?= $level->id ?>" class="infos">
                 <div class="slider">
                     -
-                    <div class="scale scale-point" style="--pos: 10%"></div>
+                    <div class="scale scale-point" style="--pos: <?= $level->ratingAverage ?>%"></div>
                     +
                 </div>
                 <div class="comments">
                     <i class="fa-solid fa-comments"></i>
-                    <p>5</p>
+                    <p><?= count($level->comments) ?></p>
                 </div>
             </a>
         </article>

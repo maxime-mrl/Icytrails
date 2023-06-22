@@ -9,11 +9,13 @@
                 <div class="scale scale-point" style="--pos: 10%"></div>
                 +
             </div>
-            <form action="">
-                <label for="difficulty">Your rating:</label>
-                <input type="range" name="difficulty" class="scale">
-                <button type="submit" class="btn">Submit</button>
-            </form>
+            <?php if (isset($level->selfRating)): ?>
+                <form action="/levels/setrating/<?= $level->id ?>" method="post">
+                    <label for="difficulty">Your rating:</label>
+                    <input type="range" name="difficulty" class="scale" value="<?= $level->selfRating ?>">
+                    <button type="submit" class="btn">Submit</button>
+                </form>
+            <?php endif; ?>
         </div>
         <div class="comments">
             <h2 class="h2">Comments</h2>

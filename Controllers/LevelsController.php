@@ -1,7 +1,9 @@
 <?php
 namespace App\Controllers;
+use App\Models\CommentsModel;
 use App\Models\LevelsModel;
 use App\Core\Tools;
+use App\Models\RatingsModel;
 
 class LevelsController extends Controller {
     /* ----------------------------- ROUTES FUNCTION ---------------------------- */
@@ -10,6 +12,7 @@ class LevelsController extends Controller {
         $levels = $levelsModel->findBy([
             "visibility" => 1
         ]);
+        $levels = $this->addRatingToLevels($levels);
         $this->render("levels/browser", $levels);
     }
 
@@ -19,22 +22,23 @@ class LevelsController extends Controller {
         $levels = $levelsModel->findBy([
             "created_by" => $user->id
         ]);
+        $levels = $this->addRatingToLevels($levels);
         $this->render("levels/browser", $levels);
-    }
-
-    
-    public function play($uuid = null) { // render wanted level to play it
-        // check that we have level
-        $levelsModel = new LevelsModel();
-        $level = $this->isLevelExist($uuid, $levelsModel);
-        $this->render("levels/game", ["level"=>$level->level]); // render game page w/ level
     }
 
     public function details($uuid = null) { // show details of a given level
         // check that we have level
         $levelsModel = new LevelsModel();
         $level = $this->isLevelExist($uuid, $levelsModel);
+        $level = $this->addRatingToLevels([ $level ])[0];
         $this->render("levels/details", ["level"=>$level]); // render game page w/ level
+    }
+    
+    public function play($uuid = null) { // render wanted level to play it
+        // check that we have level
+        $levelsModel = new LevelsModel();
+        $level = $this->isLevelExist($uuid, $levelsModel);
+        $this->render("levels/game", ["level"=>$level->level]); // render game page w/ level
     }
 
     public function delete($uuid = null) {
@@ -139,6 +143,44 @@ class LevelsController extends Controller {
         }
     }
 
+    public function setrating($uuid = null) {
+        $levelsModel = new LevelsModel();
+        $levelId = $this->isLevelExist($uuid, $levelsModel)->id;
+        $userId = Tools::IsLogged()->id;
+        if (!isset($_POST["difficulty"])) {
+            Tools::redirectResponse("/levels/details/$levelId", 200, [
+                ["type"=>"error", "text"=>"Please provide a valid input for your rating"]
+            ]);
+        }
+        $difficulty = intval($_POST["difficulty"]);
+        if ($difficulty < 0 || $difficulty > 100) {
+            Tools::redirectResponse("/levels/details/$levelId", 200, [
+                ["type"=>"error", "text"=>"Please provide a valid input for your rating"]
+            ]);
+        }
+        $ratingsModel = new RatingsModel();
+        $existingRating = $ratingsModel->findBy([
+            "posted_by" => $userId,
+            "for_level" => $levelId
+        ]);
+        if (isset($existingRating[0])) {
+            $existingRating = $ratingsModel->hydrate($existingRating[0]);
+            $ratingsModel->setDifficulty($difficulty);
+            $ratingsModel->updateById($ratingsModel, $ratingsModel->getId());
+            Tools::redirectResponse("/levels/details/$levelId", 200, [
+                ["type"=>"success", "text"=>"Personal rating successfully updated!"]
+            ]);
+        } else {
+            $ratingsModel->setFor_level($levelId)
+                ->setPosted_by($userId)
+                ->setDifficulty($difficulty);
+            $ratingsModel->create($ratingsModel);
+            Tools::redirectResponse("/levels/details/$levelId", 200, [
+                ["type"=>"success", "text"=>"Personal rating successfully posted!"]
+            ]);
+        }
+    }
+
     /* ----------------------------- UTILS FUNCTIONS ---------------------------- */
     private function setUuid() {
         $levelsModel = new LevelsModel();
@@ -179,5 +221,37 @@ class LevelsController extends Controller {
             if (!Tools::IsinArray($blocks, $bg->t)) return false;
         }
         return true;
+    }
+
+    private function addRatingToLevels($levels) {
+        $ratingsModel = new RatingsModel();
+        $commentsModel = new CommentsModel();
+        $user = Tools::IsLogged(false);
+        foreach ($levels as $level) {
+            $level->ratings = $ratingsModel->findBy([
+                "for_level" => $level->id
+            ]);
+            $level->comments = $commentsModel->findBy([
+                "for_level" => $level->id
+            ]);
+            if (count($level->ratings) < 1) {
+                $level->ratingAverage = 50;
+            } else {
+                $level->ratingAverage = 0;
+                foreach ($level->ratings as $rating) {
+                    $level->ratingAverage += intval($rating->difficulty);
+                }
+                $level->ratingAverage = $level->ratingAverage / count($level->ratings);
+            }
+
+            if ($user !== false) {
+                $selfRating = $ratingsModel->findBy([
+                    "posted_by" => $user->id,
+                    "for_level" => $level->id
+                ]);
+                $level->selfRating = isset($selfRating[0]) ? $selfRating[0]->difficulty : 50;
+            }
+        }
+        return $levels;
     }
 }

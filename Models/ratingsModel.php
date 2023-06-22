@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-class RatingModel extends Model {
+class RatingsModel extends Model {
 
     protected $id;
     protected $for_level;
