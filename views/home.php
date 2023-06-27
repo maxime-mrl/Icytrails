@@ -7,7 +7,11 @@
         </h1>
         <h2 class="h2" data-text="Create, play and share your own levels"><i class="scramble" data-words="Create%c#FF8585;Play%c#3DD6D0;Share%c#97DB4F">Create</i> your own levels</h2>
         <div class="cta">
-            <button class="btn" onclick="openModal('register-modal')">Join comunity</button>
+            <?php if($logged): ?>
+                <a class="btn" href="/levels/own">Your levels</a>
+            <?php else: ?>
+                <button class="btn" onclick="openModal('register-modal')">Join comunity</button>
+            <?php endif; ?>
             <a class="btn succes-bg" href="/levels">Browse levels</a>
         </div>
     </div>

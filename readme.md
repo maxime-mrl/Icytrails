@@ -25,10 +25,10 @@ With all these possibilities and the special physics, you can really get creativ
   - [x] 🖼️ Logo
 - [ ] ⚙️ Backend
   - [x] 🏗️ Database structure
-  - [ ] 📜 Database
+  - [x] 📜 Database
   - [ ] 👤 User handling
-  - [ ] ✔️ Game saving
-  - [ ] 🎯 Game selecting
+  - [x] ✔️ Game saving
+  - [x] 🎯 Game selecting
 - [ ] ➕ Additionals functionalities?
 
 ## How to use it?

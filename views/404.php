@@ -1,13 +1,8 @@
-<nav class="navbar">
-    <ul class="left">
-        <li>
-            <a href="/"><img src="/asset/img/logo-transparent.png" alt="Icytrails logo" class="logo"></a>
-        </li>
-        <li>
-            <a href="/" class="link">Return to home</a>
-        </li>
-    </ul>
-</nav>
+<div class="return">
+    <a href="/">
+        <i class="fa-solid fa-right-to-bracket fa-rotate-180"></i>
+    </a>
+</div>
 <h1>Ups this is a problem</h1>
 <canvas width="1280" height="720" id="game-canvas"></canvas>
 <!-- main script -->

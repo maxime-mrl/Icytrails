@@ -1,3 +1,8 @@
+<div class="return">
+    <a href="<?= $_SERVER["HTTP_REFERER"] ?>">
+        <i class="fa-solid fa-right-to-bracket fa-rotate-180"></i>
+    </a>
+</div>
 <div id="editor-container" class="modal-oppened">
     <div class="editor">
         <h1 class="h1 editor-title">IcyTrails level editor</h1>

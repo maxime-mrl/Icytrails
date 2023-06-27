@@ -69,14 +69,14 @@ select {
 /*                                   CONTENT                                  */
 /* -------------------------------------------------------------------------- */
 body {
-    background-color: $bg;
-    color: $white;
-    font-family: atma;
-    font-size: 1.25rem;
-    overflow-x: hidden;
-    &:has(.modal.active) {
-      overflow: hidden;
-    }
+  background-color: $bg;
+  color: $white;
+  font-family: atma;
+  font-size: 1.25rem;
+  overflow-x: hidden;
+  &:has(.modal.active) {
+    overflow: hidden;
+  }
 }
 
 .burger-btn {
@@ -112,7 +112,7 @@ body {
     background-color: $success;
     border: 2px solid darken($success, 8);
   }
-  animation: disapear 300ms 2s forwards;
+  animation: disapear 300ms 3.5s forwards;
 }
 
 .navbar {
@@ -359,6 +359,18 @@ input:not([type="submit"], [type="range"], [type="select"]), textarea {
   }
 }
 
+.return {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 99;
+  font-size: 2.3rem;
+  text-shadow: -0.15em -0.1em 0.25em $bg;
+  i {
+    -webkit-text-stroke: 2px $bg;
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                LEVEL EDITOR                                */
 /* -------------------------------------------------------------------------- */
@@ -444,7 +456,7 @@ input:not([type="submit"], [type="range"], [type="select"]), textarea {
 /* -------------------------------------------------------------------------- */
 /*                                LEVEL BROWSER                               */
 /* -------------------------------------------------------------------------- */
-.level-list { min-height: 90vh };
+.level-list { min-height: 91vh };
 .level {
   position: relative;
   display: flex;
@@ -486,6 +498,19 @@ input:not([type="submit"], [type="range"], [type="select"]), textarea {
     height: 100%;
     padding: 0 1em;
   }
+}
+
+.level-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .scale {
@@ -560,28 +585,28 @@ input:not([type="submit"], [type="range"], [type="select"]), textarea {
       padding: 0.5em 1em;
     }
   }
+  .comments {
+    margin-top: 2em;
+    width: 100%;
+    form {
+      margin: 1.5em 0;
+      text-align: left;
+      align-items: flex-start;
+      textarea {
+        padding: 0.2em;
+        width: 80%;
+        height: 3.5em;
+      }
+    }
+    article {
+      padding: 0.8em 0;
+      p {
+        margin-left: 1em;
+      }
+    }
+  }
 }
 
-.comments {
-  margin-top: 2em;
-  width: 100%;
-  form {
-    margin: 1.5em 0;
-    text-align: left;
-    align-items: flex-start;
-    textarea {
-      padding: 0.2em;
-      width: 80%;
-      height: 3.5em;
-    }
-  }
-  article {
-    padding: 0.8em 0;
-    p {
-      margin-left: 1em;
-    }
-  }
-}
 
 /* -------------------------------------------------------------------------- */
 /*                                  HOME PAGE                                 */

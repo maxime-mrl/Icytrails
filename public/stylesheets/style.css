@@ -95,7 +95,7 @@ body:has(.modal.active) {
   z-index: 999;
   font-weight: 500;
   color: #022e3c;
-  animation: disapear 300ms 2s forwards;
+  animation: disapear 300ms 3.5s forwards;
 }
 .notification.error {
   background-color: #FF8585;
@@ -376,6 +376,18 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
   text-align: center;
 }
 
+.return {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 99;
+  font-size: 2.3rem;
+  text-shadow: -0.15em -0.1em 0.25em #022e3c;
+}
+.return i {
+  -webkit-text-stroke: 2px #022e3c;
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                LEVEL EDITOR                                */
 /* -------------------------------------------------------------------------- */
@@ -466,7 +478,7 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
 /*                                LEVEL BROWSER                               */
 /* -------------------------------------------------------------------------- */
 .level-list {
-  min-height: 90vh;
+  min-height: 91vh;
 }
 
 .level {
@@ -512,6 +524,19 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
 .level .infos {
   height: 100%;
   padding: 0 1em;
+}
+
+.level-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
 .scale {
@@ -589,25 +614,24 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
   font-weight: 500;
   padding: 0.5em 1em;
 }
-
-.comments {
+.level-card .comments {
   margin-top: 2em;
   width: 100%;
 }
-.comments form {
+.level-card .comments form {
   margin: 1.5em 0;
   text-align: left;
   align-items: flex-start;
 }
-.comments form textarea {
+.level-card .comments form textarea {
   padding: 0.2em;
   width: 80%;
   height: 3.5em;
 }
-.comments article {
+.level-card .comments article {
   padding: 0.8em 0;
 }
-.comments article p {
+.level-card .comments article p {
   margin-left: 1em;
 }
 

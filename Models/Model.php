@@ -3,20 +3,21 @@ namespace App\Models;
 use App\Core\Db;
 
 class Model extends Db {
-    // Table de la BDD (pour les classes qui hériteront, permet de def le nom de la table)
     protected $table;
-    // Instance de DB (permet d'accéder à la connexion à la BDD)
+    // db instance
     private $db;
 
 
-    // CRUD
+    /* -------------------------------------------------------------------------- */
+    /*                                    CRUD                                    */
+    /* -------------------------------------------------------------------------- */
     public function create($model) {
         $columns = [];
         $values = [];
         $splits = [];
 
-        foreach ($model as $column => $value) { // on sépare clé valeur et on fait autant de ? que d'entrées
-            if ($value !== null && $column !== "db" && $column !== "table") { // le modele a aussi db et table donc on vire
+        foreach ($model as $column => $value) {
+            if ($value !== null && $column !== "db" && $column !== "table") { // since we have the whole model we remove table and db
                 $columns[] = "$column";
                 $values[] = "$value";
                 $splits[] = "?";
@@ -30,8 +31,8 @@ class Model extends Db {
         $fields = [];
         $values = [];
 
-        foreach ($model as $field => $value) { // on bloucle pour séparer clé / valeur ($field clé => $value valeur)
-            if ($value !== null && $field !== "db" && $field !== "table") { // le modele a aussi db et table donc on vire
+        foreach ($model as $field => $value) {
+            if ($value !== null && $field !== "db" && $field !== "table") { // since we have the whole model we remove table and db
                 $fields[] = "$field = ?";
                 $values[] = "$value";
             }
@@ -39,15 +40,14 @@ class Model extends Db {
         $values[] = $id;
         // transofrm fields array in string
         $list_fields = implode(", ", $fields);
-        // on execute la requete
         return $this->customQuery("UPDATE $this->table SET $list_fields WHERE id = ?", $values);
     }
 
-    public function deleteById($id) {
+    public function deleteById($id) { // delete element by id
         return $this->customQuery("DELETE FROM $this->table WHERE id = ?", [$id]);
     }
 
-    public function findAll() { // tt les données d'une table
+    public function findAll() { // find all data
         $req = $this->customQuery('SELECT * FROM ' . $this->table);
         return $req->fetchAll();
     }
@@ -55,26 +55,21 @@ class Model extends Db {
     public function findBy($filters) { // find data from filter
         $fields = [];
         $values = [];
-
-        foreach ($filters as $field => $value) { // on bloucle pour séparer clé / valeur ($field clé => $value valeur)
+        // create fields string and filters (value) for a prepared request
+        foreach ($filters as $field => $value) {
             $fields[] = "$field = ?";
             $values[] = "$value";
         }
-        // on transfrome tableau fields en chaine de caractères
         $list_fields = implode(' AND ', $fields);
-        return $this->customQuery("SELECT * FROM {$this->table} WHERE {$list_fields}", $values)->fetchAll(); // {} pour variable dans une string
+        return $this->customQuery("SELECT * FROM {$this->table} WHERE {$list_fields}", $values)->fetchAll();
     }
 
     public function findById($id) {
         return $this->customQuery("SELECT * FROM {$this->table} WHERE id = ?", [$id])->fetch();
     }
 
-
-
-    public function hydrate($data) { // automatise getter et setter pour des data de formulaires direct par exemple
+    public function hydrate($data) { // hydrate models by settings all value we get at once
         foreach ($data as $key => $value) {
-            // on recup le nom du setter correspondant a la clé
-            // title = settitle par exemple
             $setter = "set".ucfirst($key);
             if(method_exists($this, $setter)) {
                 $this->$setter($value);
@@ -83,15 +78,15 @@ class Model extends Db {
         return $this;
     }
     
-    public function customQuery(string $sql, array $params = null) { // automatiser les requete preparer ou non
-        // BDD connect
+    public function customQuery(string $sql, array $params = null) { // automate request
+        // DB connect
         $this->db = Db::getInstance();
-        // on verif si on a les params
-        if ($params !== null) { // param present = requete preparé
+        // check if we have params
+        if ($params !== null) { // param present = prepare
             $req = $this->db->prepare($sql);
             $req->execute($params);
             return $req;
-        } else { // pas de params = requete normale
+        } else { // no params = normal
             return $this->db->query($sql);
         }
     }

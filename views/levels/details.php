@@ -5,7 +5,7 @@
         <h2 class="h3">difficulty rating:</h2>
         <div class="slider">
             -
-            <div class="scale scale-point" style="--pos: <?= $level->ratingAverage ?>%"></div>
+            <div class="scale scale-point" style="--pos: <?= $level->rating ?>%"></div>
             +
         </div>
         <?php if (isset($level->selfRating)): ?>
@@ -18,10 +18,8 @@
     </div>
     <div class="actions">
         <a href="/levels/play/<?= $level->id ?>" class="btn"><i class="fa-solid fa-play"></i> Play !</a>
-        <?php if (isset($_SESSION["user"]["id"])): ?>
-            <?php if ($_SESSION["user"]["id"] === $level->created_by): ?>
-                <a href="/levels/editor/<?= $level->id ?>" class="btn"><i class="fa-solid fa-gear"></i>Editor</a>
-            <?php endif; ?>
+        <?php if ($logged && $user["id"] === $level->created_by): ?>
+            <a href="/levels/editor/<?= $level->id ?>" class="btn"><i class="fa-solid fa-gear"></i>Editor</a>
         <?php endif; ?>
     </div>
     <div class="comments">
@@ -35,7 +33,7 @@
         <?php endif; ?>
         <?php foreach ($level->comments as $comment): ?>
             <article>
-                <h3 class="h3"><?= $comment->posted_by_name ?></h3>
+                <h3 class="h3"><?= $comment->username ?></h3>
                 <p><?= $comment->comment ?></p>
             </article>
         <?php endforeach; ?>

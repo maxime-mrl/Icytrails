@@ -3,8 +3,13 @@ namespace App\Core;
 use App\Models\UsersModel;
 
 class Tools {
-    public static function checkEntriesValidity($post, $url) {
-        foreach($post as $field => $value) { // check that nothing is empty or not plain text
+    /**
+     * Check that every entries present in the $_POST are filled and do not contain html
+     * @param array $post $_post object
+     * @param string $url where to redirect if error
+     */
+    public static function checkEntriesValidity(array $post, string $url) {
+        foreach($post as $field => $value) {
             if (!isset($value)) {
                 Tools::redirectResponse($url, 200, [
                     ['type' => "error", "text" => "Please fill the $field"]
@@ -18,11 +23,21 @@ class Tools {
         }
     }
 
-    public static function IsinArray($array, $filter) {
+    /**
+     * Check if something is in an array
+     * @param array $array
+     * @param mixed $filter
+     */
+    public static function IsinArray(array $array, mixed $filter) {
         foreach ($array as $item) if ($filter == $item) return true;
         return false;
     }
-    public static function IsLogged($redirect = true) {
+
+    /**
+     * Check if user is logged and return it
+     * @param bool $redirect default true redirect or return false when not logged 
+     */
+    public static function IsLogged(bool $redirect = true) {
         if (isset($_SESSION["user"]) && isset($_SESSION["user"]["id"])) {
             $usersModel = new UsersModel();
             $user = $usersModel->findById($_SESSION["user"]["id"]);
@@ -35,11 +50,19 @@ class Tools {
             ['type' => "error", "text" => "Please log in before accessing this page"]
         ]);
     }
-    public static function redirectResponse($path, $code=200, $messages = null, $open = null) {
+
+    /**
+     * Redirect to a specific url and stop code to stop anything after
+     * @param string $path redirect url
+     * @param int $code [OPTIONAL] response code used
+     * @param mixed $message [OPTIONAL] message notifications displayed
+     * @param mixed $open [OPTIONAL] default opened modals
+     */
+    public static function redirectResponse(string $path, int $code=200, mixed $messages = null, mixed $open = null) {
         $_SESSION["messages"] = $messages;
         $_SESSION["open"] = $open;
         http_response_code($code);
         header("location: " . $path);
-        die();
+        exit;
     }
 }

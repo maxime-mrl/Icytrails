@@ -6,17 +6,16 @@ use App\Core\Tools;
 
 class UsersController extends controller {
     public function register() {
-        $error = false;
         if (!empty($_POST)) {
             // check that everything is filled
             Tools::checkEntriesValidity($_POST, "/users/register");
-            // set the redirect path (add first / if missing)
-            if ($_POST["redirect"][0] != "/") {
-                $_POST["redirect"] = "/" . $_POST["redirect"];
+            // set the redirect path
+            if (!isset($_POST["redirect"])) {
+                $_POST["redirect"] = $_SERVER["HTTP_REFERER"];
             }
             /* ----------------------------- SPECIFIC CHECK ----------------------------- */
             // mail
-            if (!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL) && !$error) {
+            if (!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL)) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Please enter a valid mail"]
                 ]);
@@ -28,6 +27,7 @@ class UsersController extends controller {
                     ['type' => "error", "text" => "Please enter a valid username"]
                 ]);
             }
+
             // pass
             if(!preg_match("/.{6,}/", $_POST["pass"]) || $_POST["pass"] !== $_POST["pass-confirm"]) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
@@ -66,21 +66,26 @@ class UsersController extends controller {
                 ['type' => "success", "text" => "Yeahhh welcome $user->username!"]
             ]);
         } else {
+            // display register page
+            if (Tools::IsLogged(false)) { // if user is logged don't allow access
+                Tools::redirectResponse($_SERVER["HTTP_REFERER"], 200, [
+                    ["type" => "success", "You are already signed-in"]
+                ]);
+            }
             $this->render("users/register");
         }
     }
     public function login() {
-        $error = false;
         if (!empty($_POST)) {
             // check that everything is filled
             Tools::checkEntriesValidity($_POST, "/users/login");
-            // set the redirect path (add first / if missing)
-            if ($_POST["redirect"][0] != "/") {
-                $_POST["redirect"] = "/" . $_POST["redirect"];
+            // set the redirect path
+            if (!isset($_POST["redirect"])) {
+                $_POST["redirect"] = $_SERVER["HTTP_REFERER"];
             }
             
             /* ----------------------------- SPECIFIC CHECK ----------------------------- */
-            if (!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL) && !$error) { // mail
+            if (!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL)) { // mail
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Please enter a valid mail"]
                 ]);
@@ -95,19 +100,21 @@ class UsersController extends controller {
             $mail = strip_tags($_POST["mail"]);
             $password = $_POST["pass"];
             $usersModel = new UsersModel();
-
+            // try to find user
             $user = $usersModel->findBy(["mail" => $mail]);
             if (!$user) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Incorrect mail or password"]
                 ]);
             }
+            // user mail exist -> check password
             $user = $usersModel->hydrate($user[0]);
             if (!password_verify($password, $usersModel->getPassword())) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Incorrect mail or password"]
                 ]);
             }
+            // logged in -> session
             $_SESSION["user"] = [
                 "id" => $user->getId(),
                 "username" => $user->getUsername(),
@@ -117,6 +124,12 @@ class UsersController extends controller {
                 ['type' => "success", "text" => "Yeahhh welcome back " . $user->getUsername() . "!"]
             ]);
         } else {
+            // display login page
+            if (Tools::IsLogged(false)) { // if user is logged don't allow access
+                Tools::redirectResponse($_SERVER["HTTP_REFERER"], 200, [
+                    ["type" => "success", "You are already logged"]
+                ]);
+            }
             $this->render("users/login");
         }
     }

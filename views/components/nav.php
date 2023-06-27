@@ -8,6 +8,11 @@
         </li>
         <li>
             <a href="/levels" class="link">Browse levels</a>
+        <?php if ($logged): ?>
+            <li>
+                <a href="/levels/editor/new" class="link left-space">Create a level</a>
+            </li>
+        <?php endif; ?>
         </li>
     </ul>
     <ul class="right">
@@ -17,11 +22,11 @@
         <?php elseif (preg_match("/register/", $_GET["p"])): ?>
             <li>Arleady have an account?</li>
             <li> <a class="link" href="/users/login">Login</a></li>
-        <?php elseif (!isset($_SESSION["user"])): ?>
+        <?php elseif (!$logged): ?>
             <li><button class="btn" onclick="openModal('register-modal')">Register</button></li>
             <li><button class="btn" onclick="openModal('login-modal')">Login</button></li>
         <?php else: ?>
-            <li>Hello <?= $_SESSION["user"]["username"]; ?>.</li>
+            <li>Hello <?= $user["username"]; ?>.</li>
             <li><a class="link left-space" href="/users/settings">Accout settings</a></li>
             <li><a class="link left-space" href="/levels/own">Your levels</a></li>
         <?php endif; ?>
