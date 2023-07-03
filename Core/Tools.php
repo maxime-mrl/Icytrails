@@ -8,17 +8,17 @@ class Tools {
      * @param array $post $_post object
      * @param string $url where to redirect if error
      */
-    public static function checkEntriesValidity(array $post, string $url) {
+    public static function checkEntriesValidity(array $post, string $url, $modal = null) {
         foreach($post as $field => $value) {
             if (!isset($value)) {
                 Tools::redirectResponse($url, 200, [
                     ['type' => "error", "text" => "Please fill the $field"]
-                ]);
+                ], $modal);
             }
             if (strip_tags($value) != $value) {
                 Tools::redirectResponse($url, 200, [
                     ['type' => "error", "text" => "You should only fill plain text"]
-                ]);
+                ], $modal);
             }
         }
     }

@@ -9,7 +9,7 @@
         <label for="register-pass">Password</label>
         <input type="password" name="pass" id="register-pass" placeholder="Your password" data-err="Password must be at least 6 characters" data-check="/.{6,}/">
         <input type="password" name="pass-confirm" placeholder="Confirm password"  data-err="Password dosen't match" data-check="=id:register-pass">
-        <input type="text" name="redirect" value="<?= $_SERVER["HTTP_REFERER"] ?>" readonly style="display:none">
+        <input type="text" name="redirect" value="<?= (isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "/") ?>" readonly style="display:none">
         <input type="submit" value="Register" class="btn">
     </form>
 </div>

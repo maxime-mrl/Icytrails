@@ -21,6 +21,7 @@ abstract class controller {
         include_once ROOT . "/Views/" . $file . '.php'; // view itslef
         include_once ROOT . "/Views/components/end.php"; // closing part of html (script and tag closing)
         // reset messages notifications
-        $_SESSION["messages"] = null;
+        unset($_SESSION["messages"]);
+        unset($_SESSION["open"]);
     }
 }

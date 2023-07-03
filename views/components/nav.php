@@ -26,8 +26,18 @@
             <li><button class="btn" onclick="openModal('register-modal')">Register</button></li>
             <li><button class="btn" onclick="openModal('login-modal')">Login</button></li>
         <?php else: ?>
-            <li>Hello <?= $user["username"]; ?>.</li>
-            <li><a class="link left-space" href="/users/settings">Accout settings</a></li>
+            <div class="drop-down">
+                <p>Hello <?= $user["username"]; ?> <i class="fa-solid fas fa-angle-down"></i></p>
+                <ul>
+                    <li><a class="link" href="/users/settings">Accout settings</a></li>
+                    <li><a class="link fail-color" href="/users/disconnect">sign-out</a></li>
+                </ul>
+            </div>
+            <ul class="mobile-drop-down">
+                <li>Hello <?= $user["username"]; ?> <i class="fa-solid fas fa-angle-down"></i></li>
+                <li><a class="link" href="/users/settings">Accout settings</a></li>
+                <li><a class="link fail-color" href="/users/disconnect">sign-out</a></li>
+            </ul>
             <li><a class="link left-space" href="/levels/own">Your levels</a></li>
         <?php endif; ?>
     </ul>

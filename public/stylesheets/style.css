@@ -70,15 +70,41 @@ body:has(.modal.active) {
   overflow: hidden;
 }
 
-.burger-btn {
-  position: fixed;
-  z-index: 11;
-  top: 1em;
-  right: 1rem;
-  font-size: 2rem;
-  display: none;
-  text-shadow: 0.1em 0.1em 0.1em #022e3c;
-  color: #F3EFF5;
+.succes-bg {
+  background-color: #97DB4F !important;
+}
+
+.fail-bg {
+  background-color: #FF8585 !important;
+}
+
+.succes-color {
+  color: #97DB4F !important;
+}
+
+.fail-color {
+  color: #FF8585 !important;
+}
+
+.h1 {
+  --size: 3rem ;
+}
+
+.h2 {
+  --size: 2.5rem ;
+}
+
+.h3 {
+  --size: 1.5rem ;
+}
+
+.h4 {
+  --size: 1.3rem ;
+}
+
+.h1, .h2, .h3, .h4 {
+  font-size: var(--size);
+  font-weight: bold;
 }
 
 .left-space {
@@ -139,10 +165,68 @@ body:has(.modal.active) {
 .navbar .btn {
   padding: 0.7em 1.5em;
 }
+.navbar .mobile-drop-down {
+  display: none;
+}
+.navbar .drop-down {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  cursor: pointer;
+}
+.navbar .drop-down ul {
+  position: absolute;
+  top: 100%;
+  left: -25%;
+  display: block;
+  overflow: hidden;
+  width: 150%;
+  padding: 0 0.5em;
+  box-shadow: 3px 4px 5px rgba(2, 46, 60, 0.5);
+  background-color: rgba(2, 46, 60, 0.9);
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  border: 2px solid #011f28;
+  opacity: 0;
+  height: 0%;
+  transition: opacity 0ms linear 200ms, height 200ms ease-in-out 0ms;
+}
+.navbar .drop-down ul li {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+  width: 100%;
+  padding: 0 5%;
+}
+.navbar .drop-down .fa-angle-down {
+  transition: transform 200ms ease-in-out;
+}
+.navbar .drop-down:hover ul {
+  height: 200%;
+  opacity: 1;
+  transition: opacity 0ms linear 0ms, height 200ms ease-in-out 0ms;
+}
+.navbar .drop-down:hover .fa-angle-down {
+  transform: rotate(180deg);
+}
 
 .margin {
   height: 9vh;
   max-height: 3.5em;
+}
+
+.burger-btn {
+  position: fixed;
+  z-index: 11;
+  top: 1em;
+  right: 1rem;
+  font-size: 2rem;
+  display: none;
+  text-shadow: 0.1em 0.1em 0.1em #022e3c;
+  color: #F3EFF5;
 }
 
 footer {
@@ -183,11 +267,19 @@ footer .cp .logo {
 .btn:hover {
   transform: scale(1.05);
 }
-.btn.succes-bg {
-  background-color: #97DB4F;
+
+.link {
+  color: #3DD6D0;
+  font-weight: 500;
+  text-shadow: 0.1em 0.1em 0.1em #02232d;
+  transition: transform 200ms ease-in-out, color 200ms ease-in-out;
+  display: inline-block;
+  cursor: pointer;
 }
-.btn.fail-bg {
-  background-color: #FF8585;
+.link:hover {
+  transform: scale(1.05);
+  text-shadow: 0.15em 0.15em 0.1em #02232d;
+  color: #52dad5;
 }
 
 input:not([type=submit], [type=range], [type=select]), textarea {
@@ -244,41 +336,6 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
 }
 .select:hover {
   transform: scale(1.05);
-}
-
-.h1 {
-  --size: 3rem ;
-}
-
-.h2 {
-  --size: 2.5rem ;
-}
-
-.h3 {
-  --size: 1.5rem ;
-}
-
-.h4 {
-  --size: 1.3rem ;
-}
-
-.h1, .h2, .h3, .h4 {
-  font-size: var(--size);
-  font-weight: bold;
-}
-
-.link {
-  color: #3DD6D0;
-  font-weight: 500;
-  text-shadow: 0.1em 0.1em 0.1em #02232d;
-  transition: transform 200ms ease-in-out, color 200ms ease-in-out;
-  display: inline-block;
-  cursor: pointer;
-}
-.link:hover {
-  transform: scale(1.05);
-  text-shadow: 0.15em 0.15em 0.1em #02232d;
-  color: #52dad5;
 }
 
 .tippy-box {
@@ -574,13 +631,12 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
 /*                                LEVEL DETAIL                                */
 /* -------------------------------------------------------------------------- */
 .level-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
   gap: 1em;
-  max-width: 900px;
-  margin: 1em auto;
+  margin: 1em auto 0;
+  width: 95vw;
+  min-height: 91vh;
 }
 .level-card .h2, .level-card .h1 {
   text-align: center;
@@ -588,6 +644,7 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
 .level-card .actions {
   display: flex;
   gap: 1em;
+  justify-content: center;
 }
 .level-card .btn {
   width: -moz-fit-content;
@@ -614,25 +671,45 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
   font-weight: 500;
   padding: 0.5em 1em;
 }
+.level-card .infos {
+  position: sticky;
+  top: 10vh;
+  height: -moz-fit-content;
+  height: fit-content;
+}
 .level-card .comments {
-  margin-top: 2em;
   width: 100%;
 }
-.level-card .comments form {
-  margin: 1.5em 0;
-  text-align: left;
-  align-items: flex-start;
+.level-card .comments .post-btn {
+  margin: 1em auto 1.5em;
 }
-.level-card .comments form textarea {
-  padding: 0.2em;
-  width: 80%;
-  height: 3.5em;
+.level-card .comments .comment {
+  box-shadow: 3px 4px 5px rgba(2, 46, 60, 0.5);
+  background-color: #022a37;
+  border: 2px solid #011f28;
+  padding: 0.8em 0.5em;
+  border-radius: 0.5em;
+  margin: 0.8em 0;
 }
-.level-card .comments article {
-  padding: 0.8em 0;
-}
-.level-card .comments article p {
+.level-card .comments .comment p {
   margin-left: 1em;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+}
+.comment-form .btn {
+  font-weight: 500;
+  padding: 0.5em 1em;
+}
+.comment-form textarea {
+  height: 5em;
+  resize: both;
+  max-width: 40vw;
+  max-height: 40vh;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -840,6 +917,23 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
   .navbar .logo {
     height: 8em;
   }
+  .navbar .left-space {
+    margin-left: 0;
+  }
+  .navbar .drop-down {
+    display: none;
+  }
+  .navbar .mobile-drop-down {
+    max-height: unset;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    gap: 0.5em;
+  }
+  .navbar .fa-angle-down {
+    display: none;
+  }
   footer {
     flex-direction: column;
     gap: 2.5em;
@@ -866,6 +960,17 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
   }
   .level .h3 {
     min-width: unset;
+  }
+  .level-card {
+    display: flex;
+    flex-direction: column;
+  }
+  .level-card .infos {
+    position: static;
+  }
+  .level-card .comments {
+    border-top: 2px solid #011f28;
+    padding-top: 1em;
   }
 }
 /* -------------------------------------------------------------------------- */

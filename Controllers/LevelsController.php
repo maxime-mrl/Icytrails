@@ -192,15 +192,17 @@ class LevelsController extends Controller {
 
     public function postcomment($uuid = null) { // post a comment
         /* ------------------------------- basic check ------------------------------ */
-        Tools::redirectResponse($_SERVER["HTTP_REFERER"], 200, [
-            ["type"=>"error", "text"=>"Invalid request"]
-        ]);
+        if (empty($_POST) || empty($uuid)) {
+            Tools::redirectResponse($_SERVER["HTTP_REFERER"], 200, [
+                ["type"=>"error", "text"=>"Invalid request"]
+            ]);
+        }
         Tools::checkEntriesValidity($_POST, "/levels/details/$uuid");
         $levelsModel = new LevelsModel();
         $levelId = $this->isLevelExist($uuid, $levelsModel)->id; // check that level exist and get the id (even if it's found by it's id w/ that we are certaain that the levelID is valid)
         $userId = Tools::IsLogged()->id; // get user id
         /* ------------------------------ comment check ----------------------------- */
-        if (!isset($_POST["comment"]) || !preg_match("/^.{5,}$/", $_POST["comment"])) {
+        if (!isset($_POST["comment"]) || !preg_match("/^.{5,300}$/", $_POST["comment"])) {
             Tools::redirectResponse("/levels/details/$levelId", 200, [
                 ["type"=>"error", "text"=>"Please provide a valid comment"]
             ]);

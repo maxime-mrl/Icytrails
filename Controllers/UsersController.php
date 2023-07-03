@@ -8,7 +8,7 @@ class UsersController extends controller {
     public function register() {
         if (!empty($_POST)) {
             // check that everything is filled
-            Tools::checkEntriesValidity($_POST, "/users/register");
+            Tools::checkEntriesValidity($_POST, "/users/register", "register-modal");
             // set the redirect path
             if (!isset($_POST["redirect"])) {
                 $_POST["redirect"] = $_SERVER["HTTP_REFERER"];
@@ -18,21 +18,21 @@ class UsersController extends controller {
             if (!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL)) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Please enter a valid mail"]
-                ]);
+                ], "register-modal");
             }
 
             // name
             if(!preg_match("/^[-a-z0-9\/]{4,20}$/", $_POST["username"])) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Please enter a valid username"]
-                ]);
+                ], "register-modal");
             }
 
             // pass
             if(!preg_match("/.{6,}/", $_POST["pass"]) || $_POST["pass"] !== $_POST["pass-confirm"]) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Please enter a valid password"]
-                ]);
+                ], "register-modal");
             }
             /* ----------------------------- DATA VALIDATED ----------------------------- */
             $mail = strip_tags($_POST["mail"]);
@@ -43,12 +43,12 @@ class UsersController extends controller {
             if ($usersModel->findBy(["username"=>$username])) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "This username is arleady taken"]
-                ]);
+                ], "register-modal");
             }
             if ($usersModel->findBy(["mail"=>$mail])) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "This mail arleady exist"]
-                ]);
+                ], "register-modal");
             }
             // all ok -> create user
             $usersModel->setMail($mail)
@@ -78,7 +78,7 @@ class UsersController extends controller {
     public function login() {
         if (!empty($_POST)) {
             // check that everything is filled
-            Tools::checkEntriesValidity($_POST, "/users/login");
+            Tools::checkEntriesValidity($_POST, "/users/login", "login-modal");
             // set the redirect path
             if (!isset($_POST["redirect"])) {
                 $_POST["redirect"] = $_SERVER["HTTP_REFERER"];
@@ -88,12 +88,12 @@ class UsersController extends controller {
             if (!filter_var($_POST["mail"], FILTER_VALIDATE_EMAIL)) { // mail
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Please enter a valid mail"]
-                ]);
+                ], "login-modal");
             }
             if(!preg_match("/.{6,}/", $_POST["pass"])) { // pass
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Please enter a valid password"]
-                ]);
+                ], "login-modal");
             }
 
             /* ----------------------------- DATA VALIDATED ----------------------------- */
@@ -105,14 +105,14 @@ class UsersController extends controller {
             if (!$user) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Incorrect mail or password"]
-                ]);
+                ], "login-modal");
             }
             // user mail exist -> check password
             $user = $usersModel->hydrate($user[0]);
             if (!password_verify($password, $usersModel->getPassword())) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Incorrect mail or password"]
-                ]);
+                ], "login-modal");
             }
             // logged in -> session
             $_SESSION["user"] = [
@@ -132,5 +132,12 @@ class UsersController extends controller {
             }
             $this->render("users/login");
         }
+    }
+
+    public function disconnect() {
+        unset($_SESSION["user"]);
+        Tools::redirectResponse((isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "/"), 200, [
+            ['type' => "success", "text" => "You are now signed out"]
+        ]);
     }
 }
