@@ -12,7 +12,8 @@ const texts = [
     "something's wrong",
     "42 is the answer",
     "Or is it?",
-]
+];
+const modals = document.querySelectorAll(".game-modal");
 
 fetch('/asset/json/404.json') // get 404 "level"
     .then(resp => resp.json())
@@ -124,5 +125,17 @@ class World {
         this.ctx.ellipse(x , y, size, Math.min(size * 0.45, 40), 0, 0, 2*Math.PI);
         this.ctx.fill();
         this.ctx.closePath();
+    }
+
+    handleResize = (ratio) => {
+        if (ratio < 1.2) {
+            modals.forEach(modal => {
+                modal.className = "game-modal shown";
+            })
+        } else {
+            modals.forEach(modal => {
+                modal.className = "game-modal";
+            })
+        }
     }
 }

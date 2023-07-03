@@ -50,7 +50,6 @@ export default class Renderer {
     resize = () => { // handle everithing for size - resize canvas, set block size etc called at start and on resize
         this.width = window.innerWidth;
         this.height = window.innerHeight;
-        if (this.width < this.height) return; // need to alert user portrait isn't supported or do something to support it
         if (this.screenMode == "fullscreen") {
             this.canvas.width = this.width;
             this.canvas.height = this.height;
@@ -61,6 +60,7 @@ export default class Renderer {
             this.canvas.className = "windowed";
         }
         this.blockSize =this.canvas.height / this.verticalRenderDistance;
+        this.world.handleResize(this.width / this.height);
     }
 
     calculateCoords = (pos) => { // from coordinate in blocks return the position in pixel for the canvas

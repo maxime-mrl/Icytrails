@@ -927,6 +927,31 @@ input:not([type="submit"], [type="range"], [type="select"]), textarea {
   }
 }
 
+.game-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5vh;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  background-color: fade-out($bg, 0.2);
+  backdrop-filter: blur(8px);
+  text-align: center;
+  &.shown {
+    display: flex;
+  }
+  img {
+    width: 10em;
+    max-width: 60vw;
+  }
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                 ANIMATIONS                                 */
 /* -------------------------------------------------------------------------- */

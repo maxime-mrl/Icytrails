@@ -1,10 +1,9 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
 import confetti from "./ext/confetti.min.js"
+import decompressLevel from "./utils/decompressLevel.js";
 
-// fetch('/script/level-hard.json') // get the level (temp - should be something at least a bit different for backend)
-//     .then(resp => resp.json())
-//     .then(data => new World(data));
+const modals = document.querySelectorAll(".game-modal");
 
 class World {
     constructor(level) {
@@ -169,36 +168,18 @@ class World {
                 break;
         }
     }
-}
-
-function decompressLevel(compressedLevel) { // decompress the levels to be used as json
-    let intermediate = compressedLevel.split(/[a-z]/i)
-    intermediate.forEach((elem, i) => intermediate[i] = elem.split(";"));
-    let decompressedLevel = {
-        spawn: {x: parseInt(intermediate[0][0].split(',')[0]), y: parseInt(intermediate[0][0].split(',')[1])},
-        end: {x: parseInt(intermediate[0][1].split(',')[0]), y: parseInt(intermediate[0][1].split(',')[1])},
-        bg: [],
-        fg: []
+    
+    handleResize = (ratio) => {
+        if (ratio < 1) {
+            modals.forEach(modal => {
+                modal.className = "game-modal shown";
+            })
+        } else {
+            modals.forEach(modal => {
+                modal.className = "game-modal";
+            })
+        }
     }
-    intermediate[1].forEach(bg => {
-        bg = bg.split(',');
-        if (!bg[0] || !bg[1] || !bg[2]) return;
-        decompressedLevel.bg.push({
-            x: parseInt(bg[0]),
-            y: parseInt(bg[1]),
-            t: parseInt(bg[2])
-        })
-    })
-    intermediate[2].forEach(fg => {
-        fg = fg.split(',');
-        if (!fg[0] || !fg[1] || !fg[2]) return;
-        decompressedLevel.fg.push({
-            x: parseInt(fg[0]),
-            y: parseInt(fg[1]),
-            t: parseInt(fg[2])
-        })
-    })
-    return decompressedLevel;
 }
 
 if (compressedLevel) {
