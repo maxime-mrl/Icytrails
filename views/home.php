@@ -39,7 +39,6 @@
         <img src="asset/img/keys-arrow.png" alt="game controls illustration" class="keys active">
         <img src="asset/img/keys-qwerty.png" alt="game controls illustration" class="keys">
         <img src="asset/img/keys-azerty.png" alt="game controls illustration" class="keys">
-        <a href="/tuto" class="btn">Play tutorial</a>
         <div class="background-images">
             <img src="asset/img/terrain.png" alt="Terrain illustration background" class="terrain">
             <img src="asset/img/end.png" alt="star illustration" class="star1">

@@ -32,17 +32,5 @@ With all these possibilities and the special physics, you can really get creativ
 - [ ] ➕ Additionals functionalities?
 
 ## How to use it?
-If you want to play around with the project, create your levels, share them, etc you can either:
+To play with this project you should:
 - 🌐 Use the hosted version (🚧 not available yet 🚧)
-- Clone the project and run it locally
-
-### How to clone:
-**For now:**
-
-You just have to download the project and use some kind of server (apache vs code live server vite etc) not included in the project to host it. You have nothing more to do it'll **magically work** 🥳
-
-To create some levels you need to use the level-editor.html and you'll see for each edit you make there is an object loaded in the console, you need to copy it to a JSON object and change the **fetch URL** in the `game.js` (start of file) file to match your JSON. You can re-edit your level by using the fetch in `editor.js` (end of file) to match your JSON. And, that's it! 🎉
-
-**Later:**
-
-When the backend will be added you'll have to recreate the database but since there is no backend for now let's not get too much ahead 😏

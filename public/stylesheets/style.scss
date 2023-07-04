@@ -98,6 +98,10 @@ body {
   margin-left: 1em;
 }
 
+.align-center {
+  text-align: center;
+}
+
 .notification {
   position: fixed;
   top: 0;
@@ -846,6 +850,41 @@ input:not([type="submit"], [type="range"], [type="select"]), textarea {
     top: 4em;
     left: 30%;
     height: 3em;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                USER SETTINGS                               */
+/* -------------------------------------------------------------------------- */
+.settings-title {
+  text-align: center;
+  margin: 1em 0;
+}
+
+.update-infos {
+  width: 30em;
+  margin: 1em auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
+  box-shadow: 3px 4px 5px fade-out($bg, 0.5);
+  background-color: darken($bg, 1);
+  border: 2px solid darken($bg, 4);
+  padding: 0.8em 0.5em;
+  border-radius: 0.5em;
+
+  .btn {
+    align-self: center;
+  }
+  input {
+    margin-bottom: 0.5em;
+  }
+  .h1 {
+    text-align: center;
+  }
+  .space {
+    height: 0.5em;
   }
 }
 

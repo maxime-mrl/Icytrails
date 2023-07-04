@@ -111,6 +111,10 @@ body:has(.modal.active) {
   margin-left: 1em;
 }
 
+.align-center {
+  text-align: center;
+}
+
 .notification {
   position: fixed;
   top: 0;
@@ -883,6 +887,39 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
   top: 4em;
   left: 30%;
   height: 3em;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                USER SETTINGS                               */
+/* -------------------------------------------------------------------------- */
+.settings-title {
+  text-align: center;
+  margin: 1em 0;
+}
+
+.update-infos {
+  width: 30em;
+  margin: 1em auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  box-shadow: 3px 4px 5px rgba(2, 46, 60, 0.5);
+  background-color: #022a37;
+  border: 2px solid #011f28;
+  padding: 0.8em 0.5em;
+  border-radius: 0.5em;
+}
+.update-infos .btn {
+  align-self: center;
+}
+.update-infos input {
+  margin-bottom: 0.5em;
+}
+.update-infos .h1 {
+  text-align: center;
+}
+.update-infos .space {
+  height: 0.5em;
 }
 
 /* -------------------------------------------------------------------------- */

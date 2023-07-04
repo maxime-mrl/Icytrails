@@ -5,13 +5,13 @@ use App\Core\Tools;
 
 
 class UsersController extends controller {
-    public function register() {
+    public function register() { // display register page and handle user register
         if (!empty($_POST)) {
             // check that everything is filled
             Tools::checkEntriesValidity($_POST, "/users/register", "register-modal");
             // set the redirect path
             if (!isset($_POST["redirect"])) {
-                $_POST["redirect"] = $_SERVER["HTTP_REFERER"];
+                $_POST["redirect"] = Tools::getReferer();
             }
             /* ----------------------------- SPECIFIC CHECK ----------------------------- */
             // mail
@@ -68,20 +68,20 @@ class UsersController extends controller {
         } else {
             // display register page
             if (Tools::IsLogged(false)) { // if user is logged don't allow access
-                Tools::redirectResponse($_SERVER["HTTP_REFERER"], 200, [
-                    ["type" => "success", "You are already signed-in"]
+                Tools::redirectResponse(Tools::getReferer(), 200, [
+                    ["type" => "success", "text" => "You are already signed-in"]
                 ]);
             }
             $this->render("users/register");
         }
     }
-    public function login() {
+    public function login() { // display login page and handle user login
         if (!empty($_POST)) {
             // check that everything is filled
             Tools::checkEntriesValidity($_POST, "/users/login", "login-modal");
             // set the redirect path
             if (!isset($_POST["redirect"])) {
-                $_POST["redirect"] = $_SERVER["HTTP_REFERER"];
+                $_POST["redirect"] = Tools::getReferer();
             }
             
             /* ----------------------------- SPECIFIC CHECK ----------------------------- */
@@ -126,18 +126,111 @@ class UsersController extends controller {
         } else {
             // display login page
             if (Tools::IsLogged(false)) { // if user is logged don't allow access
-                Tools::redirectResponse($_SERVER["HTTP_REFERER"], 200, [
-                    ["type" => "success", "You are already logged"]
+                Tools::redirectResponse(Tools::getReferer(), 200, [
+                    ["type" => "success", "text" => "You are already logged"]
                 ]);
             }
             $this->render("users/login");
         }
     }
 
-    public function disconnect() {
+    public function disconnect() { // disconnect user (remove session)
         unset($_SESSION["user"]);
-        Tools::redirectResponse((isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "/"), 200, [
+        Tools::redirectResponse(Tools::getReferer(), 200, [
             ['type' => "success", "text" => "You are now signed out"]
+        ]);
+    }
+
+    public function settings() { // display settings page and update user infos
+        $user = Tools::IsLogged(); // need user in all case
+        if (!empty($_POST)) {
+            Tools::checkEntriesValidity($_POST, "/users/settings");
+            /* ----------------------------- SPECIFIC CHECK ----------------------------- */
+            // check pass
+            if(!preg_match("/.{6,}/", $_POST["pass"])) { // correctly provided
+                Tools::redirectResponse("/users/settings", 200, [
+                    ['type' => "error", "text" => "Please enter a valid password"]
+                ]);
+            }
+            if (!password_verify($_POST["pass"], $user->password)) { // is the correct password
+                Tools::redirectResponse("/users/settings", 200, [
+                    ['type' => "error", "text" => "Incorrect password"]
+                ]);
+            }
+
+            // check any optional entry to make sure if provided is correct
+            if(!preg_match("/^[-a-z0-9\/]{4,20}$|^$/", $_POST["username"])) {
+                Tools::redirectResponse("/users/settings", 200, [
+                    ['type' => "error", "text" => "Please enter a valid username"]
+                ]);
+            }
+            if(!preg_match("/^[a-z][-._a-z0-9]*@[a-z0-9][-.a-z0-9]+\.[a-z]{2,}$|^$/i", $_POST["mail"])) {
+                Tools::redirectResponse("/users/settings", 200, [
+                    ['type' => "error", "text" => "Please enter a valid mail"]
+                ]);
+            }
+            if(!preg_match("/^.{6,}$|^$/", $_POST["new-pass"]) || $_POST["new-pass"] !== $_POST["new-pass-confirm"]) {
+                Tools::redirectResponse("/users/settings", 200, [
+                    ['type' => "error", "text" => "Please enter a valid password"]
+                ]);
+            }
+            /* -------------------------------- VALIDATED ------------------------------- */
+            // set every data that should be edited
+            $usersModel = new UsersModel();
+            if (isset($_POST["username"])) {
+                $usersModel->setUsername(strip_tags($_POST["username"]));
+            }
+            if (isset($_POST["mail"])) {
+                $usersModel->setMail(strip_tags($_POST["mail"]));
+            }
+            if (isset($_POST["new-pass"])) {
+                $usersModel->setPassword(password_hash($_POST["pass"], PASSWORD_ARGON2ID));
+            }
+            // update user
+            $usersModel->updateById($usersModel, $user->id);
+            // set back session
+            $user = $usersModel->findById($user->id);
+            $_SESSION["user"] = [
+                "id" => $user->id,
+                "username" => $user->username,
+            ];
+            Tools::redirectResponse("/users/settings", 200, [
+                ['type' => "success", "text" => "Informations successfully updated"]
+            ]);
+        }
+        $this->render("users/settings", [
+            "mail"=>$user->mail,
+            "username"=>$user->username,
+        ]);
+    }
+
+    public function delete() { // delte user account
+        /* ----------------------------- GENERAAL CHECK ----------------------------- */
+        $user = Tools::IsLogged(); // user need to be logged to remove his account
+        if (empty($_POST)) { // accept only request w/ post on this url
+            Tools::redirectResponse("/users/settings", 200, [
+                ['type' => "error", "text" => "Invalid request"]
+            ]);
+        }
+        Tools::checkEntriesValidity($_POST, "/users/settings");
+        /* ----------------------------- SPECIFIC CHECK ----------------------------- */
+        // check pass
+        if(!preg_match("/.{6,}/", $_POST["pass"])) { // correctly provided
+            Tools::redirectResponse("/users/settings", 200, [
+                ['type' => "error", "text" => "Please enter a valid password"]
+            ]);
+        }
+        if (!password_verify($_POST["pass"], $user->password)) { // is the correct password
+            Tools::redirectResponse("/users/settings", 200, [
+                ['type' => "error", "text" => "Incorrect password"]
+            ]);
+        }
+        /* ----------------------------- DATA VALIDATED ----------------------------- */
+        $usersModel = new UsersModel();
+        $usersModel->deleteById($user->id); // remove from db
+        unset($_SESSION["user"]); // unset session
+        Tools::redirectResponse("/", 200, [ // redirect
+            ['type' => "success", "text" => "Your account and all your informations are now deleted permanently"]
         ]);
     }
 }

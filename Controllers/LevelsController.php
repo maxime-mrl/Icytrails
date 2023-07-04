@@ -68,13 +68,13 @@ class LevelsController extends Controller {
 
         if (!empty($_POST)) {
             /* ------------------------------- basic check ------------------------------ */
-            Tools::checkEntriesValidity($_POST, "/level/editor/$uuid");
+            Tools::checkEntriesValidity($_POST, "/levels/editor/$uuid");
             $level = json_decode($_POST["level"]);
             $title = strip_tags($_POST["name"]);
             $visibility = intval($_POST["visibility"]);
             /* -------------------------- check level integrity ------------------------- */
             if (!$this->isLevelCorrect($level)) {
-                Tools::redirectResponse("/level/editor/$uuid", 200, [
+                Tools::redirectResponse("/levels/editor/$uuid", 200, [
                     ['type' => "error", "text" => "Incorrect data, please try again"]
                 ]);
             }
@@ -86,12 +86,12 @@ class LevelsController extends Controller {
             
             /* ------------------------------ Others check ------------------------------ */
             if (!preg_match('/.{5,100}$/', $title)) { // title
-                Tools::redirectResponse("/level/editor/$uuid", 200, [
+                Tools::redirectResponse("/levels/editor/new", 200, [
                     ['type' => "error", "text" => "Please enter a valid title"]
                 ]);
             } // title
             if (!is_int($visibility) || $visibility > 1 || $visibility < 0) { // visibility
-                Tools::redirectResponse("/level/editor/$uuid", 200, [
+                Tools::redirectResponse("/levels/editor/$uuid", 200, [
                     ['type' => "error", "text" => "Please select a valid visibility"]
                 ]);
             }
@@ -135,7 +135,7 @@ class LevelsController extends Controller {
         if ($uuid != "new") { // if uuid is set find level check user has perms and render it
             $level = $this->isLevelExist($uuid, $levelsModel);
             if ($level->created_by !== $user->id) {
-                Tools::redirectResponse($_SERVER["HTTP_REFERER"], 200, [
+                Tools::redirectResponse(Tools::getReferer(), 200, [
                     ['type' => "error", "text" => "You don't have the right to edit this level"]
                 ]);
             }
@@ -146,7 +146,7 @@ class LevelsController extends Controller {
     public function setrating($uuid = null) { // set rating for a level
         /* ------------------------------- basic check ------------------------------ */
         if (empty($_POST) || empty($uuid)) {
-            Tools::redirectResponse($_SERVER["HTTP_REFERER"], 200, [
+            Tools::redirectResponse(Tools::getReferer(), 200, [
                 ["type"=>"error", "text"=>"Invalid request"]
             ]);
         }
@@ -193,7 +193,7 @@ class LevelsController extends Controller {
     public function postcomment($uuid = null) { // post a comment
         /* ------------------------------- basic check ------------------------------ */
         if (empty($_POST) || empty($uuid)) {
-            Tools::redirectResponse($_SERVER["HTTP_REFERER"], 200, [
+            Tools::redirectResponse(Tools::getReferer(), 200, [
                 ["type"=>"error", "text"=>"Invalid request"]
             ]);
         }

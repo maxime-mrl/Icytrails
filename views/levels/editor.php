@@ -1,5 +1,5 @@
 <div class="return">
-    <a href="<?= $_SERVER["HTTP_REFERER"] ?>">
+    <a href="<?= $referer ?>">
         <i class="fa-solid fa-right-to-bracket fa-rotate-180"></i>
     </a>
 </div>
@@ -11,6 +11,10 @@
     <div class="editor">
         <h1 class="h1 editor-title">IcyTrails level editor</h1>
         <canvas width="1280" height="720" id="game-canvas"></canvas>
+        <section class="level-title">
+            <label for="input-title">Title:</label>
+            <input type="text" name="title" id="input-title" placeholder="Level title" data-err="Please enter a valid title" data-check="/^.{5,100}$/" value="<?= ($level != false ?$level->name : '') ?>" required>
+        </section>
         <section class="controls">
             <form action="/<?= $_GET["p"] ?>" method="post" class="visibility" id="form-sumbit">
                 <div class="select">
@@ -37,10 +41,6 @@
                     <input type="submit" class="btn fail-bg" value="Delete">
                 </form>
             <?php endif; ?>
-        </section>
-        <section class="level-title">
-            <label for="input-title">Title:</label>
-            <input type="text" name="title" id="input-title" placeholder="Level title" data-err="Please enter a valid title" data-check="/^.{5,100}$/" value="<?= ($level != false ?$level->name : '') ?>">
         </section>
     </div>
     <section class="blocks-select">

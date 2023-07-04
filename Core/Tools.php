@@ -59,10 +59,28 @@ class Tools {
      * @param mixed $open [OPTIONAL] default opened modals
      */
     public static function redirectResponse(string $path, int $code=200, mixed $messages = null, mixed $open = null) {
-        $_SESSION["messages"] = $messages;
+        foreach ($messages as $message) {
+            $_SESSION["messages"][] = $message;
+        }
         $_SESSION["open"] = $open;
         http_response_code($code);
         header("location: " . $path);
         exit;
+    }
+
+    /**
+     * return refferer adress adressing the various problems of http refferer (can be undefined or can be the same url as the current page)
+     * @return string correct enough http referer
+     */
+    public static function getReferer() {
+        $referer = isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : '/'; // get the refferer if it exist
+        // create the aactual full url
+        $currentProtocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on" ? "https://" : "http://"; // check if we are in http or https
+        $currentUrl = $currentProtocol . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]; // full url
+
+        if ($referer !== $currentUrl) { // check if refferer and current url are the same or not
+            return $referer; // refer is correct
+        }
+        return "/"; // return the main page
     }
 }

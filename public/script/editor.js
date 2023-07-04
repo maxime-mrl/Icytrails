@@ -174,6 +174,7 @@ class World {
 }
 
 function btnClick(e) {
+    if (title.value == "") return alert("please enter a valid title");
     const action = e.target.id.split("-btn")[0];
     formSubmit.action += "/" + action;
     levelSumbit.value = JSON.stringify(level);

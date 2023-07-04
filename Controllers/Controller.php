@@ -1,5 +1,6 @@
 <?php
 namespace App\Controllers;
+use App\Core\Tools;
 
 abstract class controller {
     /**
@@ -16,6 +17,8 @@ abstract class controller {
         } else {
             $logged = false;
         }
+        // give referer to the page
+        $referer = Tools::getReferer();
         // add every part of the view
         include_once ROOT . "/Views/components/header.php"; // header
         include_once ROOT . "/Views/" . $file . '.php'; // view itslef

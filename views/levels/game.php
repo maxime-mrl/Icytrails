@@ -1,5 +1,5 @@
 <div class="return">
-    <a href="<?= $_SERVER["HTTP_REFERER"] ?>">
+    <a href="<?= $referer ?>">
         <i class="fa-solid fa-right-to-bracket fa-rotate-180"></i>
     </a>
 </div>
