@@ -19,6 +19,9 @@ class Autoloader {
         $file = __DIR__ . "/" . $class . ".php";
         if (file_exists($file)) {
             require_once $file;
+        } else {
+            http_response_code(500);
+            die("file not found, you can report this problem to the webmaster");
         }
     }
 }

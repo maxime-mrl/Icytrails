@@ -1,6 +1,6 @@
 <?php
 namespace App\Core;
-use App\Controllers\Maincontroller;
+use App\Controllers\MainController;
 
 class Main {
     public function start() {

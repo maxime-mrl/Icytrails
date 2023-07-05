@@ -20,9 +20,9 @@ abstract class controller {
         // give referer to the page
         $referer = Tools::getReferer();
         // add every part of the view
-        include_once ROOT . "/Views/components/header.php"; // header
-        include_once ROOT . "/Views/" . $file . '.php'; // view itslef
-        include_once ROOT . "/Views/components/end.php"; // closing part of html (script and tag closing)
+        include_once ROOT . "/views/components/header.php"; // header
+        include_once ROOT . "/views/" . $file . '.php'; // view itslef
+        include_once ROOT . "/views/components/end.php"; // closing part of html (script and tag closing)
         // reset messages notifications
         unset($_SESSION["messages"]);
         unset($_SESSION["open"]);
