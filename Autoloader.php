@@ -21,7 +21,7 @@ class Autoloader {
             require_once $file;
         } else {
             http_response_code(500);
-            die("file not found, you can report this problem to the webmaster");
+            die("file not found, you can report this problem to the webmaster $file");
         }
     }
 }

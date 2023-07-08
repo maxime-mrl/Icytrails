@@ -1,12 +1,4 @@
-<div class="return">
-    <a href="<?= $referer ?>">
-        <i class="fa-solid fa-right-to-bracket fa-rotate-180"></i>
-    </a>
-</div>
-<div class="game-modal">
-    <img src="/asset/img/landscape.gif" alt="">
-    <h2 class="h2">Please use landscape mode</h2>
-</div>
+<?php include_once ROOT . "/views/components/game.php" ?>
 <div id="editor-container" class="modal-oppened">
     <div class="editor">
         <h1 class="h1 editor-title">IcyTrails level editor</h1>

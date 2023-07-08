@@ -7,7 +7,7 @@ class Main {
         $errors = new \App\Controllers\ErrorsController;
         session_start(); // start session
         $uri = $_SERVER["REQUEST_URI"];
-        if (!empty($uri) && $uri[-1] == "/") { // remove eventual trailling /
+        if (!empty($uri) && $uri[-1] == "/" && $uri !== "/") { // remove eventual trailling /
             http_response_code(301);
             header("location: " . substr($uri, 0, -1));
             if ($uri != "/") exit;

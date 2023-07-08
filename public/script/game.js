@@ -4,6 +4,7 @@ import confetti from "./ext/confetti.min.js"
 import decompressLevel from "./utils/decompressLevel.js";
 
 const modals = document.querySelectorAll(".game-modal");
+const loader = document.querySelector(".loader");
 
 class World {
     constructor(level) {
@@ -26,6 +27,7 @@ class World {
 
         this.renderer = new Renderer(this);
         this.player = new Hero(this, this.level.spawn);
+        window.onload = () => loader.style.display = "none";
 
         // listener for movements
         document.addEventListener("keydown", this.keyDown);

@@ -36,7 +36,7 @@ class LevelsController extends Controller {
         $levelsModel = new LevelsModel();
         $level = $this->isLevelExist($uuid, $levelsModel); // check that level exist and get it
 
-        $this->render("levels/game", ["level"=>$level->level]); // render game page w/ level
+        $this->render("levels/play", ["level"=>$level->level]); // render game page w/ level
     }
 
     public function delete($uuid = null) { // delete level (from level editor)

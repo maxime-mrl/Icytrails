@@ -355,6 +355,28 @@ input:not([type="submit"], [type="range"], [type="select"]), textarea {
     }
 }
 
+.loader {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  background-color: #022E3C;
+  img {
+    animation: big-float 2s ease-in-out infinite;
+  }
+  h2 {
+    position: absolute;
+    bottom: 0.5em;
+    right: 0.5em;
+  }
+}
+
 .modal {
   display: none;
   &.active {
@@ -951,6 +973,15 @@ input:not([type="submit"], [type="range"], [type="select"]), textarea {
     .play { display: none; }
     .infos { display: none; }
     .h3 { min-width: unset; }
+    .details {
+      width: min-content;
+      padding: 0.8em 1em;
+      text-align: center;
+    }
+    .name {
+      justify-content: space-between;
+      width: 100%;
+    }
     height: 6em;
   }
   .level-card {
@@ -1003,6 +1034,18 @@ input:not([type="submit"], [type="range"], [type="select"]), textarea {
   }
   100% {
     margin-bottom: 0;
+  }
+}
+
+@keyframes big-float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.5em);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 

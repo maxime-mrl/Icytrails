@@ -383,6 +383,28 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
   height: auto;
 }
 
+.loader {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  background-color: #022E3C;
+}
+.loader img {
+  animation: big-float 2s ease-in-out infinite;
+}
+.loader h2 {
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.5em;
+}
+
 .modal {
   display: none;
   position: fixed;
@@ -998,6 +1020,16 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
   .level .h3 {
     min-width: unset;
   }
+  .level .details {
+    width: -moz-min-content;
+    width: min-content;
+    padding: 0.8em 1em;
+    text-align: center;
+  }
+  .level .name {
+    justify-content: space-between;
+    width: 100%;
+  }
   .level-card {
     display: flex;
     flex-direction: column;
@@ -1048,6 +1080,17 @@ input:not([type=submit], [type=range], [type=select])[data-state=success], texta
   }
   100% {
     margin-bottom: 0;
+  }
+}
+@keyframes big-float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-0.5em);
+  }
+  100% {
+    transform: translateY(0);
   }
 }
 @keyframes blink {

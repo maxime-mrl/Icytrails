@@ -16,6 +16,7 @@ const formSubmit = document.getElementById("form-sumbit");
 const titleSumbit = document.getElementById("title-box");
 const levelSumbit = document.getElementById("level-box");
 const modals = document.querySelectorAll(".game-modal");
+const loader = document.querySelector(".loader");
 
 let level = {
     spawn: {x: 0, y: 0},
@@ -43,7 +44,8 @@ class World {
         this.clicked = false;
 
         this.renderer = new Renderer(this, "windowed");
-        window.addEventListener("blocksLoaded", this.addBlocksToSelector)
+        window.addEventListener("blocksLoaded", this.addBlocksToSelector);
+        window.onload = () => loader.style.display = "none";
         
         // listening stuffs
         this.canvas.addEventListener("mousemove", this.mouseEvent);
