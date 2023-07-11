@@ -23,14 +23,14 @@ With all these possibilities and the special physics, you can really get creativ
   - [x] 🏠 Landing page
   - [x] 👤 Profile pages (register / login / edit profile)
   - [x] 🖼️ Logo
-- [ ] ⚙️ Backend
+- [x] ⚙️ Backend
   - [x] 🏗️ Database structure
   - [x] 📜 Database
-  - [ ] 👤 User handling
+  - [x] 👤 User handling
   - [x] ✔️ Game saving
   - [x] 🎯 Game selecting
 - [ ] ➕ Additionals functionalities?
 
 ## How to use it?
 To play with this project you should:
-- 🌐 Use the hosted version (🚧 not available yet 🚧)
+- 🌐 Use the hosted version available at [here](https://icytrails.maxime-morel.xyz)

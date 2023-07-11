@@ -1,7 +1,7 @@
 /* ------------------------------ NOTIFICATIONS ----------------------------- */
-setTimeout(() => { // removes notifications popup
-    document.querySelectorAll(".notification").forEach( notification => notification.remove() );
-}, 5000);
+
+const clearNotif = () => document.querySelectorAll(".notification").forEach( notification => notification.remove() );
+setTimeout(clearNotif, 5000);
 
 /* ---------------------------------- MODAL --------------------------------- */
 function closeModal(modal) {

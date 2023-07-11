@@ -3,7 +3,8 @@ namespace App\Controllers;
 use App\Models\CommentsModel;
 use App\Models\LevelsModel;
 use App\Core\Tools;
-use App\Models\RatingsModel;    
+use App\Models\RatingsModel;
+use App\Models\UsersModel;    
 
 class LevelsController extends Controller {
     /* ----------------------------- ROUTES FUNCTION ---------------------------- */
@@ -26,17 +27,19 @@ class LevelsController extends Controller {
 
     public function details($uuid = null) { // show details of a given level
         $levelsModel = new LevelsModel();
+        $usersModel = new UsersModel();
         $level = $this->isLevelExist($uuid, $levelsModel); // check that level exist and get it
+        $created_by = $usersModel->findById($level->created_by)->username;
         $level = $this->addRatingToLevels([ $level ])[0]; // add comments and rating to level object
 
-        $this->render("levels/details", ["level"=>$level]);
+        $this->render("levels/details", [ "level"=>$level, "created_by"=>$created_by ]);
     }
     
     public function play($uuid = null) { // render wanted level to play it
         $levelsModel = new LevelsModel();
         $level = $this->isLevelExist($uuid, $levelsModel); // check that level exist and get it
 
-        $this->render("levels/play", ["level"=>$level->level]); // render game page w/ level
+        $this->render("levels/play", ["level"=>$level]); // render game page w/ level
     }
 
     public function delete($uuid = null) { // delete level (from level editor)
@@ -85,7 +88,7 @@ class LevelsController extends Controller {
             foreach($level->fg as $fg) $compressedLevel .= "{$fg->x},{$fg->y},{$fg->t};";
             
             /* ------------------------------ Others check ------------------------------ */
-            if (!preg_match('/.{5,100}$/', $title)) { // title
+            if (!preg_match('/.{3,100}$/', $title)) { // title
                 Tools::redirectResponse("/levels/editor/new", 200, [
                     ['type' => "error", "text" => "Please enter a valid title"]
                 ]);

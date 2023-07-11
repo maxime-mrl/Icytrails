@@ -22,7 +22,7 @@ class UsersController extends controller {
             }
 
             // name
-            if(!preg_match("/^[-a-z0-9\/]{4,20}$/", $_POST["username"])) {
+            if(!preg_match("/^[-a-z0-9\/]{4,20}$/i", $_POST["username"])) {
                 Tools::redirectResponse($_POST["redirect"], 200, [
                     ['type' => "error", "text" => "Please enter a valid username"]
                 ], "register-modal");
@@ -159,7 +159,7 @@ class UsersController extends controller {
             }
 
             // check any optional entry to make sure if provided is correct
-            if(!preg_match("/^[-a-z0-9\/]{4,20}$|^$/", $_POST["username"])) {
+            if(!preg_match("/^[-a-z0-9\/]{4,20}$|^$/i", $_POST["username"])) {
                 Tools::redirectResponse("/users/settings", 200, [
                     ['type' => "error", "text" => "Please enter a valid username"]
                 ]);

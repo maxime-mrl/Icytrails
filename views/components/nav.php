@@ -1,5 +1,6 @@
 <button class="burger-btn" onclick="toggleNavbar()">
     <i class="fa-solid fa-bars"></i>
+    <span class="visually-hidden">Nav toggle button for mobile</span>
 </button>
 <nav class="navbar">
     <ul class="left">

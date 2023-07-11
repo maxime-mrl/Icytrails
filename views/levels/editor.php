@@ -5,7 +5,7 @@
         <canvas width="1280" height="720" id="game-canvas"></canvas>
         <section class="level-title">
             <label for="input-title">Title:</label>
-            <input type="text" name="title" id="input-title" placeholder="Level title" data-err="Please enter a valid title" data-check="/^.{5,100}$/" value="<?= ($level != false ?$level->name : '') ?>" required>
+            <input type="text" name="title" id="input-title" placeholder="Level title" data-err="Please enter a valid title" data-check="/^.{3,100}$/" value="<?= ($level != false ?$level->name : '') ?>" required>
         </section>
         <section class="controls">
             <form action="/<?= $_GET["p"] ?>" method="post" class="visibility" id="form-sumbit">
@@ -60,6 +60,7 @@
     </section>
     <button class="modal-button" onclick="toggleEditor()">
         <i class="fa-solid fa-chevron-left"></i>
+        <span class="visually-hidden">Close block tab</span>
     </button>
 </div>
 <!-- tippy import (for tooltips) -->

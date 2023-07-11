@@ -1,7 +1,10 @@
 <?php include_once ROOT . "/views/components/nav.php" ?>
 <?php if ($logged): ?>
     <div class="modal" id="post-comment-modal">
-        <button class="close" onclick="closeModal(this.parentNode)"><i class="fa-solid fa-xmark"></i></button>
+        <button class="close" onclick="closeModal(this.parentNode)">
+            <i class="fa-solid fa-xmark"></i>
+            <span class="visually-hidden">Close modal</span>
+        </button>
         <form action="/levels/postcomment/<?= $level->id ?>" method="post" class="comment-form">
             <label for="comment" class="h4">Post a comment</label>
             <textarea name="comment" id="comment" cols="30" rows="10" placeholder="Write your comment here" data-err="You comment should be at least 5 characters long" data-check="/^.{5,300}$/"></textarea>
@@ -13,6 +16,7 @@
 <section class="level-card">
     <article class="infos">
         <h1 class="h1"><?= $level->name ?></h1>
+        <p class="align-center">By <?= $created_by ?></p>
         <div class="difficulty">
             <h2 class="h3">difficulty rating:</h2>
             <div class="slider">
@@ -23,7 +27,7 @@
             <?php if (isset($level->selfRating)): ?>
                 <form action="/levels/setrating/<?= $level->id ?>" method="post">
                     <label for="difficulty">Your rating:</label>
-                    <input type="range" name="difficulty" class="scale" value="<?= $level->selfRating ?>">
+                    <input type="range" name="difficulty" id="difficulty" class="scale" value="<?= $level->selfRating ?>">
                     <button type="submit" class="btn">Submit</button>
                 </form>
             <?php endif; ?>

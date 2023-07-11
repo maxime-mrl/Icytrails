@@ -1,4 +1,5 @@
 <?php include_once ROOT . "/views/components/nav.php" ?>
+<h1 class="h1 level-title">Levels</h1>
 <section class="level-list">
     <?php if (count($levels) === 0): ?>
         <article class="level-empty">

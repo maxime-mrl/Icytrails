@@ -176,11 +176,20 @@ class World {
 }
 
 function btnClick(e) {
-    if (title.value == "") return alert("please enter a valid title");
-    const action = e.target.id.split("-btn")[0];
-    formSubmit.action += "/" + action;
+    if (title.value == "") { // if no title
+        const notif = document.createElement("article");
+        notif.className = "notification error";
+        notif.innerHTML = "please add a valid title";
+        notif.style = "margin-top: 1em";
+        document.body.appendChild(notif)
+        title.focus();
+        setTimeout(clearNotif ,5000);
+        return;
+    }
     levelSumbit.value = JSON.stringify(level);
     titleSumbit.value = title.value;
+    const action = e.target.id.split("-btn")[0];
+    formSubmit.action += "/" + action;
     formSubmit.submit();
 }
 

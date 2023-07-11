@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="oli">
+    <meta name="description" content="Icytrails - free to play online comunity platform game">
     <link rel="icon" href="/asset/img/favicon.ico" type="image/x-icon">
     <title>Icytrails</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
@@ -13,7 +13,10 @@
 <body>
     <?php if(!preg_match("/users/", $_GET["p"]) && !$logged): ?>
     <div class="modal" id="login-modal">
-        <button class="close" onclick="closeModal(this.parentNode)"><i class="fa-solid fa-xmark"></i></button>
+        <button class="close" onclick="closeModal(this.parentNode)">
+            <i class="fa-solid fa-xmark"></i>
+            <span class="visually-hidden">Close modal</span>
+        </button>
         <form action="/users/login" method="post" class="form-modal">
             <label for="login-mail">Your mail</label>
             <input type="email" name="mail" id="login-mail" placeholder="mail@adress.com" data-err="Please enter a valid mail" data-check="/^[a-z][-._a-z0-9]*@[a-z0-9][-.a-z0-9]+\.[a-z]{2,}$/i" required>
@@ -25,7 +28,10 @@
     </div>
 
     <div class="modal" id="register-modal">
-        <button class="close" onclick="closeModal(this.parentNode)"><i class="fa-solid fa-xmark"></i></button>
+        <button class="close" onclick="closeModal(this.parentNode)">
+            <i class="fa-solid fa-xmark"></i>
+            <span class="visually-hidden">Close modal</span>
+        </button>
         <form action="/users/register" method="post" class="form-modal">
             <label for="register-name">Username</label>
             <input type="text" name="username" id="register-name" placeholder="Your cool username" autocomplete="name" data-err="Please enter a valid username" data-check="/^[-a-z0-9/]{4,20}$/" required>
