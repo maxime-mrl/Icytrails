@@ -7,7 +7,7 @@ use PDOException;
 class Db extends PDO {
     private static $instance; // class instance so the class only created one time
 
-    // DB creditentials
+    // DB creditentials [UPDATE THAT TO MATCH YOUR DB]
     private const DBHOST = "127.0.0.1";
     private const DBUSER = "root";
     private const DBPASS = "";

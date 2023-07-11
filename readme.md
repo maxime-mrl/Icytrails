@@ -1,5 +1,4 @@
 # ❄️ Icytrails - community platformer game ❄️
-### -------------- WIP --------------
 ## What is it?
 IcyTrails is an open-source and in-browser platformer game with some ✨special✨ functionalities and physics: 
 - For the <u>physics</u> part some **inertia** (or slipping on ice) is introduced: the more you move the faster you go and the higher you jump! 💨 and you can't stop immediately you need to slow down. **This allows creatives moves and level design** 💡
@@ -13,7 +12,7 @@ IcyTrails is an open-source and in-browser platformer game with some ✨special�
   - Coins (for unnecessary  score)
   - Visibility of your level (public or unlisted)
 
-With all these possibilities and the special physics, you can really get creative and create a **unique level**!
+With all these possibilities and the special physics, you can really get creative and create an **unique level**!
 ## Roadmap:
 - [x] 🖥️ Frontend: 
   - [x] 🔧 Level editor
@@ -32,5 +31,9 @@ With all these possibilities and the special physics, you can really get creativ
 - [ ] ➕ Additionals functionalities?
 
 ## How to use it?
-To play with this project you should:
+To play with this project, you should:
 - 🌐 Use the hosted version available at [here](https://icytrails.maxime-morel.xyz)
+- 🔧 Clone the project. For that, you'll need :
+  - PHP 8.2,
+  - create a database with `db_structure.sql`, 
+  - you'll probably also need to update `Core/Db.php` to match your db address and credentials (set to the default value for a local database)
