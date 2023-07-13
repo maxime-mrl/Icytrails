@@ -14,7 +14,7 @@
         </ul>
     </div>
     <div class="contact">
-        Contact us at <a href="mailto:mail@mail.com" class="link">mail@mail.com</a>
+        Contact us at <a href="mailto:contact@maxime-morel.xyz" class="link">contact@maxime-morel.xyz</a>
     </div>
     <div class="cookie">
         <p>This website only use necessary cookies to function and does not track user data</p>

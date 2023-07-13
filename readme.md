@@ -13,7 +13,7 @@ IcyTrails is an open-source and in-browser platformer game with some ✨special�
   - Visibility of your level (public or unlisted)
 
 With all these possibilities and the special physics, you can really get creative and create an **unique level**!
-## Roadmap:
+## V1:
 - [x] 🖥️ Frontend: 
   - [x] 🔧 Level editor
   - [x] 🕹️ Level player
@@ -28,7 +28,15 @@ With all these possibilities and the special physics, you can really get creativ
   - [x] 👤 User handling
   - [x] ✔️ Game saving
   - [x] 🎯 Game selecting
-- [ ] ➕ Additionals functionalities?
+## Future Versions:
+- [ ] 🖥️ Frontend:
+  - [ ] JS optimization
+  - [ ] Add blocks
+  - [ ] animated blocks? (eg. monster)
+  - [ ] Creator's name in the levels list
+  - [ ] Share button for levels
+- [ ] ⚙️ Backend
+  - [ ] Filters for level searching (by difficulty, date, number of comments, etc.)
 
 ## How to use it?
 To play with this project, you should:
@@ -36,4 +44,4 @@ To play with this project, you should:
 - 🔧 Clone the project. For that, you'll need :
   - PHP 8.2,
   - create a database with `db_structure.sql`, 
-  - you'll probably also need to update `Core/Db.php` to match your db address and credentials (set to the default value for a local database)
+  - you'll probably also need to update `Core/Db.php` to match your db address and credentials

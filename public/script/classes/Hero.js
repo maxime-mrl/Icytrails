@@ -1,13 +1,15 @@
 import collisionDetection from "../utils/collisionDetection.js";
-import createSprites from "../utils/createSprites.js"
 import Camera from "./Camera.js";
-const sprites = [
+
+const spritesSrcs = [
     "idle",
     "death",
     "walk",
     "blink",
     "jump",
 ];
+
+let memorySprites = false; // keep sprites in memory so when death new hero dosen't reload sprites (which is cool for optimization)
 
 export default class Hero {
     constructor (world, pos) {
@@ -43,7 +45,7 @@ export default class Hero {
         this.camera = new Camera(this);
 
         // sprites
-        this.sprites = createSprites(sprites);
+        this.sprites = this.createSprites();
         this.frameTime = 75; // duration of frames in ms
         this.currentFrame = 0; // frames number
         this.elapsed = 0; // ms elapsed since curent frame
@@ -58,38 +60,36 @@ export default class Hero {
             this.checkHorizontalColision();
             this.updateVerticalPos(delay);
             this.checkVerticalColision();
+            this.updateSprites();
             this.checkColisionEvents();
-        } // alive or dead
+        }
         // draw
         this.updateSpriteFrames(delay);
         this.renderer.drawSprite(this.currentSprite, this.currentFrame, this.pos);
-        // this.updateHitBox();
-        // this.drawDebug();
     }
 
-    updateSpriteFrames(delay) { // update hero sprite
-        // select sprite
-        if (this.vel.xAbs > 5 && /walk|idle|blink/.test(this.currentSprite.name)) this.currentSprite = this.sprites.walk; // when idling if move walk
-        else if (/walk|idle/.test(this.currentSprite.name)) this.currentSprite = this.sprites.idle; // when idling no movement = idle
-        else if ((this.currentSprite.name == "blink" && this.currentFrame == this.currentSprite.frameNb - 1) || (!this.jumping && this.currentSprite.name == "jump")) { // when blink cycle end or when jumping end return to idle
-            this.elapsed = 0;
-            this.currentFrame = 0;
-            this.currentSprite = this.sprites.idle;
+    updateSprites() { // select sprite order of priority first if is more important than second etc
+        if (this.jumping && this.currentSprite.name == "jump") this.currentSprite = this.sprites.jump; // jumping => jump sprite
+        else if (this.vel.xAbs > 5) this.currentSprite = this.sprites.walk; // moving => walk sprite
+        else if (this.currentSprite.name != "blink") { // idling => idle sprite and radom blink
+            this.currentSprite = this.sprites.idle
+            if (Math.random() > 0.98 && this.currentFrame == 0) { // blink at random time at first frame
+                this.elapsed = 0;
+                this.currentSprite = this.sprites.blink;
+            }
         }
-        else if (this.currentSprite.name == "death" && this.currentFrame == this.currentSprite.frameNb - 1) return this.world.respawn(); // respawn when death anim finished
-        if (this.currentSprite.name == "idle" && Math.random() > 0.98 && this.currentFrame == 0) { // blink if idle at random time
-            this.currentFrame = 0;
-            this.elapsed = 0;
-            this.currentSprite = this.sprites.blink;
-        }
-       if (this.jumping && this.vel.y < -1 && !this.dead) this.currentSprite = this.sprites.jump; // jumping => jump sprite
+    }
 
-        // updates sprite frames
+    updateSpriteFrames(delay) {
         this.elapsed += delay;
-        if (this.elapsed > this.frameTime) {
-            if (this.currentFrame < this.currentSprite.frameNb - 1) this.currentFrame++;
-            else this.currentFrame = 0;
+        if (this.elapsed > this.frameTime) { // next frame
             this.elapsed = 0;
+            if (this.currentFrame < this.currentSprite.frameNb - 1) this.currentFrame++; // normal add a frame
+            else { // last frame reached => rreturn to 0 and reset special sprites animation
+                if (this.currentSprite.name == "blink") this.currentSprite = this.sprites.idle; // when blink cycle end return to idle
+                else if (this.currentSprite.name == "death") return this.world.respawn(); // respawn when death anim finished
+                this.currentFrame = 0;
+            }
         }
         // update side of the sprite
         if (this.vel.mdir < 0) this.currentSprite.sprite = this.currentSprite.lSprite;
@@ -98,7 +98,7 @@ export default class Hero {
     
     updateHitBox = () => { // update Hitbox position
         this.hitBox.pos.x = this.pos.x + (1 - this.hitBox.width) / 2;
-        this.hitBox.pos.y = this.pos.y - (1 - this.hitBox.height) / 2; // minus bcz Y is calculated from bottom
+        this.hitBox.pos.y = this.pos.y - (1 - this.hitBox.height) / 2; // minus because Y is calculated from bottom
     }
 
     checkHorizontalColision = () => {
@@ -189,21 +189,27 @@ export default class Hero {
         this.pos.y += this.vel.y*delay/1000;
     }
 
-    drawDebug() { // temp
-        // camera
-        const camera = this.camera.camera;
-        this.ctx.fillStyle = "#00ff0050";
-        const {x:crx, y:cry} = this.renderer.calculateCoords({
-            x: camera.pos.x,
-            y: camera.pos.y
+    createSprites = () => {
+        if (memorySprites) return memorySprites; // dosen't recrate sprites if arleady exist
+        const sprites = {};
+        spritesSrcs.forEach(sprite => {
+            // create image
+            const imageR = document.createElement("img"); // right side image
+            imageR.src = `/asset/texture/hero/${sprite}.png`;
+            const imageL = document.createElement("img"); // left side image
+            imageL.src = `/asset/texture/hero/${sprite}_l.png`;
+            // set set number of frames on load
+            imageR.onload = () => sprites[sprite].frameNb = imageR.width/sprites[sprite].frameSize; // (we know frames size = 256px so we devide width by frame size for the number)
+            sprites[sprite] = {
+                rSprite: imageR,
+                lSprite: imageL,
+                sprite: imageL,
+                frameSize: 256,
+                frameNb: 10, // random number waiting for image to load and be edited
+                name: sprite,
+            }
         });
-        this.ctx.fillRect(crx, cry, camera.width * this.renderer.blockSize, camera.height * this.renderer.blockSize);
-        // hitbox
-        this.ctx.fillStyle = "#ff000050";
-        const {x:hrx, y:hry} = this.renderer.calculateCoords({
-            x: this.hitBox.pos.x,
-            y: this.hitBox.pos.y
-        });
-        this.ctx.fillRect(hrx, hry, this.hitBox.width * this.renderer.blockSize, this.hitBox.height * this.renderer.blockSize);
+        memorySprites = sprites; // register for memory
+        return sprites;
     }
 }
