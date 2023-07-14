@@ -1,6 +1,3 @@
-const delays = [];
-const loader = document.querySelector(".loader");
-
 export default class Renderer {
     constructor(world, mode = "fullscreen") {
         const event = new Event("blocksLoaded")
@@ -19,24 +16,27 @@ export default class Renderer {
         this.bg.ratio = 1;
         this.bg.onload = () => this.bg.ratio = this.bg.width/this.bg.height;
         this.blockTextures = new Map();
-        // loading
         // blocks loading and everything that needs block
         fetch("/asset/json/blocks.json")
             .then(resp => resp.json())
             .then(({blocks}) => {
+                let loadedImage = 0;
                 blocks.forEach(block => {
                     const image = document.createElement("img");
                     image.src = `/asset/texture/blocks/${block[0]}.png`;
                     image.alt = block[2];
                     image.onclick = () => this.world.selectedBlock = block[1]; // add event listener for level editors (when images are used as html)
+                    image.onload = () => {
+                        loadedImage++
+                        if(loadedImage == blocks.length) {
+                            document.querySelector(".loader").style.display = "none";
+                        }
+                    }
                     this.blockTextures.set(block[1], image);
                 });
                 window.dispatchEvent(event);
+                this.updater = requestAnimationFrame(() => this.render(Date.now()));
             });
-        window.onload = () => {
-            if (loader) loader.style.display = "none";
-            this.updater = requestAnimationFrame(() => this.render(Date.now()));
-        };
     }
 
     render = (lastFrame) => {

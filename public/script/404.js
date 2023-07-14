@@ -111,12 +111,10 @@ class World {
         this.ctx.shadowOffsetY = this.renderer.blockSize*0.06;
         this.texts.forEach(({ content:txt, x, y}) => {
             let { x:rx, y:ry } = this.renderer.calculateCoords({ x, y });
-            
             const txtSize = this.ctx.measureText(txt);
             rx = rx - txtSize.width/2;
             this.ctx.fillText(txt, rx, ry);
         })
-        
         this.ctx.restore()
     }
     

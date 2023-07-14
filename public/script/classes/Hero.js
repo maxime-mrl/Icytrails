@@ -31,7 +31,7 @@ export default class Hero {
             dir: 0, // direction of this velocity (calculation)
             mdir: 0, // memory velocity for movement
             y: 0, // vertical velocity
-            jump: 19.5, // acceleration when jump
+            jump: 19.4, // acceleration when jump
             increment: { // acceleration/deceleration of horizontal velocity
                 acc: 3,
                 slow: 8,

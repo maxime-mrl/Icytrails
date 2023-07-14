@@ -22,8 +22,10 @@
 <div class="video-paralax">
     <section class="create">
         <h2 class="h2">Create your world without any limits</h2>
-        <p>Your imagination is the only limit, hop in the level editor and place blocks decoration traps and more !</p>
-        <p>And the best part: there is no download required</p>
+        <div>
+            <p>Your imagination is the only limit, hop in the level editor and place blocks decoration traps and more !</p>
+            <p>And the best part: there is no download required</p>
+        </div>
         <a href="/levels/editor" class="btn">Level editor</a>
         <div class="background-images">
             <img src="asset/img/blockedit.png" alt="Level edition illustration" class="edit-img">
@@ -39,6 +41,7 @@
         <img src="asset/img/keys-arrow.png" alt="game controls illustration" class="keys active">
         <img src="asset/img/keys-qwerty.png" alt="game controls illustration" class="keys">
         <img src="asset/img/keys-azerty.png" alt="game controls illustration" class="keys">
+        <a href="/levels/tutorial" class="btn">Play tutorial</a>
         <div class="background-images">
             <img src="asset/img/terrain.png" alt="Terrain illustration background" class="terrain">
             <img src="asset/img/end.png" alt="star illustration" class="star1">

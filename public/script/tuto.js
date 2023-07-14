@@ -1,7 +1,6 @@
 import Renderer from "./classes/Renderer.js";
 import Hero from "./classes/Hero.js";
 import confetti from "./ext/confetti.min.js"
-import decompressLevel from "./utils/decompressLevel.js";
 
 const modals = document.querySelectorAll(".game-modal");
 
@@ -10,6 +9,7 @@ class World {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
         this.level = level;
+        this.texts = level.text;
         this.translate = { x: 0, y: 0 };
         this.handleDeath = false;
         this.respawnTimeout = 2000; // how long we wait before respawn
@@ -36,14 +36,36 @@ class World {
         this.ctx.translate(this.translate.x * this.renderer.blockSize, this.translate.y * this.renderer.blockSize); // translate the canvas
 
         // draw blocks
-        this.level.bg.forEach(({ x,y,t:type }) => this.renderer.drawBlock(this.renderer.blockTextures.get(type), {x,y}));
-        this.level.fg.forEach(({ x,y,t:type }) => this.renderer.drawBlock(this.renderer.blockTextures.get(type), {x,y}));
+        this.level.bg.forEach(({ x,y,t:type }) => {
+            const texture = this.renderer.blockTextures.get(type);
+            this.renderer.drawBlock(texture, {x,y});
+        });
+        this.level.fg.forEach(({ x,y,t:type }) => {
+            const texture = this.renderer.blockTextures.get(type);
+            this.renderer.drawBlock(texture, {x,y});
+        });
 
         // update player
         this.player.update(delay);
+        this.drawText()
         this.ctx.restore();
         this.drawScore();
         if (this.player.dead) this.deathGradient(delay)
+    }
+
+    drawText = () => {
+        this.ctx.font = `500 ${this.renderer.blockSize*0.6}px atma`;
+        this.ctx.fillStyle = "#F3EFF5";
+        this.ctx.shadowColor="#022e3c";
+        this.ctx.shadowBlur = this.renderer.blockSize*0.03;
+        this.ctx.shadowOffsetX = this.renderer.blockSize*0.06;
+        this.ctx.shadowOffsetY = this.renderer.blockSize*0.06;
+        this.texts.forEach(({ content:txt, x, y}) => {
+            let { x:rx, y:ry } = this.renderer.calculateCoords({ x, y });
+            const txtSize = this.ctx.measureText(txt);
+            rx = rx - txtSize.width/2;
+            this.ctx.fillText(txt, rx, ry);
+        })
     }
 
     drawScore = () => {
@@ -127,7 +149,7 @@ class World {
             cancelAnimationFrame(this.renderer.updater);
             clearInterval(this.renderer.updater);
         }, 100); // wait a bit to stop updating so the start disapear ecc.
-        setTimeout(() => window.location.pathname = window.location.pathname.replace("play", "details"), 2000); // redirect users
+        setTimeout(() => window.location.pathname ="/levels", 2000); // redirect users
     }
 
     // key input events
@@ -179,6 +201,6 @@ class World {
     }
 }
 
-if (compressedLevel) {
-    new World(decompressLevel(compressedLevel));
-}
+fetch('/asset/json/tuto.json') // get tuto level
+    .then(resp => resp.json())
+    .then(data => {new World(data)});

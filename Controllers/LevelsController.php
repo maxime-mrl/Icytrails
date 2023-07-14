@@ -16,6 +16,10 @@ class LevelsController extends Controller {
         $this->render("levels/browser", ["levels"=>$levels]);
     }
 
+    public function tutorial() { // tutorial page
+        $this->render("levels/tuto"); // render game page w/ level
+    }
+
     public function own() { // find alls owned levels and render them as list
         $user = Tools::IsLogged();
         $levelsModel = new LevelsModel();
