@@ -1,3 +1,6 @@
+const delays = [];
+const loader = document.querySelector(".loader");
+
 export default class Renderer {
     constructor(world, mode = "fullscreen") {
         const event = new Event("blocksLoaded")
@@ -16,6 +19,7 @@ export default class Renderer {
         this.bg.ratio = 1;
         this.bg.onload = () => this.bg.ratio = this.bg.width/this.bg.height;
         this.blockTextures = new Map();
+        // loading
         // blocks loading and everything that needs block
         fetch("/asset/json/blocks.json")
             .then(resp => resp.json())
@@ -28,14 +32,16 @@ export default class Renderer {
                     this.blockTextures.set(block[1], image);
                 });
                 window.dispatchEvent(event);
-                // first render
-                this.updater = requestAnimationFrame(() => this.render(Date.now()));
             });
+        window.onload = () => {
+            if (loader) loader.style.display = "none";
+            this.updater = requestAnimationFrame(() => this.render(Date.now()));
+        };
     }
 
     render = (lastFrame) => {
         // delay calculation and next frame
-        const delay = Math.min((Date.now() - lastFrame), 20); // don't allow under 50 fps physics (because slower risk glitchy collision)
+        const delay = Math.min((Date.now() - lastFrame), 30); // don't allow over 20ms delay (because slower risk glitchy collision) -> paast this delay the game will aappear to slow down
         lastFrame = Date.now();
         this.updater = requestAnimationFrame(() => this.render(lastFrame));
         // reset canvas
@@ -59,7 +65,7 @@ export default class Renderer {
             this.canvas.height = 720;
             this.canvas.className = "windowed";
         }
-        this.blockSize =this.canvas.height / this.verticalRenderDistance;
+        this.blockSize = this.canvas.height / this.verticalRenderDistance;
         this.world.handleResize(this.width / this.height);
     }
 
@@ -86,7 +92,7 @@ export default class Renderer {
         const bgWidth = this.blockSize*5.5 * this.bg.ratio;
         const bgHeight = this.blockSize*5.5;
         const y = this.canvas.height + this.world.translate.y * this.blockSize - bgHeight;
-        for (let i = 0; i < 99; i++) {
+        for (let i = 0; i < 50; i++) {
             const x = i*bgWidth + this.world.translate.x * this.blockSize / 5;
             this.world.ctx.drawImage(this.bg, x, y, bgWidth * 1.01, bgHeight * 1.01);
         }

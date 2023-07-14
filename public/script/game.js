@@ -4,7 +4,6 @@ import confetti from "./ext/confetti.min.js"
 import decompressLevel from "./utils/decompressLevel.js";
 
 const modals = document.querySelectorAll(".game-modal");
-const loader = document.querySelector(".loader");
 
 class World {
     constructor(level) {
@@ -27,7 +26,6 @@ class World {
 
         this.renderer = new Renderer(this);
         this.player = new Hero(this, this.level.spawn);
-        window.onload = () => loader.style.display = "none";
 
         // listener for movements
         document.addEventListener("keydown", this.keyDown);
@@ -131,7 +129,10 @@ class World {
                 y: 0
               }
             })
-        setTimeout(() => cancelAnimationFrame(this.renderer.updater), 100); // wait a bit to stop updating so the start disapear ecc.
+        setTimeout(() => {
+            cancelAnimationFrame(this.renderer.updater);
+            clearInterval(this.renderer.updater);
+        }, 100); // wait a bit to stop updating so the start disapear ecc.
         setTimeout(() => window.location.pathname = window.location.pathname.replace("play", "details"), 1500); // redirect users
     }
 

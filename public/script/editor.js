@@ -11,12 +11,10 @@ const blockCategories = {
 }
 
 const title = document.getElementById("input-title");
-const visibility = document.getElementById("visibility");
 const formSubmit = document.getElementById("form-sumbit");
 const titleSumbit = document.getElementById("title-box");
 const levelSumbit = document.getElementById("level-box");
 const modals = document.querySelectorAll(".game-modal");
-const loader = document.querySelector(".loader");
 
 let level = {
     spawn: {x: 0, y: 0},
@@ -45,7 +43,6 @@ class World {
 
         this.renderer = new Renderer(this, "windowed");
         window.addEventListener("blocksLoaded", this.addBlocksToSelector);
-        window.onload = () => loader.style.display = "none";
         
         // listening stuffs
         this.canvas.addEventListener("mousemove", this.mouseEvent);
@@ -77,9 +74,9 @@ class World {
         let widthRatio = this.canvas.width / rect.width;
         let heightRatio = this.canvas.height / rect.height;
         // calculate coordinate
-        this.mouse.x = Math.round(( (clientX - rect.left -(this.renderer.blockSize / 2)) / this.renderer.blockSize ) * widthRatio); // get coordinate in block unit w/ mous at center
-        this.mouse.y = Math.round(( (rect.bottom - clientY  - this.renderer.blockSize / 2) / this.renderer.blockSize ) * heightRatio); // y from the bottom
-        // make sur it's > 0 (without that could be -0 or in some case -1)
+        this.mouse.x = Math.round(( (clientX - rect.left) * widthRatio - (this.renderer.blockSize / 2) ) / this.renderer.blockSize); // get coordinate in block unit w/ mous at center
+        this.mouse.y = Math.round(( (rect.bottom - clientY) * heightRatio  - this.renderer.blockSize / 2 ) / this.renderer.blockSize); // y from the bottom
+        // make sur it's > 0 (without that could be -0)
         this.mouse.x = Math.max(0, this.mouse.x);
         this.mouse.y = Math.max(0, this.mouse.y);
 
@@ -123,6 +120,7 @@ class World {
 
     
     keyPressed = ({key}) => { // handle canvas translate based on key
+        if (document.activeElement == title) return; // dosen't move canvas if writting title
         switch (key) {
             case " ": case "ArrowUp": case "z": case "w":
                 this.translate.y++;

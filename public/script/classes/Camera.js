@@ -27,7 +27,6 @@ export default class Camera {
         const right = this.camera.pos.x + this.camera.width;
         const bottom = this.camera.pos.y + (1 - this.camera.height);
         const top = this.camera.pos.y + 1;
-        // maximum x world translate
         const max = this.world.max - (this.world.canvas.width / this.renderer.blockSize) + 1;
 
         // change translate for horizontal
@@ -38,8 +37,8 @@ export default class Camera {
         else if ((top - this.world.translate.y) * this.renderer.blockSize >= this.world.canvas.height && this.vel.y > 0) this.world.translate.y += this.vel.y * delay/1000; // top
         
         // translate limits
-        if (this.world.translate.x > 0) this.world.translate.x = 0; // left
         if (-this.world.translate.x > max) this.world.translate.x = -max; // right
+        if (this.world.translate.x > 0) this.world.translate.x = 0; // left
         if (this.world.translate.y < 0) this.world.translate.y = 0; // bottom
         // no top limit since we are pretty naturaly limited by jump
     }

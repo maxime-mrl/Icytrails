@@ -28,15 +28,6 @@ With all these possibilities and the special physics, you can really get creativ
   - [x] 👤 User handling
   - [x] ✔️ Game saving
   - [x] 🎯 Game selecting
-## Future Versions:
-- [ ] 🖥️ Frontend:
-  - [ ] JS optimization
-  - [ ] Add blocks
-  - [ ] animated blocks? (eg. monster)
-  - [ ] Creator's name in the levels list
-  - [ ] Share button for levels
-- [ ] ⚙️ Backend
-  - [ ] Filters for level searching (by difficulty, date, number of comments, etc.)
 
 ## How to use it?
 To play with this project, you should:
@@ -45,3 +36,7 @@ To play with this project, you should:
   - PHP 8.2,
   - create a database with `db_structure.sql`, 
   - you'll probably also need to update `Core/Db.php` to match your db address and credentials
+## Project links:
+- 🌐 [Website](https://icytrails.maxime-morel.xyz)
+- 📡 [Github](https://github.com/maxime-mrl/Icytrails)
+- ✨ [Behance](https://www.behance.net/gallery/175043179/Icytrails-comunity-platformer-game)

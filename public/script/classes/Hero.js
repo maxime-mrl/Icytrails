@@ -16,6 +16,7 @@ export default class Hero {
         this.ctx = world.ctx;
         this.world = world;
         this.renderer = world.renderer;
+        this.collisionsCheck = [];
 
         // positions
         this.pos = { x: pos.x, y: pos.y };
@@ -30,7 +31,7 @@ export default class Hero {
             dir: 0, // direction of this velocity (calculation)
             mdir: 0, // memory velocity for movement
             y: 0, // vertical velocity
-            jump: 20, // acceleration when jump
+            jump: 19.5, // acceleration when jump
             increment: { // acceleration/deceleration of horizontal velocity
                 acc: 3,
                 slow: 8,
@@ -45,7 +46,7 @@ export default class Hero {
         this.camera = new Camera(this);
 
         // sprites
-        this.sprites = this.createSprites();
+        this.sprites = createSprites();
         this.frameTime = 75; // duration of frames in ms
         this.currentFrame = 0; // frames number
         this.elapsed = 0; // ms elapsed since curent frame
@@ -55,11 +56,12 @@ export default class Hero {
     update = (delay) => {
         if (!this.dead) { // only if alive
             if (this.jumpMem && !this.jumping) this.jump(); // jump feels way better by keeping input while jumping (except if key is released)
+            this.updateCollisionCheck()
             this.updateHorizontalPos(delay);
             this.camera.update(delay);
             this.checkHorizontalColision();
             this.updateVerticalPos(delay);
-            this.checkVerticalColision();
+            this.checkVerticalColision(delay);
             this.updateSprites();
             this.checkColisionEvents();
         }
@@ -101,14 +103,28 @@ export default class Hero {
         this.hitBox.pos.y = this.pos.y - (1 - this.hitBox.height) / 2; // minus because Y is calculated from bottom
     }
 
+    updateCollisionCheck = () => { // select only nearby blocks to calculates every specials collision only for them going forwards
+        this.collisionsCheck = [];
+        this.world.level.fg.forEach((block) => {
+            if (
+                this.hitBox.pos.y + 5 >= block.y &&
+                this.hitBox.pos.y + (1 - this.hitBox.height) <= block.y + 5 &&
+                this.hitBox.pos.x <= block.x + 5 &&
+                this.hitBox.pos.x + this.hitBox.width + 5 >= block.x
+            ) {
+                this.collisionsCheck.push(block);
+            };
+        })
+    }
+
     checkHorizontalColision = () => {
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
-        this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}) => {
-            if (type >= 20) return; // no horizontal colision for slabs
-            if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
+        this.collisionsCheck.forEach(({x, y, t}) => {
+            if (t >= 20) return; // no horizontal colision for slabs
+            if (!collisionDetection(this.hitBox, {x, y})) return;
             this.vel.xAbs = 0;
-            if (blockX - 0.1 > this.hitBox.pos.x) return this.pos.x = blockX - 1.003 + (1 - this.hitBox.width) / 2;
-            if (blockX + 0.1 <  this.hitBox.pos.x) return this.pos.x = blockX + 1.003 - (1 - this.hitBox.width) / 2;
+            if (x - 0.1 > this.hitBox.pos.x) return this.pos.x = x - 1.003 + (1 - this.hitBox.width) / 2;
+            if (x + 0.1 <  this.hitBox.pos.x) return this.pos.x = x + 1.003 - (1 - this.hitBox.width) / 2;
         })
 
         // check limits
@@ -116,24 +132,30 @@ export default class Hero {
         if (this.hitBox.pos.x + this.hitBox.width > this.world.max + 1) this.pos.x = this.world.max + (1 - this.hitBox.width) / 2;
     }
     
-    checkVerticalColision = () => {
-        const halfPlatTolerance = 0.65 + this.vel.y/100;
+    checkVerticalColision = (delay) => {
         this.jumping = true;
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
-        this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}) => {
-            if (type > 30) return; // with blocks and slabs
-            if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
-
-            if (this.vel.y > 0 && type < 20) {
-                this.vel.y = 0;
-                this.pos.y = blockY - 1.003 + (1 - this.hitBox.height) / 2;
-                return; // stop itteration for perfs
-            } if (this.vel.y < 0 && (type < 20 || blockY + halfPlatTolerance < this.pos.y)) { // (type < 20 || blockY + 0.6 < this.pos.y) allow to test for plates to only colide from top part
+        this.collisionsCheck.forEach(({x, y, t}) => {
+        if (!collisionDetection(this.hitBox, {x, y})) return;
+            if (t < 20) { // blocks
+                if (this.vel.y > 0) { // top collision
+                    this.vel.y = 0;
+                    this.pos.y = y - 1.003 + (1 - this.hitBox.height) / 2;
+                    return;
+                }
+                if (this.vel.y < 0) {
+                    this.jumping = false;
+                    this.vel.y = 0;
+                    this.pos.y = y + 1.003 - (1 - this.hitBox.height) / 2;
+                    return;
+                }
+            } else if (t < 30 && this.vel.y < 0 && y + 0.65 + this.vel.y*delay/800 < this.pos.y) { // slab -- only colides from top part
                 this.jumping = false;
                 this.vel.y = 0;
-                this.pos.y = blockY + 1.003 - (1 - this.hitBox.height) / 2;
-                return; // stop itteration for perfs
+                this.pos.y = y + 1.003 - (1 - this.hitBox.height) / 2;
+                return;
             }
+
         })
         // check ground
         if (this.pos.y <= 0) {
@@ -145,7 +167,7 @@ export default class Hero {
 
     checkColisionEvents = () => {
         this.updateHitBox(); // check w/ hitbox so make sure it's up to date
-        this.world.level.fg.forEach(({x:blockX, y:blockY, t:type}, index) => {
+        this.collisionsCheck.forEach(({x:blockX, y:blockY, t:type}) => {
             if (!collisionDetection(this.hitBox, {x: blockX, y: blockY})) return;
             if (type >= 70 && type < 80 && blockY + 0.2 > this.pos.y) { // death
                 this.dead = true;
@@ -155,14 +177,20 @@ export default class Hero {
                 return;
             } else if (type == 80) { // score increase
                 this.world.score++;
+                // remove from array
+                const index = this.world.level.fg.findIndex(elem => (elem.x == blockX && elem.y == blockY && elem.t == type))
                 this.world.level.fg.splice(index, 1);
                 return;
             } else if (type == 81) { // checkpoint
-                this.world.level.fg.splice(index, 1);
                 this.world.level.spawn = { x: blockX, y: blockY }
-            } else if (type == 98) { // succes
+                // remove from array
+                const index = this.world.level.fg.findIndex(elem => (elem.x == blockX && elem.y == blockY && elem.t == type))
                 this.world.level.fg.splice(index, 1);
+            } else if (type == 98) { // succes
                 this.world.succes()
+                // remove from array
+                const index = this.world.level.fg.findIndex(elem => (elem.x == blockX && elem.y == blockY && elem.t == type))
+                this.world.level.fg.splice(index, 1);
                 return;
             }
         })
@@ -172,44 +200,44 @@ export default class Hero {
     jump = () => {
         this.jumping = true;
         this.jumpMem = false;
-        this.vel.y = this.vel.jump + (this.vel.xAbs) * 0.08; // jump a bit higher when going quick
+        this.vel.y = this.vel.jump + this.vel.xAbs * 0.08; // jump a bit higher when going quick
         this.currentFrame = 0;
         this.elapsed = 0;
         this.currentSprite = this.sprites.jump;
     }
 
     updateHorizontalPos = (delay) => {
-        if (this.vel.dir != 0) this.vel.xAbs += (this.vel.increment.acc * delay / 1000) * (this.vel.xMax - this.vel.xAbs);
+        if (this.vel.dir != 0) this.vel.xAbs += (this.vel.increment.acc) * (this.vel.xMax - this.vel.xAbs)  * delay / 1000;
         else this.vel.xAbs -= (this.vel.increment.slow * delay / 1000) * this.vel.xAbs;
         this.pos.x += this.vel.xAbs * delay/1000 * this.vel.mdir;
     }
 
     updateVerticalPos = (delay) => {
+        // kind of better but still higher for the non laggy version
+        const oldVel = this.vel.y;
         this.vel.y -= this.vel.g*delay/1000;
-        this.pos.y += this.vel.y*delay/1000;
+        this.pos.y += 0.5 * (this.vel.y + oldVel) * delay/1000;
     }
+}
 
-    createSprites = () => {
-        if (memorySprites) return memorySprites; // dosen't recrate sprites if arleady exist
-        const sprites = {};
-        spritesSrcs.forEach(sprite => {
-            // create image
-            const imageR = document.createElement("img"); // right side image
-            imageR.src = `/asset/texture/hero/${sprite}.png`;
-            const imageL = document.createElement("img"); // left side image
-            imageL.src = `/asset/texture/hero/${sprite}_l.png`;
-            // set set number of frames on load
-            imageR.onload = () => sprites[sprite].frameNb = imageR.width/sprites[sprite].frameSize; // (we know frames size = 256px so we devide width by frame size for the number)
-            sprites[sprite] = {
-                rSprite: imageR,
-                lSprite: imageL,
-                sprite: imageL,
-                frameSize: 256,
-                frameNb: 10, // random number waiting for image to load and be edited
-                name: sprite,
-            }
-        });
-        memorySprites = sprites; // register for memory
-        return sprites;
-    }
+function createSprites() { // import sprites and create array of object with all usefull things
+    if (memorySprites) return memorySprites; // dosen't recrate sprites if arleady exist
+    const sprites = {};
+    spritesSrcs.forEach(sprite => {
+        const imageR = document.createElement("img");
+        imageR.src = `/asset/texture/hero/${sprite}.png`;
+        imageR.onload = () => sprites[sprite].frameNb = imageR.width/sprites[sprite].frameSize; // when image loaded set number of frames (we now frames size - 256px - so we devide width by frame size for the number)
+        const imageL = document.createElement("img");
+        imageL.src = `/asset/texture/hero/${sprite}_l.png`;
+        sprites[sprite] = {
+            rSprite: imageR,
+            lSprite: imageL,
+            sprite: imageL,
+            frameSize: 256,
+            frameNb: 10, // random number waiting for image to load and be edited
+            name: sprite,
+        }
+    });
+    memorySprites = sprites; // register for memory
+    return sprites;
 }

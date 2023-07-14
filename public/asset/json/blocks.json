@@ -1,6 +1,7 @@
 {
     "blocks": [
-        ["block-01", 0, "A solid rock"],
+        ["block-00", 0, "A solid rock"],
+        ["block-01", 1, "Are you really gonna hover every solid block?"],
         ["block-02", 2, "Another solid rock"],
         ["block-03", 3, "Are you really gonna hover every solid block?"],
         ["block-04", 4, "Yes, this is still a solid rock"],
@@ -37,6 +38,7 @@
         ["decor-11", 50, "Another type of arrow? you can't get lost!"],
         ["decor-12", 51, "Pro tip: you can stack multiple background blocks!"],
         ["decor-13", 52, "When it snows a bit too much"],
+        ["bg-11", 54, "This is still a background block"],
         ["spikes-01", 70, "DIIIIIEE"],
         ["spikes-02", 71, "SUFFEEERRRR"],
         ["coin-01", 80, "A shiny golden coin gives a sweat point"],
