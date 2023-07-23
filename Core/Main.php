@@ -10,7 +10,7 @@ class Main {
         if (!empty($uri) && $uri[-1] == "/" && $uri !== "/") { // remove eventual trailling /
             http_response_code(301);
             header("location: " . substr($uri, 0, -1));
-            if ($uri != "/") exit;
+            exit;
         }
         /* ------------------------------- HANDLE PATH ------------------------------ */
         $params = explode('/', $_GET["p"]);

@@ -34,7 +34,7 @@
         </button>
         <form action="/users/register" method="post" class="form-modal">
             <label for="register-name">Username</label>
-            <input type="text" name="username" id="register-name" placeholder="Your cool username" autocomplete="name" data-err="Please enter a valid username" data-check="/^[-a-z0-9/]{4,20}$/" required>
+            <input type="text" name="username" id="register-name" placeholder="Your cool username" autocomplete="name" data-err="Please enter a valid username" data-check="/^[-a-z0-9/]{4,20}$/i" required>
             <label for="register-mail">Your mail</label>
             <input type="email" name="mail" id="register-mail" placeholder="mail@adress.com" data-err="Please enter a valid mail" data-check="/^[a-z][-._a-z0-9]*@[a-z0-9][-.a-z0-9]+\.[a-z]{2,}$/i" required>
             <label for="register-pass">Password</label>
