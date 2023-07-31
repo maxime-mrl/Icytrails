@@ -2,6 +2,7 @@ export default class Renderer {
     constructor(world, mode = "fullscreen") {
         const event = new Event("blocksLoaded")
         this.verticalRenderDistance = 10;
+        this.speedMultiplier = 0.85; // used to slow down a bit the game because it's too hard apparently
         this.world = world;
         this.canvas = world.canvas;
         this.ctx = world.ctx;
@@ -41,7 +42,7 @@ export default class Renderer {
 
     render = (lastFrame) => {
         // delay calculation and next frame
-        const delay = Math.min((Date.now() - lastFrame), 30); // don't allow over 20ms delay (because slower risk glitchy collision) -> paast this delay the game will aappear to slow down
+        const delay = Math.min((Date.now() - lastFrame), 30) * this.speedMultiplier; // don't allow over 20ms delay (because slower risk glitchy collision) -> paast this delay the game will appear
         lastFrame = Date.now();
         this.updater = requestAnimationFrame(() => this.render(lastFrame));
         // reset canvas

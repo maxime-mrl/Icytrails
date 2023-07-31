@@ -14,7 +14,7 @@ class ErrorsController extends Controller {
     }
     public function notFound() { // not found error handling
         http_response_code(404);
-        $this->render("404");
+        $this->render("404", [], "Icytrails - 404");
         exit;
     }
 }

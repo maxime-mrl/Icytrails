@@ -13,11 +13,11 @@ class LevelsController extends Controller {
         $levels = $levelsModel->findBy([ "visibility" => 1 ]);
         $levels = $this->addRatingToLevels($levels); // add comments and rating to level object
 
-        $this->render("levels/browser", ["levels"=>$levels]);
+        $this->render("levels/browser", ["levels"=>$levels], "Icytrails - Levels");
     }
 
     public function tutorial() { // tutorial page
-        $this->render("levels/tuto"); // render game page w/ level
+        $this->render("levels/tuto", [], "Icytrails - Learn to play"); // render game page w/ level
     }
 
     public function own() { // find alls owned levels and render them as list
@@ -26,7 +26,7 @@ class LevelsController extends Controller {
         $levels = $levelsModel->findBy([ "created_by" => $user->id ]);
         $levels = $this->addRatingToLevels($levels); // add comments and rating to level object
 
-        $this->render("levels/browser", ["levels"=>$levels]);
+        $this->render("levels/browser", ["levels"=>$levels], "Icytrails - Your levels");
     }
 
     public function details($uuid = null) { // show details of a given level
@@ -36,14 +36,14 @@ class LevelsController extends Controller {
         $created_by = $usersModel->findById($level->created_by)->username;
         $level = $this->addRatingToLevels([ $level ])[0]; // add comments and rating to level object
 
-        $this->render("levels/details", [ "level"=>$level, "created_by"=>$created_by ]);
+        $this->render("levels/details", [ "level"=>$level, "created_by"=>$created_by ], "Icytrails - Details");
     }
     
     public function play($uuid = null) { // render wanted level to play it
         $levelsModel = new LevelsModel();
         $level = $this->isLevelExist($uuid, $levelsModel); // check that level exist and get it
 
-        $this->render("levels/play", ["level"=>$level]); // render game page w/ level
+        $this->render("levels/play", ["level"=>$level], "Icytrails - Play!"); // render game page w/ level
     }
 
     public function delete($uuid = null) { // delete level (from level editor)
@@ -147,7 +147,7 @@ class LevelsController extends Controller {
                 ]);
             }
         }
-        $this->render("/levels/editor", ["level" => $level]);
+        $this->render("/levels/editor", ["level" => $level], "Icytrails - Create your level");
     }
 
     public function setrating($uuid = null) { // set rating for a level

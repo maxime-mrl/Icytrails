@@ -72,7 +72,7 @@ class UsersController extends controller {
                     ["type" => "success", "text" => "You are already signed-in"]
                 ]);
             }
-            $this->render("users/register");
+            $this->render("users/register", [], "Icytrails - join the community");
         }
     }
     public function login() { // display login page and handle user login
@@ -130,7 +130,7 @@ class UsersController extends controller {
                     ["type" => "success", "text" => "You are already logged"]
                 ]);
             }
-            $this->render("users/login");
+            $this->render("users/login", [], "Icytrails - login");
         }
     }
 
@@ -201,7 +201,7 @@ class UsersController extends controller {
         $this->render("users/settings", [
             "mail"=>$user->mail,
             "username"=>$user->username,
-        ]);
+        ], "Icytrails - Account");
     }
 
     public function delete() { // delte user account

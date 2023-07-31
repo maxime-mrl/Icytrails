@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Icytrails - free to play online comunity platform game">
+    <meta name="description" content="Icytrails - Free to play online comunity platform game">
     <link rel="icon" href="/asset/img/favicon.ico" type="image/x-icon">
-    <title>Icytrails</title>
+    <title><?= $title ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
 </head>

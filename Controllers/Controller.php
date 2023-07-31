@@ -7,8 +7,9 @@ abstract class controller {
      * Render a pages
      * @param string $file path from views to the file
      * @param array $data optional data used by the views
+     * @param string $title optional custom tabs title
      */
-    protected function render($file, $data = []) {
+    protected function render($file, $data = [], $title = "Icytrails") {
         extract($data);
         // user variable so if I change the session structure i just change here
         if (isset($_SESSION["user"])) {
