@@ -149,6 +149,9 @@ class World {
                 this.player.vel.dir = -1;
                 this.player.vel.mdir = -1;
                 break;
+            case "h":
+                this.player.showHitbox = !this.player.showHitbox;
+                break;
         }
     }
     keyUp = ({key}) => {

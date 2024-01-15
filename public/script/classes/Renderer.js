@@ -78,7 +78,7 @@ export default class Renderer {
     }
 
     drawBlock = (img, pos) => { // draw images without sprite
-        const {x, y} = this.calculateCoords(pos) ;
+        const {x, y} = this.calculateCoords(pos);
         this.world.ctx.drawImage(img, x, y, this.blockSize*1.01, this.blockSize*1.01);
     }
 
@@ -87,6 +87,13 @@ export default class Renderer {
         const cropStart = frameSize * displayedFrame;
         this.world.ctx.drawImage(sprite, cropStart, 0, frameSize, frameSize, x, y, this.blockSize, this.blockSize);
         // draw image full: imgSRC, imgcropStart x-y, imgcropWidth x-y, posX, posY, SizeX, sizeY  
+    }
+
+    drawHitbox = ({pos, width, height}) => {
+        const {x, y} = this.calculateCoords(pos);
+        this.ctx.fillStyle = "#ff0000";
+        this.ctx.globalAlpha = 0.2;
+        this.world.ctx.fillRect(x, y, width*this.blockSize, height*this.blockSize);
     }
 
     drawBackground = () => {

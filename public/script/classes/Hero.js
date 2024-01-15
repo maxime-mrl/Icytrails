@@ -22,8 +22,9 @@ export default class Hero {
         this.pos = { x: pos.x, y: pos.y };
         this.hitBox = {
             pos: { x: this.pos.x, y: this.pos.y },
-            width: 0.6, height: 0.8,
+            width: 0.5, height: 0.7,
         };
+        this.showHitbox = false;
 
         this.vel = {
             xAbs: 0, // horizontal velocity
@@ -68,6 +69,7 @@ export default class Hero {
         // draw
         this.updateSpriteFrames(delay);
         this.renderer.drawSprite(this.currentSprite, this.currentFrame, this.pos);
+        if (this.showHitbox) this.renderer.drawHitbox(this.hitBox);
     }
 
     updateSprites() { // select sprite order of priority first if is more important than second etc
