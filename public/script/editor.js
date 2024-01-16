@@ -35,22 +35,25 @@ class World {
         this.canvas = document.getElementById("game-canvas");
         this.ctx = this.canvas.getContext("2d");
         this.level = level;
-        console.log(level)
         this.selectedBlock = 0;
         this.mouse = { x: 0, y: 0 }; // mouse position over canvas
         this.pos = { x: 0, y: 0 }; // real pos
         this.translate = { x: 0, y: 0 }; // translate amount
         this.clicked = false;
+        this.moveMode = false;
+        this.isRightClick = false;
 
         this.renderer = new Renderer(this, "windowed");
         window.addEventListener("blocksLoaded", this.addBlocksToSelector);
         
         // listening stuffs
         this.canvas.addEventListener("mousemove", this.mouseEvent);
-        this.canvas.addEventListener("mousedown", (e) => { this.mouseEvent(e); this.clicked = true });
-        this.canvas.addEventListener("mouseleave", (e) => { this.mouseEvent(e); this.clicked = false })
-        this.canvas.addEventListener("mouseup", (e) => { this.mouseEvent(e); this.clicked = false });
+        this.canvas.addEventListener("mousedown", (e) => { this.clicked = true; this.mouseEvent(e);});
+        this.canvas.addEventListener("mouseleave", (e) => { this.clicked = false; this.mouseEvent(e); })
+        this.canvas.addEventListener("mouseup", (e) => { this.clicked = false; this.mouseEvent(e); });
+        window.addEventListener(`contextmenu`, (e) => { return e.preventDefault() }); // prevent default for right click
         document.addEventListener("keydown", this.keyPressed);
+        document.addEventListener("keyup", this.keyReleased);
     }
 
     addBlocksToSelector = () => { // add blocks (given from renderer) to block selector
@@ -69,11 +72,26 @@ class World {
         })
     }
 
-    mouseEvent = ({clientX, clientY}) => { // mouse movement get canvas relative coordinates
+    mouseEvent = (e) => { // mouse movement get canvas relative coordinates
+        const {clientX, clientY} = e;
+
         let rect = this.canvas.getBoundingClientRect();
         // get ratio of canvas js width vs real width
         let widthRatio = this.canvas.width / rect.width;
         let heightRatio = this.canvas.height / rect.height;
+        
+        if (this.moveMode && this.clicked) {
+            // calculate drift
+            const x = Math.round(( (clientX - rect.left) * widthRatio - (this.renderer.blockSize / 2) ) / this.renderer.blockSize); // get coordinate in block unit w/ mous at center
+            const y  = Math.round(( (rect.bottom - clientY) * heightRatio  - this.renderer.blockSize / 2 ) / this.renderer.blockSize); // y from the bottom
+            if (this.mouse.x > x) this.translate.x--
+            else if (this.mouse.x < x && this.translate.x < 0) this.translate.x++
+            if (this.mouse.y > y) this.translate.y++
+            else if (this.mouse.y < y && this.translate.y > 0) this.translate.y--
+            this.mouse.x = Math.max(0, x);
+            this.mouse.y = Math.max(0, y);
+            return;
+        }
         // calculate coordinate
         this.mouse.x = Math.round(( (clientX - rect.left) * widthRatio - (this.renderer.blockSize / 2) ) / this.renderer.blockSize); // get coordinate in block unit w/ mous at center
         this.mouse.y = Math.round(( (rect.bottom - clientY) * heightRatio  - this.renderer.blockSize / 2 ) / this.renderer.blockSize); // y from the bottom
@@ -81,15 +99,21 @@ class World {
         this.mouse.x = Math.max(0, this.mouse.x);
         this.mouse.y = Math.max(0, this.mouse.y);
 
-        if (!this.clicked) return; // add blocks only on click
+        if (!this.clicked) {
+            this.isRightClick = false;
+            return;
+        } // add blocks only on click
+        e.preventDefault();
+        const isRightClick = e.which ? e.which == 3 : e.button == 2; // get right click
+        if (isRightClick) this.isRightClick = true;
 
         // spawn and finish point
-        if (this.selectedBlock == 95 && (this.pos.x != this.level.end.x || this.pos.y != this.level.end.y)) 
+        if (this.selectedBlock == 95 && (this.pos.x != this.level.end.x || this.pos.y != this.level.end.y) && !this.isRightClick) 
             this.level.spawn = { x: this.pos.x, y:this.pos.y };
-        if (this.selectedBlock == 96 && (this.pos.x != this.level.spawn.x || this.pos.y != this.level.spawn.y))
+        if (this.selectedBlock == 96 && (this.pos.x != this.level.spawn.x || this.pos.y != this.level.spawn.y) && !this.isRightClick)
             this.level.end = { x: this.pos.x, y:this.pos.y };
         // eraser (also erase when setting spawn/end point so it can't be inside a block)
-        if (this.selectedBlock >= 95) {
+        if (this.selectedBlock >= 95 || this.isRightClick) {
             const toEraseBg = this.level.bg.findIndex(block => block.x == this.pos.x && block.y == this.pos.y);
             const toEraseFg = this.level.fg.findIndex(block => block.x == this.pos.x && block.y == this.pos.y);
             if (toEraseBg != -1) this.level.bg.splice(toEraseBg, 1);
@@ -118,7 +142,6 @@ class World {
             this.level.fg.push(toAdd);
         }
     }
-
     
     keyPressed = ({key}) => { // handle canvas translate based on key
         if (document.activeElement == title) return; // dosen't move canvas if writting title
@@ -135,9 +158,16 @@ class World {
             case "a": case "q": case "ArrowLeft":
                 this.translate.x++;
                 break;
+            case "Control":
+                this.moveMode = true;
+                break;
         }
         if (this.translate.x > 0) this.translate.x = 0;
         if (this.translate.y < 0) this.translate.y = 0;
+    }
+
+    keyReleased = ({key}) => {
+        if (key === "Control") this.moveMode = false;
     }
 
     update = () => { // udate, draw etc
