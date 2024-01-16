@@ -19,6 +19,7 @@ class World {
         // level read and initialization
         this.level.fg.push({ x: level.end.x, y: level.end.y, t: 98 });
         this.max = Math.max.apply(this.level.spawn.x, this.level.fg.map(elem => elem.x), this.level.end.x); // level x border
+        this.top = Math.max.apply(this.level.spawn.y, this.level.fg.map(elem => elem.y), this.level.end.y);
 
         // initialize score
         this.score = 0;
@@ -135,7 +136,7 @@ class World {
         if (this.player.dead) return;
         switch (key) {
             case " ": case "ArrowUp": case "z": case "w": // jump
-                if (this.player.jumping || this.player.jumpMem) {
+            if (this.player.jumping || this.player.jumpMem) {
                     this.player.jumpMem = true;
                     break;
                 };

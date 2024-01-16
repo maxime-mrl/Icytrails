@@ -43,6 +43,7 @@
         ["spikes-02", 71, "SUFFEEERRRR"],
         ["coin-01", 80, "A shiny golden coin gives a sweat point"],
         ["checkpoint", 81, "\"This game is too easy it has checkpoints!\" they said"],
+        ["gravity-reverse", 82, "Invert gravity, yes you can."],
         ["point-start", 95, "Set the spawn point where you want"],
         ["point-finish", 96, "Set the success point where you want"],
         ["eraser", 97, "Made a mistake? No problem this can even erase you"],

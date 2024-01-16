@@ -8,6 +8,5 @@
         <input type="password" name="pass" id="login-pass" placeholder="Your password" data-err="Password must be at least 6 characters" data-check="/^.{6,}$/" required>
         <input type="text" name="redirect" value="<?= $referer ?>" readonly style="display:none">
         <input type="submit" value="Login" class="btn">
-        <a href="">forgot password?</a>
     </form>
 </div>

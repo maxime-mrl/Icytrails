@@ -39,6 +39,8 @@ export default class Hero {
             },
             g: 100 // gravity
         };
+        this.lastGravityChanged = Date.now();
+
         this.jumping = false;
         this.jumpMem = false;
         this.dead = false;
@@ -73,9 +75,9 @@ export default class Hero {
     }
 
     updateSprites() { // select sprite order of priority first if is more important than second etc
-        if (this.jumping && this.currentSprite.name == "jump") this.currentSprite = this.sprites.jump; // jumping => jump sprite
-        else if (this.vel.xAbs > 5) this.currentSprite = this.sprites.walk; // moving => walk sprite
-        else if (this.currentSprite.name != "blink") { // idling => idle sprite and radom blink
+        if (this.jumping && this.currentSprite.name == "jump" && !this.dead) this.currentSprite = this.sprites.jump; // jumping => jump sprite
+        else if (this.vel.xAbs > 5 && !this.dead) this.currentSprite = this.sprites.walk; // moving => walk sprite
+        else if (this.currentSprite.name != "blink" && !this.dead) { // idling => idle sprite and radom blink
             this.currentSprite = this.sprites.idle
             if (Math.random() > 0.98 && this.currentFrame == 0) { // blink at random time at first frame
                 this.elapsed = 0;
@@ -96,8 +98,14 @@ export default class Hero {
             }
         }
         // update side of the sprite
-        if (this.vel.mdir < 0) this.currentSprite.sprite = this.currentSprite.lSprite;
-        else this.currentSprite.sprite = this.currentSprite.rSprite;
+        if (this.vel.mdir < 0) {
+            if (this.vel.g > 0) this.currentSprite.sprite = this.currentSprite.lSprite;
+            else this.currentSprite.sprite = this.currentSprite.lReverseSprite;
+        }
+        else {
+            if (this.vel.g > 0) this.currentSprite.sprite = this.currentSprite.rSprite;
+            else this.currentSprite.sprite = this.currentSprite.rReverseSprite;
+        }
     }
     
     updateHitBox = () => { // update Hitbox position
@@ -141,12 +149,13 @@ export default class Hero {
         if (!collisionDetection(this.hitBox, {x, y})) return;
             if (t < 20) { // blocks
                 if (this.vel.y > 0) { // top collision
+                    if (this.vel.g < 0) this.jumping = false;
                     this.vel.y = 0;
                     this.pos.y = y - 1.003 + (1 - this.hitBox.height) / 2;
                     return;
                 }
                 if (this.vel.y < 0) {
-                    this.jumping = false;
+                    if (this.vel.g > 0) this.jumping = false;
                     this.vel.y = 0;
                     this.pos.y = y + 1.003 - (1 - this.hitBox.height) / 2;
                     return;
@@ -162,8 +171,14 @@ export default class Hero {
         // check ground
         if (this.pos.y <= 0) {
             this.jumping = false;
-            this.pos.y = 0 - (1 - this.hitBox.height) / 2;
-            this.vel.y = 0;
+            this.pos.y = 0 - (1 - this.hitBox.height) / 2 + 0.05;
+            if (this.vel.y < 0) this.vel.y = 0;
+        }
+        if (this.pos.y > this.world.top + 30) { // if too high -> dieeeee
+            this.dead = true;
+            this.currentFrame = 0;
+            this.elapsed = 0;
+            this.currentSprite = this.sprites.death;
         }
     }
 
@@ -177,21 +192,32 @@ export default class Hero {
                 this.elapsed = 0;
                 this.currentSprite = this.sprites.death;
                 return;
-            } else if (type == 80) { // score increase
+            } else if (type == 80) { // score increase (coin)
                 this.world.score++;
-                // remove from array
-                const index = this.world.level.fg.findIndex(elem => (elem.x == blockX && elem.y == blockY && elem.t == type))
+                // remove from level
+                const index = this.world.level.fg.findIndex(elem => (elem.x == blockX && elem.y == blockY && elem.t == type));
                 this.world.level.fg.splice(index, 1);
                 return;
             } else if (type == 81) { // checkpoint
                 this.world.level.spawn = { x: blockX, y: blockY }
-                // remove from array
-                const index = this.world.level.fg.findIndex(elem => (elem.x == blockX && elem.y == blockY && elem.t == type))
+                // remove from level
+                const index = this.world.level.fg.findIndex(elem => (elem.x == blockX && elem.y == blockY && elem.t == type));
                 this.world.level.fg.splice(index, 1);
+                return;
+            } else if (type == 82 && Date.now() - this.lastGravityChanged > 400) { // gravity reverse block
+                // give a small kickstart to feel more natural
+                this.vel.jump = this.vel.jump * 0.5;
+                this.jump();
+                this.vel.jump = this.vel.jump * 2;
+                // inverse gravity
+                this.vel.g = -this.vel.g;
+                // don't do it just after
+                this.lastGravityChanged = Date.now();
+                return;
             } else if (type == 98) { // succes
                 this.world.succes()
-                // remove from array
-                const index = this.world.level.fg.findIndex(elem => (elem.x == blockX && elem.y == blockY && elem.t == type))
+                // remove from level
+                const index = this.world.level.fg.findIndex(elem => (elem.x == blockX && elem.y == blockY && elem.t == type));
                 this.world.level.fg.splice(index, 1);
                 return;
             }
@@ -202,7 +228,7 @@ export default class Hero {
     jump = () => {
         this.jumping = true;
         this.jumpMem = false;
-        this.vel.y = this.vel.jump + this.vel.xAbs * 0.08; // jump a bit higher when going quick
+        this.vel.y = (this.vel.jump + this.vel.xAbs * 0.08) * Math.sign(this.vel.g); // jump a bit higher when going quick
         this.currentFrame = 0;
         this.elapsed = 0;
         this.currentSprite = this.sprites.jump;
@@ -230,10 +256,16 @@ function createSprites() { // import sprites and create array of object with all
         imageR.src = `/asset/texture/hero/${sprite}.png`;
         imageR.onload = () => sprites[sprite].frameNb = imageR.width/sprites[sprite].frameSize; // when image loaded set number of frames (we now frames size - 256px - so we devide width by frame size for the number)
         const imageL = document.createElement("img");
+        const imageLReverse = document.createElement("img");
+        const imageRReverse = document.createElement("img");
         imageL.src = `/asset/texture/hero/${sprite}_l.png`;
+        imageLReverse.src = `/asset/texture/hero/reverse-${sprite}_l.png`;
+        imageRReverse.src = `/asset/texture/hero/reverse-${sprite}.png`;
         sprites[sprite] = {
             rSprite: imageR,
             lSprite: imageL,
+            rReverseSprite: imageRReverse,
+            lReverseSprite: imageLReverse,
             sprite: imageL,
             frameSize: 256,
             frameNb: 10, // random number waiting for image to load and be edited
