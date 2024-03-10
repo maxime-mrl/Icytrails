@@ -183,6 +183,4 @@ class World {
     }
 }
 
-if (compressedLevel) {
-    new World(decompressLevel(compressedLevel));
-}
+if (compressedLevel) window.world = new World(decompressLevel(compressedLevel));

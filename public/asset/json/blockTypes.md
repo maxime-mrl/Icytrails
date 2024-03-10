@@ -6,5 +6,5 @@
 - `20-29` solid from top
 - `30-69` background / decoration (no interaction)
 - `70-79` kill on colision (spikes)
-- `80-94` other and overflowed category (kind of potential more future proofing)
+- `80-94` other and overflown category (kind of potential more future proofing)
 - `95-99` not rendered (will enter in other category for editor)

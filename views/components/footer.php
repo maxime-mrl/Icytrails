@@ -1,7 +1,7 @@
 <footer>
     <div class="cp">
         <img src="/asset/img/logo-transparent.png" alt="Icytrails logo" class="logo">
-        <p>&copy; Icytrails 2023 - All right reserved</p>
+        <p>© Icytrails <?= date("Y") ?> - All right reserved</p>
         <p>Made by <a href="https://maxime-morel.xyz" class="link" target="_blank">Maxime Morel</a></p>
     </div>
     <div class="sitemap">

@@ -39,7 +39,8 @@ export default class Hero {
             },
             g: 100 // gravity
         };
-        this.lastGravityChanged = Date.now();
+        this.gravityCooldown = [];
+        this.cooldownTime = 400;
 
         this.jumping = false;
         this.jumpMem = false;
@@ -204,7 +205,14 @@ export default class Hero {
                 const index = this.world.level.fg.findIndex(elem => (elem.x == blockX && elem.y == blockY && elem.t == type));
                 this.world.level.fg.splice(index, 1);
                 return;
-            } else if (type == 82 && Date.now() - this.lastGravityChanged > 400) { // gravity reverse block
+            } else if (type == 82) { // gravity reverse block
+                // check if specific block as a recent cooldown
+                const now = Date.now();
+                this.gravityCooldown = this.gravityCooldown.filter(cooldown => now - cooldown.time < this.cooldownTime); // remove expired cooldowns
+                const cooldown = this.gravityCooldown.find(cooldown => cooldown.x === blockX && cooldown.y === blockY);
+                if (cooldown) return;
+                // remember cooldown
+                this.gravityCooldown.push({ x: blockX, y: blockY, time: now });
                 // give a small kickstart to feel more natural
                 this.vel.jump = this.vel.jump * 0.5;
                 this.jump();
